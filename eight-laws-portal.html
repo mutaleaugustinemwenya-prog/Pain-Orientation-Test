@@ -47,8 +47,9 @@ button{font-family:inherit;background:none;border:none;color:inherit;cursor:poin
 #root{position:relative;z-index:5;min-height:100vh}
 
 /* ---------- Layout shells ---------- */
-.screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+.screen{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;
   padding:5rem 1.5rem 3rem;position:relative;animation:screenIn .6s ease both;}
+.screen.active{display:flex}
 @keyframes screenIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .wrap{max-width:680px;width:100%;position:relative;z-index:2}
 .wrap-wide{max-width:760px}
@@ -63,11 +64,6 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 }
 .btn:hover{background:var(--accent-dim);box-shadow:0 0 30px var(--accent-dim);transform:translateY(-1px)}
 .btn:disabled{opacity:.25;pointer-events:none}
-.btn-ghost{
-  color:var(--ghost);font-family:'Cinzel',serif;font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;
-  padding:.6rem 0;transition:color .2s;
-}
-.btn-ghost:hover{color:var(--bone)}
 
 /* ---------- Boot ---------- */
 #boot{align-items:flex-start;justify-content:center}
@@ -94,10 +90,11 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
   letter-spacing:.14em;text-transform:uppercase;color:var(--ghost)}
 
 /* ---------- HUD ---------- */
-#hud{position:fixed;top:0;left:0;right:0;z-index:50;
+#hud{position:fixed;top:0;left:0;right:0;z-index:50;display:none;
   background:linear-gradient(to bottom, rgba(5,4,3,.92), rgba(5,4,3,0));
-  padding:.9rem 1.2rem .6rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+  padding:.9rem 1.2rem .6rem;align-items:center;gap:1rem;flex-wrap:wrap;
 }
+#hud.show{display:flex}
 .hud-act{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;color:var(--accent);white-space:nowrap}
 .hud-dots{display:flex;gap:6px;flex:1;min-width:180px;justify-content:center}
 .hud-dot{width:22px;height:22px;border-radius:50%;border:1px solid var(--fog);display:flex;align-items:center;justify-content:center;
@@ -139,11 +136,11 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 .portal-title{font-family:'Cinzel',serif;font-size:clamp(1.5rem,4.4vw,2.15rem);text-align:center;color:var(--bone);margin-bottom:.3rem}
 .portal-sub{text-align:center;color:var(--ghost);font-style:italic;margin-bottom:2rem;font-size:.98rem}
 
-.typewriter-box{min-height:5.4rem;margin-bottom:1.6rem}
+.typewriter-box{min-height:5.4rem;margin-bottom:1.6rem;cursor:pointer}
 .tw-line{font-size:1.04rem;line-height:1.85;color:var(--bone);text-align:justify;hyphens:auto;margin-bottom:.9rem}
 .tw-cursor{display:inline-block;width:9px;height:1em;background:var(--accent);vertical-align:-3px;animation:blink .9s step-end infinite}
 .skip-hint{text-align:center;color:var(--ghost);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
-  opacity:.55;margin-bottom:1.4rem;cursor:pointer}
+  opacity:.55;margin-bottom:1.4rem}
 .skip-hint:hover{opacity:.9}
 
 .rune-callout{border-left:2px solid var(--accent-d);padding:1rem 1.4rem;background:var(--accent-dim);margin:1.6rem 0 2rem}
@@ -219,33 +216,105 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 <div id="field"></div>
 <div class="vignette"></div>
 <div class="scanlines"></div>
-<div id="root"></div>
 
-<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<div id="hud">
+  <div class="hud-act mono" id="hud-act"></div>
+  <div class="hud-dots" id="hud-dots"></div>
+  <div class="hud-meter">
+    <span class="eyebrow" style="font-size:.55rem">Orientation</span>
+    <div class="hud-meter-track"><div class="hud-meter-fill" id="hud-meter-fill" style="width:0%"></div></div>
+  </div>
+  <button class="hud-mute" id="hud-mute" title="Mute">🔊</button>
+</div>
 
-<script type="text/babel" data-presets="react">
-const { useState, useEffect, useRef, useCallback, useMemo } = React;
+<div id="root">
+
+<section class="screen active" id="screen-boot">
+  <div class="boot-box mono">
+    <div id="boot-lines"></div>
+    <div class="boot-bar-track"><div class="boot-bar-fill" id="boot-bar-fill"></div></div>
+    <div id="boot-enter"></div>
+  </div>
+</section>
+
+<section class="screen title-glow" id="screen-title">
+  <div class="wrap">
+    <p class="eyebrow" style="margin-bottom:1.8rem">An Interactive Reorientation, in Three Acts</p>
+    <span class="display title-main">Eight Laws</span>
+    <span class="title-sub">of Pain</span>
+    <p class="title-tag">The Reorientation Protocol</p>
+    <p class="title-desc">
+      Pain is not the exception to a well-built life. It is a structural feature of any life lived with
+      genuine engagement. Ahead of you stand eight portals, each built from a law that governs how
+      suffering moves through a human being. You will not escape any of them. You will only learn to
+      pass through with your eyes open. At the end, the same instrument used by <em>The Pain Orientation
+      Test</em> will name where you currently stand.
+    </p>
+    <button class="btn" id="btn-begin">Begin the Descent</button>
+    <div class="law-preview" id="law-preview"></div>
+  </div>
+</section>
+
+<section class="screen" id="screen-actintro">
+  <div class="wrap">
+    <div class="act-roman" id="act-roman"></div>
+    <div class="act-name" id="act-name"></div>
+    <p class="act-tag" id="act-tag"></p>
+    <div class="act-laws" id="act-laws"></div>
+    <button class="btn" id="btn-enter-act"></button>
+  </div>
+</section>
+
+<section class="screen" id="screen-portal">
+  <div class="wrap">
+    <div class="portal-frame">
+      <div class="portal-ring r3"></div>
+      <div class="portal-ring r2"></div>
+      <div class="portal-ring"></div>
+      <div class="portal-core" id="portal-core"></div>
+    </div>
+    <div class="portal-num mono" id="portal-num"></div>
+    <h2 class="portal-title" id="portal-title"></h2>
+    <p class="portal-sub" id="portal-sub"></p>
+    <div id="portal-body"></div>
+  </div>
+</section>
+
+<section class="screen" id="screen-calc">
+  <div class="spinner"></div>
+  <p class="eyebrow">Compiling your orientation</p>
+  <p class="calc-msg" id="calc-msg"></p>
+</section>
+
+<section class="screen" id="screen-results">
+  <div class="wrap wrap-wide" id="results-body"></div>
+</section>
+
+</div>
+
+<script>
+(function(){
+"use strict";
 
 /* ============================================================
    SOUND — tiny WebAudio chime engine, no external assets
    ============================================================ */
-let audioCtx = null;
+var audioCtx = null;
+var muted = false;
 function getCtx(){
   if(!audioCtx){
     try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ audioCtx = null; }
   }
   return audioCtx;
 }
-function chime(freqs, dur, muted){
+function chime(freqs, dur){
   if(muted) return;
-  const ctx = getCtx();
+  var ctx = getCtx();
   if(!ctx) return;
-  const now = ctx.currentTime;
-  freqs.forEach((f, i)=>{
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
+  var now = ctx.currentTime;
+  freqs.forEach(function(f, i){
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
     osc.type = 'sine';
     osc.frequency.setValueAtTime(f, now);
     gain.gain.setValueAtTime(0, now);
@@ -256,111 +325,97 @@ function chime(freqs, dur, muted){
     osc.stop(now + dur + i*0.03 + 0.05);
   });
 }
-const SFX = {
-  boot: (m)=>chime([220], 0.4, m),
-  advance: (m)=>chime([330, 440], 0.5, m),
-  select: (m)=>chime([392], 0.25, m),
-  rune: (m)=>chime([523.25, 659.25, 783.99], 1.1, m),
-  act: (m)=>chime([196, 246.94, 293.66], 1.4, m),
-  finale: (m)=>chime([261.63, 329.63, 392, 523.25], 2, m),
+var SFX = {
+  boot: function(){ chime([220], 0.4); },
+  select: function(){ chime([392], 0.25); },
+  rune: function(){ chime([523.25, 659.25, 783.99], 1.1); },
+  act: function(){ chime([196, 246.94, 293.66], 1.4); },
+  finale: function(){ chime([261.63, 329.63, 392, 523.25], 2); }
 };
 
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
 /* ============================================================
-   EMBER FIELD — ambient particles, mounted once
+   EMBER FIELD — ambient particles
    ============================================================ */
-function EmberField({ accent }){
-  useEffect(()=>{
-    const field = document.getElementById('field');
-    field.style.setProperty('--accent', accent);
-    field.innerHTML = '';
-    const n = window.innerWidth < 640 ? 14 : 26;
-    for(let i=0;i<n;i++){
-      const d = document.createElement('div');
-      d.className = 'ember';
-      const size = 1 + Math.random()*2.4;
-      d.style.width = size+'px';
-      d.style.height = size+'px';
-      d.style.left = Math.random()*100+'%';
-      d.style.bottom = '-10px';
-      d.style.setProperty('--drift', (Math.random()*60-30)+'px');
-      const dur = 10 + Math.random()*14;
-      d.style.animationDuration = dur+'s';
-      d.style.animationDelay = (Math.random()*dur)+'s';
-      field.appendChild(d);
-    }
-  }, [accent]);
-  return null;
+function emberField(accent){
+  var field = document.getElementById('field');
+  field.style.setProperty('--accent', accent);
+  field.innerHTML = '';
+  var n = window.innerWidth < 640 ? 14 : 26;
+  for(var i=0;i<n;i++){
+    var d = document.createElement('div');
+    d.className = 'ember';
+    var size = 1 + Math.random()*2.4;
+    d.style.width = size+'px';
+    d.style.height = size+'px';
+    d.style.left = Math.random()*100+'%';
+    d.style.bottom = '-10px';
+    d.style.setProperty('--drift', (Math.random()*60-30)+'px');
+    var dur = 10 + Math.random()*14;
+    d.style.animationDuration = dur+'s';
+    d.style.animationDelay = (Math.random()*dur)+'s';
+    field.appendChild(d);
+  }
 }
 
 /* ============================================================
    TYPEWRITER — reveals text progressively, click-to-skip
    ============================================================ */
-function Typewriter({ lines, speed = 16, onDone, startDelay = 0 }){
-  const [visibleLines, setVisibleLines] = useState([]);
-  const [charIdx, setCharIdx] = useState(0);
-  const [lineIdx, setLineIdx] = useState(0);
-  const [done, setDone] = useState(false);
-  const timeoutRef = useRef(null);
-  const skippedRef = useRef(false);
+function runTypewriter(container, lines, speed, onDone){
+  var lineIdx = 0, charIdx = 0, done = false;
+  var timer = null;
+  container.innerHTML = '<div class="skip-hint">tap to reveal</div>';
+  var hint = container.querySelector('.skip-hint');
 
-  useEffect(()=>{
-    setVisibleLines([]); setCharIdx(0); setLineIdx(0); setDone(false); skippedRef.current = false;
-  }, [lines]);
+  function render(){
+    var html = '';
+    for(var i=0;i<lineIdx;i++){ html += '<p class="tw-line">'+escapeHtml(lines[i])+'</p>'; }
+    if(lineIdx < lines.length){
+      html += '<p class="tw-line">'+escapeHtml(lines[lineIdx].slice(0,charIdx))+'<span class="tw-cursor"></span></p>';
+    }
+    container.innerHTML = html + (done ? '' : '<div class="skip-hint">tap to reveal</div>');
+  }
 
-  useEffect(()=>{
+  function tick(){
     if(done) return;
-    if(lineIdx >= lines.length){
-      setDone(true);
-      if(onDone) onDone();
-      return;
+    if(lineIdx >= lines.length){ finish(); return; }
+    var current = lines[lineIdx];
+    if(charIdx < current.length){
+      charIdx++;
+      render();
+      timer = setTimeout(tick, speed);
+    } else {
+      lineIdx++; charIdx = 0;
+      render();
+      timer = setTimeout(tick, speed);
     }
-    const current = lines[lineIdx];
-    if(charIdx === 0 && startDelay > 0 && lineIdx === 0){
-      timeoutRef.current = setTimeout(()=>{ tick(current); }, startDelay);
-      return () => clearTimeout(timeoutRef.current);
-    }
-    timeoutRef.current = setTimeout(()=>{ tick(current); }, speed);
-    return () => clearTimeout(timeoutRef.current);
-    function tick(currentLine){
-      if(charIdx < currentLine.length){
-        setCharIdx(c => c + 1);
-      } else {
-        setVisibleLines(v => [...v, currentLine]);
-        setLineIdx(i => i + 1);
-        setCharIdx(0);
-      }
-    }
-  }, [charIdx, lineIdx, done]);
+  }
 
-  function skip(){
-    if(done || skippedRef.current) return;
-    skippedRef.current = true;
-    clearTimeout(timeoutRef.current);
-    setVisibleLines(lines);
-    setLineIdx(lines.length);
-    setCharIdx(0);
-    setDone(true);
+  function finish(){
+    if(done) return;
+    done = true;
+    clearTimeout(timer);
+    var html = '';
+    lines.forEach(function(l){ html += '<p class="tw-line">'+escapeHtml(l)+'</p>'; });
+    container.innerHTML = html;
     if(onDone) onDone();
   }
 
-  const inProgress = lineIdx < lines.length ? lines[lineIdx].slice(0, charIdx) : '';
-
-  return (
-    <div className="typewriter-box" onClick={skip}>
-      {visibleLines.map((l, i) => <p className="tw-line" key={i}>{l}</p>)}
-      {!done && lineIdx < lines.length && (
-        <p className="tw-line">{inProgress}<span className="tw-cursor"></span></p>
-      )}
-      {!done && <div className="skip-hint">tap to reveal</div>}
-    </div>
-  );
+  container.onclick = finish;
+  render();
+  timer = setTimeout(tick, speed);
 }
 
 /* ============================================================
    DATA — the eight laws, in three-act order
    (questions & scoring mirror The Pain Orientation Test)
    ============================================================ */
-const LAWS = [
+var LAWS = [
   {
     id:"malevolence", numeral:"I", act:1,
     name:"The Law of Malevolence",
@@ -563,13 +618,13 @@ const LAWS = [
   }
 ];
 
-const ACTS = [
+var ACTS = [
   { n:1, roman:"I", name:"The Descent", tag:"Before you can be reoriented, you must first admit what pain actually is." },
   { n:2, roman:"II", name:"The Trials", tag:"Time will erode you, urges will pull at you, and some doors close forever. Meet them with open eyes." },
-  { n:3, roman:"III", name:"The Revelation", tag:"See clearly. Face the end. Then rise — reoriented." },
+  { n:3, roman:"III", name:"The Revelation", tag:"See clearly. Face the end. Then rise — reoriented." }
 ];
 
-const ARCHETYPES = [
+var ARCHETYPES = [
   {
     id:"avoider", name:"The Avoider", range:[8,14], orient:"Avoidance",
     tagline:"If I move with sufficient speed, pain will not find me.",
@@ -603,450 +658,404 @@ const ARCHETYPES = [
 ];
 
 function getArchetype(total){
-  return ARCHETYPES.find(a => total >= a.range[0] && total <= a.range[1]) || ARCHETYPES[2];
+  for(var i=0;i<ARCHETYPES.length;i++){
+    var a = ARCHETYPES[i];
+    if(total >= a.range[0] && total <= a.range[1]) return a;
+  }
+  return ARCHETYPES[2];
 }
 
 /* ============================================================
    ICONS — small inline SVG glyphs, one per portal + per archetype
    ============================================================ */
-function PortalGlyph({ type, color, size = 46 }){
-  const s = size;
-  const stroke = color;
-  const paths = {
-    mask: <><circle cx="23" cy="23" r="16" fill="none" stroke={stroke} strokeWidth="1.4"/><path d="M23 7 L23 39" stroke={stroke} strokeWidth="1.2"/><circle cx="17" cy="20" r="2" fill={stroke}/><circle cx="29" cy="26" r="2" fill="none" stroke={stroke} strokeWidth="1.2"/></>,
-    crack: <><circle cx="23" cy="23" r="16" fill="none" stroke={stroke} strokeWidth="1.4"/><path d="M23 8 L19 20 L26 24 L18 38" fill="none" stroke={stroke} strokeWidth="1.3"/></>,
-    ripple: <><circle cx="23" cy="23" r="16" fill="none" stroke={stroke} strokeWidth="1" opacity=".5"/><circle cx="23" cy="23" r="10" fill="none" stroke={stroke} strokeWidth="1.2" opacity=".8"/><circle cx="23" cy="23" r="3" fill={stroke}/></>,
-    hourglass: <><path d="M12 8 H34 L23 23 L34 38 H12 L23 23 Z" fill="none" stroke={stroke} strokeWidth="1.3"/><path d="M16 12 H30" stroke={stroke} strokeWidth="1"/><path d="M16 34 H30" stroke={stroke} strokeWidth="1"/></>,
-    pulse: <><path d="M6 23 H16 L20 12 L26 34 L30 23 H40" fill="none" stroke={stroke} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round"/></>,
-    gate: <><rect x="10" y="10" width="26" height="28" fill="none" stroke={stroke} strokeWidth="1.3"/><path d="M23 10 V38" stroke={stroke} strokeWidth="1"/><circle cx="19" cy="24" r="1.6" fill={stroke}/></>,
-    eye: <><path d="M6 23 Q23 9 40 23 Q23 37 6 23 Z" fill="none" stroke={stroke} strokeWidth="1.3"/><circle cx="23" cy="23" r="6" fill="none" stroke={stroke} strokeWidth="1.2"/><circle cx="23" cy="23" r="2.2" fill={stroke}/></>,
-    circle: <><circle cx="23" cy="23" r="16" fill="none" stroke={stroke} strokeWidth="1.4"/><circle cx="23" cy="23" r="1.6" fill={stroke}/></>,
+function portalGlyphSvg(type, color, size){
+  size = size || 46;
+  var paths = {
+    mask: '<circle cx="23" cy="23" r="16" fill="none" stroke="'+color+'" stroke-width="1.4"/><path d="M23 7 L23 39" stroke="'+color+'" stroke-width="1.2"/><circle cx="17" cy="20" r="2" fill="'+color+'"/><circle cx="29" cy="26" r="2" fill="none" stroke="'+color+'" stroke-width="1.2"/>',
+    crack: '<circle cx="23" cy="23" r="16" fill="none" stroke="'+color+'" stroke-width="1.4"/><path d="M23 8 L19 20 L26 24 L18 38" fill="none" stroke="'+color+'" stroke-width="1.3"/>',
+    ripple: '<circle cx="23" cy="23" r="16" fill="none" stroke="'+color+'" stroke-width="1" opacity=".5"/><circle cx="23" cy="23" r="10" fill="none" stroke="'+color+'" stroke-width="1.2" opacity=".8"/><circle cx="23" cy="23" r="3" fill="'+color+'"/>',
+    hourglass: '<path d="M12 8 H34 L23 23 L34 38 H12 L23 23 Z" fill="none" stroke="'+color+'" stroke-width="1.3"/><path d="M16 12 H30" stroke="'+color+'" stroke-width="1"/><path d="M16 34 H30" stroke="'+color+'" stroke-width="1"/>',
+    pulse: '<path d="M6 23 H16 L20 12 L26 34 L30 23 H40" fill="none" stroke="'+color+'" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>',
+    gate: '<rect x="10" y="10" width="26" height="28" fill="none" stroke="'+color+'" stroke-width="1.3"/><path d="M23 10 V38" stroke="'+color+'" stroke-width="1"/><circle cx="19" cy="24" r="1.6" fill="'+color+'"/>',
+    eye: '<path d="M6 23 Q23 9 40 23 Q23 37 6 23 Z" fill="none" stroke="'+color+'" stroke-width="1.3"/><circle cx="23" cy="23" r="6" fill="none" stroke="'+color+'" stroke-width="1.2"/><circle cx="23" cy="23" r="2.2" fill="'+color+'"/>',
+    circle: '<circle cx="23" cy="23" r="16" fill="none" stroke="'+color+'" stroke-width="1.4"/><circle cx="23" cy="23" r="1.6" fill="'+color+'"/>'
   };
-  return <svg width={s} height={s} viewBox="0 0 46 46">{paths[type]}</svg>;
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 46 46">'+(paths[type]||'')+'</svg>';
 }
 
 function archetypeSvg(id, size){
-  const g="#c9973a", gd="#7a5a1a", b="#f0ead6", a="#1a1608", gh="#9a8f72", bk="#080705";
-  const c = size/2, r = size*0.46;
-  const bg = <circle cx={c} cy={c} r={r} fill={a} stroke={gd} strokeWidth="0.8"/>;
-  if(id==="avoider") return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-    {bg}
-    <line x1={c-size*.30} y1={c-size*.10} x2={c+size*.22} y2={c-size*.10} stroke={g} strokeWidth="1.4" strokeLinecap="round"/>
-    <line x1={c-size*.36} y1={c} x2={c+size*.28} y2={c} stroke={g} strokeWidth="1.8" strokeLinecap="round"/>
-    <line x1={c-size*.30} y1={c+size*.10} x2={c+size*.22} y2={c+size*.10} stroke={g} strokeWidth="1.4" strokeLinecap="round"/>
-    <polygon points={`${c+size*.34},${c} ${c+size*.22},${c-size*.08} ${c+size*.22},${c+size*.08}`} fill={g}/>
-    <path d={`M${c-size*.04} ${c+size*.22} A${size*.23} ${size*.23} 0 1 1 ${c-size*.04} ${c-size*.22}`} fill="none" stroke={gh} strokeWidth="1.3" strokeLinecap="round"/>
-  </svg>;
-  if(id==="resister") return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-    {bg}
-    <path d={`M${c} ${c-size*.30} L${c-size*.22} ${c-size*.14} L${c-size*.22} ${c+size*.08} Q${c-size*.22} ${c+size*.30} ${c} ${c+size*.32} Q${c+size*.22} ${c+size*.30} ${c+size*.22} ${c+size*.08} L${c+size*.22} ${c-size*.14} Z`} fill="#1e1408" stroke={g} strokeWidth="1.6"/>
-    <line x1={c} y1={c-size*.22} x2={c} y2={c+size*.24} stroke={g} strokeWidth="1.5" strokeLinecap="round"/>
-    <line x1={c-size*.17} y1={c+size*.01} x2={c+size*.17} y2={c+size*.01} stroke={g} strokeWidth="1.5" strokeLinecap="round"/>
-  </svg>;
-  if(id==="negotiator") return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-    {bg}
-    <line x1={c} y1={c-size*.30} x2={c} y2={c+size*.32} stroke={g} strokeWidth="1.4" strokeLinecap="round"/>
-    <line x1={c-size*.28} y1={c-size*.05} x2={c+size*.28} y2={c-size*.05} stroke={g} strokeWidth="1.4" strokeLinecap="round"/>
-    <polygon points={`${c},${c+size*.30} ${c-size*.07},${c+size*.38} ${c+size*.07},${c+size*.38}`} fill={g}/>
-  </svg>;
-  if(id==="witness") return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-    {bg}
-    <path d={`M${c-size*.34} ${c} Q${c} ${c-size*.22} ${c+size*.34} ${c} Q${c} ${c+size*.22} ${c-size*.34} ${c} Z`} fill="#14100a" stroke={b} strokeWidth="1.4"/>
-    <circle cx={c} cy={c} r={size*.13} fill="#1e1408" stroke={g} strokeWidth="1.2"/>
-    <circle cx={c} cy={c} r={size*.07} fill={bk}/>
-  </svg>;
-  // integrator
-  let dots=[], sPts=[];
-  for(let i=0;i<8;i++){ const a2=(i*45*Math.PI)/180; dots.push(<circle key={i} cx={(c+size*.22*Math.cos(a2)).toFixed(1)} cy={(c+size*.22*Math.sin(a2)).toFixed(1)} r={size*.09} fill={a} stroke={g} strokeWidth="0.9"/>); }
-  for(let i=0;i<16;i++){ const a2=((i*22.5-90)*Math.PI)/180, r2 = i%2===0?size*.16:size*.08; sPts.push(`${(c+r2*Math.cos(a2)).toFixed(1)},${(c+r2*Math.sin(a2)).toFixed(1)}`); }
-  return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-    {bg}
-    <circle cx={c} cy={c} r={size*.43} fill="none" stroke={gd} strokeWidth="0.5"/>
-    {dots}
-    <polygon points={sPts.join(' ')} fill={g} stroke={bk} strokeWidth="0.4"/>
-    <circle cx={c} cy={c} r={size*.04} fill={b}/>
-  </svg>;
+  var g="#c9973a", gd="#7a5a1a", b="#f0ead6", a="#1a1608", gh="#9a8f72", bk="#080705";
+  var c = size/2, r = size*0.46;
+  var bg = '<circle cx="'+c+'" cy="'+c+'" r="'+r+'" fill="'+a+'" stroke="'+gd+'" stroke-width="0.8"/>';
+  var body = '';
+  if(id==="avoider"){
+    body = bg +
+      '<line x1="'+(c-size*.30)+'" y1="'+(c-size*.10)+'" x2="'+(c+size*.22)+'" y2="'+(c-size*.10)+'" stroke="'+g+'" stroke-width="1.4" stroke-linecap="round"/>'+
+      '<line x1="'+(c-size*.36)+'" y1="'+c+'" x2="'+(c+size*.28)+'" y2="'+c+'" stroke="'+g+'" stroke-width="1.8" stroke-linecap="round"/>'+
+      '<line x1="'+(c-size*.30)+'" y1="'+(c+size*.10)+'" x2="'+(c+size*.22)+'" y2="'+(c+size*.10)+'" stroke="'+g+'" stroke-width="1.4" stroke-linecap="round"/>'+
+      '<polygon points="'+(c+size*.34)+','+c+' '+(c+size*.22)+','+(c-size*.08)+' '+(c+size*.22)+','+(c+size*.08)+'" fill="'+g+'"/>'+
+      '<path d="M'+(c-size*.04)+' '+(c+size*.22)+' A'+(size*.23)+' '+(size*.23)+' 0 1 1 '+(c-size*.04)+' '+(c-size*.22)+'" fill="none" stroke="'+gh+'" stroke-width="1.3" stroke-linecap="round"/>';
+  } else if(id==="resister"){
+    body = bg +
+      '<path d="M'+c+' '+(c-size*.30)+' L'+(c-size*.22)+' '+(c-size*.14)+' L'+(c-size*.22)+' '+(c+size*.08)+' Q'+(c-size*.22)+' '+(c+size*.30)+' '+c+' '+(c+size*.32)+' Q'+(c+size*.22)+' '+(c+size*.30)+' '+(c+size*.22)+' '+(c+size*.08)+' L'+(c+size*.22)+' '+(c-size*.14)+' Z" fill="#1e1408" stroke="'+g+'" stroke-width="1.6"/>'+
+      '<line x1="'+c+'" y1="'+(c-size*.22)+'" x2="'+c+'" y2="'+(c+size*.24)+'" stroke="'+g+'" stroke-width="1.5" stroke-linecap="round"/>'+
+      '<line x1="'+(c-size*.17)+'" y1="'+(c+size*.01)+'" x2="'+(c+size*.17)+'" y2="'+(c+size*.01)+'" stroke="'+g+'" stroke-width="1.5" stroke-linecap="round"/>';
+  } else if(id==="negotiator"){
+    body = bg +
+      '<line x1="'+c+'" y1="'+(c-size*.30)+'" x2="'+c+'" y2="'+(c+size*.32)+'" stroke="'+g+'" stroke-width="1.4" stroke-linecap="round"/>'+
+      '<line x1="'+(c-size*.28)+'" y1="'+(c-size*.05)+'" x2="'+(c+size*.28)+'" y2="'+(c-size*.05)+'" stroke="'+g+'" stroke-width="1.4" stroke-linecap="round"/>'+
+      '<polygon points="'+c+','+(c+size*.30)+' '+(c-size*.07)+','+(c+size*.38)+' '+(c+size*.07)+','+(c+size*.38)+'" fill="'+g+'"/>';
+  } else if(id==="witness"){
+    body = bg +
+      '<path d="M'+(c-size*.34)+' '+c+' Q'+c+' '+(c-size*.22)+' '+(c+size*.34)+' '+c+' Q'+c+' '+(c+size*.22)+' '+(c-size*.34)+' '+c+' Z" fill="#14100a" stroke="'+b+'" stroke-width="1.4"/>'+
+      '<circle cx="'+c+'" cy="'+c+'" r="'+(size*.13)+'" fill="#1e1408" stroke="'+g+'" stroke-width="1.2"/>'+
+      '<circle cx="'+c+'" cy="'+c+'" r="'+(size*.07)+'" fill="'+bk+'"/>';
+  } else {
+    var dots = '', sPts = [];
+    for(var i=0;i<8;i++){ var a2=(i*45*Math.PI)/180; dots += '<circle cx="'+(c+size*.22*Math.cos(a2)).toFixed(1)+'" cy="'+(c+size*.22*Math.sin(a2)).toFixed(1)+'" r="'+(size*.09)+'" fill="'+a+'" stroke="'+g+'" stroke-width="0.9"/>'; }
+    for(var j=0;j<16;j++){ var a3=((j*22.5-90)*Math.PI)/180, r2 = j%2===0?size*.16:size*.08; sPts.push((c+r2*Math.cos(a3)).toFixed(1)+','+(c+r2*Math.sin(a3)).toFixed(1)); }
+    body = bg + '<circle cx="'+c+'" cy="'+c+'" r="'+(size*.43)+'" fill="none" stroke="'+gd+'" stroke-width="0.5"/>' + dots +
+      '<polygon points="'+sPts.join(' ')+'" fill="'+g+'" stroke="'+bk+'" stroke-width="0.4"/>'+
+      '<circle cx="'+c+'" cy="'+c+'" r="'+(size*.04)+'" fill="'+b+'"/>';
+  }
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'">'+body+'</svg>';
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+var portalIndex = 0;
+var answers = [];
+var runes = [];
+
+function showScreen(id){
+  var els = document.querySelectorAll('.screen');
+  for(var i=0;i<els.length;i++){ els[i].classList.remove('active'); }
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
 }
 
 /* ============================================================
    HUD
    ============================================================ */
-function HUD({ portalIndex, runes, act, muted, setMuted }){
-  const pct = Math.min(100, Math.round((runes.length/8)*100));
-  return (
-    <div id="hud">
-      <div className="hud-act mono">ACT {act?.roman || ''} · {act?.name || ''}</div>
-      <div className="hud-dots">
-        {LAWS.map((law, i)=>{
-          const isDone = runes.includes(law.id);
-          const isCurrent = i === portalIndex;
-          return <div key={law.id} className={"hud-dot" + (isDone?" done":"") + (isCurrent?" current":"")} title={law.name}>
-            {isDone ? "✓" : law.numeral}
-          </div>;
-        })}
-      </div>
-      <div className="hud-meter">
-        <span className="eyebrow" style={{fontSize:'.55rem'}}>Orientation</span>
-        <div className="hud-meter-track"><div className="hud-meter-fill" style={{width:pct+'%'}}></div></div>
-      </div>
-      <button className="hud-mute" onClick={()=>setMuted(m=>!m)} title={muted ? "Unmute" : "Mute"}>
-        {muted ? "🔇" : "🔊"}
-      </button>
-    </div>
-  );
+function updateHUD(){
+  var hud = document.getElementById('hud');
+  hud.classList.add('show');
+  var law = LAWS[Math.min(portalIndex,7)];
+  var act = ACTS[law.act-1];
+  document.getElementById('hud-act').textContent = 'ACT ' + act.roman + ' · ' + act.name;
+
+  var dotsEl = document.getElementById('hud-dots');
+  dotsEl.innerHTML = '';
+  LAWS.forEach(function(l, i){
+    var d = document.createElement('div');
+    var doneNow = i < answers.length;
+    var isCurrent = i === portalIndex;
+    d.className = 'hud-dot' + (doneNow ? ' done' : '') + (isCurrent ? ' current' : '');
+    d.title = l.name;
+    d.textContent = doneNow ? '✓' : l.numeral;
+    dotsEl.appendChild(d);
+  });
+
+  var pct = Math.min(100, Math.round((answers.length/8)*100));
+  document.getElementById('hud-meter-fill').style.width = pct + '%';
 }
 
+document.getElementById('hud-mute').addEventListener('click', function(){
+  muted = !muted;
+  this.textContent = muted ? '🔇' : '🔊';
+  this.title = muted ? 'Unmute' : 'Mute';
+});
+
 /* ============================================================
-   SCREENS
+   BOOT
    ============================================================ */
-function BootScreen({ onDone, muted }){
-  const bootLines = useMemo(()=>[
+function startBoot(){
+  var bootLines = [
     "PAIN OS v8.0.1 — initializing reorientation protocol...",
     "loading law modules ................ [8/8] OK",
     "loading pain orientation index ...... OK",
     "calibrating discernment threshold ... OK",
-    "the eight portals are ready.",
-  ], []);
-  const [shown, setShown] = useState(0);
-  const [pct, setPct] = useState(0);
-  useEffect(()=>{
-    SFX.boot(muted);
-    const iv = setInterval(()=>{
-      setShown(s=>{
-        if(s < bootLines.length){ return s+1; }
-        clearInterval(iv);
-        return s;
-      });
-    }, 420);
-    return ()=>clearInterval(iv);
-  }, []);
-  useEffect(()=>{
-    const iv = setInterval(()=> setPct(p => Math.min(100, p + 4)), 60);
-    return ()=>clearInterval(iv);
-  }, []);
-  return (
-    <div className="screen" id="boot">
-      <div className="boot-box mono">
-        {bootLines.slice(0, shown).map((l,i)=>(
-          <div className="boot-line" key={i}>
-            {l}{i === bootLines.length-1 && <span className="ok"> ✓</span>}
-          </div>
-        ))}
-        <div className="boot-bar-track"><div className="boot-bar-fill" style={{width:pct+'%'}}></div></div>
-        {shown >= bootLines.length && (
-          <button className="btn" onClick={onDone} style={{marginTop:'1.4rem'}}>Enter</button>
-        )}
-        {shown < bootLines.length && <span className="boot-cursor"></span>}
-      </div>
-    </div>
-  );
-}
-
-function TitleScreen({ onStart }){
-  return (
-    <div className="screen title-glow" id="title">
-      <div className="wrap">
-        <p className="eyebrow" style={{marginBottom:'1.8rem'}}>An Interactive Reorientation, in Three Acts</p>
-        <span className="display title-main">Eight Laws</span>
-        <span className="title-sub">of Pain</span>
-        <p className="title-tag">The Reorientation Protocol</p>
-        <p className="title-desc">
-          Pain is not the exception to a well-built life. It is a structural feature of any life lived with
-          genuine engagement. Ahead of you stand eight portals, each built from a law that governs how
-          suffering moves through a human being. You will not escape any of them. You will only learn to
-          pass through with your eyes open. At the end, the same instrument used by <em>The Pain Orientation
-          Test</em> will name where you currently stand.
-        </p>
-        <button className="btn" onClick={onStart}>Begin the Descent</button>
-        <div className="law-preview">
-          {LAWS.map(l => <span className="law-chip" key={l.id}>{l.numeral} · {l.name.replace('The Law of ','')}</span>)}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ActIntroScreen({ act, onDone, muted }){
-  useEffect(()=>{ SFX.act(muted); }, []);
-  const lawsInAct = LAWS.filter(l => l.act === act.n);
-  return (
-    <div className="screen" id="act-intro">
-      <div className="wrap">
-        <div className="act-roman">{act.roman}</div>
-        <div className="act-name">{act.name}</div>
-        <p className="act-tag">"{act.tag}"</p>
-        <div className="act-laws">
-          {lawsInAct.map(l=>(
-            <div className="act-law-item" key={l.id}>
-              <div className="act-law-num">LAW {l.numeral}</div>
-              <div className="act-law-name">{l.name.replace('The Law of ','')}</div>
-            </div>
-          ))}
-        </div>
-        <button className="btn" onClick={onDone}>Enter Act {act.roman}</button>
-      </div>
-    </div>
-  );
-}
-
-function PortalScene({ law, index, onComplete, muted }){
-  const [phase, setPhase] = useState('teaching'); // teaching -> trial -> rune
-  const [chosen, setChosen] = useState(null);
-  const [optionsShown, setOptionsShown] = useState(false);
-
-  useEffect(()=>{
-    setPhase('teaching'); setChosen(null); setOptionsShown(false);
-    const root = document.documentElement;
-    root.style.setProperty('--accent', law.accent);
-  }, [law]);
-
-  function handleTeachingDone(){
-    setTimeout(()=>{ setPhase('trial'); setTimeout(()=>setOptionsShown(true), 250); }, 350);
-  }
-
-  function selectOption(opt){
-    if(chosen) return;
-    setChosen(opt);
-    SFX.select(muted);
-    setTimeout(()=>{
-      setPhase('rune');
-      SFX.rune(muted);
-    }, 650);
-  }
-
-  return (
-    <div className="screen" id="portal" style={{'--accent': law.accent}}>
-      <div className="wrap">
-        <div className="portal-frame">
-          <div className="portal-ring r3"></div>
-          <div className="portal-ring r2"></div>
-          <div className="portal-ring"></div>
-          <div className="portal-core">
-            <PortalGlyph type={law.glyph} color={law.accent} />
-          </div>
-        </div>
-        <div className="portal-num mono">PORTAL {law.numeral} OF VIII</div>
-        <h2 className="portal-title">{law.name}</h2>
-        <p className="portal-sub">"{law.tagline}"</p>
-
-        {phase === 'teaching' && (
-          <Typewriter lines={law.teaching} onDone={handleTeachingDone} muted={muted} speed={14} />
-        )}
-
-        {phase !== 'teaching' && (
-          <div className="trial-box">
-            <p className="trial-label">The Trial</p>
-            <p className="trial-q">{law.q.text}</p>
-            <p className="trial-sub">{law.q.sub}</p>
-            {optionsShown && (
-              <div>
-                {law.q.options.map((o, i)=>(
-                  <button
-                    key={o.l}
-                    className={"opt" + (chosen && chosen.l===o.l ? " chosen":"")}
-                    style={{animationDelay:(i*0.08)+'s'}}
-                    onClick={()=>selectOption(o)}
-                    disabled={!!chosen}
-                  >
-                    <span className="opt-l">{o.l}</span><span>{o.text}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {phase === 'rune' && (
-          <div className="rune-collect-wrap">
-            <hr className="rule" />
-            <div className="rune-word">{law.rune}</div>
-            <p className="rune-caption">{law.runeLine}</p>
-            <div className="rune-callout">
-              <p className="eyebrow">Rune Claimed</p>
-              <p>You carry this word forward. It will complete your pledge at the final threshold.</p>
-            </div>
-            <button className="btn" onClick={()=>onComplete(chosen.score)}>
-              {index === 7 ? "Face the Final Threshold →" : "Pass Through the Portal →"}
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function CalculatingScreen({ onDone }){
-  const msgs = [
-    "Weighing your responses across all eight laws…",
-    "Binding your eight collected runes into a pledge…",
-    "Locating your archetype within the spectrum…",
+    "the eight portals are ready."
   ];
-  const [i, setI] = useState(0);
-  useEffect(()=>{
-    const iv = setInterval(()=> setI(v => Math.min(msgs.length-1, v+1)), 1100);
-    const t = setTimeout(onDone, 3400);
-    return ()=>{ clearInterval(iv); clearTimeout(t); };
-  }, []);
-  return (
-    <div className="screen" id="calc">
-      <div className="spinner"></div>
-      <p className="eyebrow">Compiling your orientation</p>
-      <p className="calc-msg">{msgs[i]}</p>
-    </div>
-  );
-}
+  SFX.boot();
+  var linesEl = document.getElementById('boot-lines');
+  var barFill = document.getElementById('boot-bar-fill');
+  var shown = 0;
+  var pct = 0;
 
-function ResultsScreen({ answers, runes, onRestart, muted }){
-  const total = answers.reduce((s,a)=>s+a, 0);
-  const arch = getArchetype(total);
+  var pctTimer = setInterval(function(){
+    pct = Math.min(100, pct + 4);
+    barFill.style.width = pct + '%';
+    if(pct >= 100) clearInterval(pctTimer);
+  }, 60);
 
-  useEffect(()=>{
-    SFX.finale(muted);
-    requestAnimationFrame(()=> setTimeout(()=>{
-      document.querySelectorAll('.bar-fill').forEach(el=>{ el.style.width = el.dataset.pct; });
-    }, 300));
-  }, []);
-
-  const pledgeLines = {
-    ADMIT:"admit what moves in me",
-    EXPOSE:"expose what I have hidden",
-    ENOUGH:"call enough what already is",
-    TEND:"tend what decays",
-    RIDE:"ride what impulse brings",
-    DISCERN:"discern before I cross",
-    SEE:"see before I suffer",
-    GROUND:"stand grounded in what ends",
-  };
-  const pledgeSentence = "I will " + runes.map(r=>pledgeLines[r]).join(", ").replace(/, ([^,]*)$/, ", and $1") + ".";
-
-  return (
-    <div className="screen" id="results">
-      <div className="wrap wrap-wide">
-        <p className="eyebrow" style={{marginBottom:'1.2rem'}}>The Final Threshold — You Have Been Reoriented</p>
-
-        <div className="r-hero">
-          <div className="r-symbol">{archetypeSvg(arch.id, 96)}</div>
-          <div>
-            <h2 className="r-name">{arch.name}</h2>
-            <p className="r-tagline">"{arch.tagline}"</p>
-          </div>
-        </div>
-
-        <div className="pledge-box">
-          <p className="eyebrow" style={{marginBottom:'.8rem'}}>Your Reorientation Pledge</p>
-          <div className="pledge-runes">
-            {runes.map(r => <span className="pledge-rune mono" key={r}>{r}</span>)}
-          </div>
-          <p className="pledge-text">{pledgeSentence}</p>
-        </div>
-
-        <div className="score-strip">
-          <div className="score-cell"><p className="eyebrow">Total Score</p><p className="score-val">{total} / 40</p></div>
-          <div className="score-cell"><p className="eyebrow">Orientation</p><p className="score-val" style={{fontSize:'1.1rem'}}>{arch.orient}</p></div>
-          <div className="score-cell"><p className="eyebrow">Score Range</p><p className="score-val" style={{fontSize:'1.1rem'}}>{arch.range[0]}–{arch.range[1]}</p></div>
-        </div>
-
-        <p className="r-desc">{arch.desc}</p>
-
-        <hr className="rule" />
-        <p className="eyebrow" style={{marginBottom:'1.2rem'}}>Score by Law of Pain</p>
-        <div className="law-bars">
-          {LAWS.map((law, i)=>(
-            <div className="law-row" key={law.id}>
-              <div className="law-name">{law.name.replace('The Law of ','')}</div>
-              <div className="bar-track"><div className="bar-fill" data-pct={(answers[i]/5)*100+'%'} style={{width:'0%'}}></div></div>
-              <div className="bar-score">{answers[i]} / 5</div>
-            </div>
-          ))}
-        </div>
-
-        <div className="growth">
-          <p className="eyebrow" style={{color:'var(--gold)', marginBottom:'.5rem'}}>Growth Practice</p>
-          <p className="growth-text">{arch.growth}</p>
-        </div>
-
-        <div className="result-actions">
-          <button className="btn" onClick={onRestart}>Walk the Portals Again</button>
-        </div>
-      </div>
-    </div>
-  );
+  var lineTimer = setInterval(function(){
+    if(shown >= bootLines.length){
+      clearInterval(lineTimer);
+      var enterWrap = document.getElementById('boot-enter');
+      var btn = document.createElement('button');
+      btn.className = 'btn';
+      btn.style.marginTop = '1.4rem';
+      btn.textContent = 'Enter';
+      btn.addEventListener('click', showTitle);
+      enterWrap.appendChild(btn);
+      return;
+    }
+    var div = document.createElement('div');
+    div.className = 'boot-line';
+    div.textContent = bootLines[shown];
+    if(shown === bootLines.length-1){
+      var ok = document.createElement('span');
+      ok.className = 'ok';
+      ok.textContent = ' ✓';
+      div.appendChild(ok);
+    }
+    linesEl.appendChild(div);
+    shown++;
+  }, 420);
 }
 
 /* ============================================================
-   APP — state machine
+   TITLE
    ============================================================ */
-function App(){
-  const [stage, setStage] = useState('boot'); // boot -> title -> actintro -> portal -> calc -> results
-  const [portalIndex, setPortalIndex] = useState(0);
-  const [answers, setAnswers] = useState([]);
-  const [runes, setRunes] = useState([]);
-  const [muted, setMuted] = useState(false);
-  const [pendingAct, setPendingAct] = useState(ACTS[0]);
+function showTitle(){
+  var preview = document.getElementById('law-preview');
+  preview.innerHTML = '';
+  LAWS.forEach(function(l){
+    var span = document.createElement('span');
+    span.className = 'law-chip';
+    span.textContent = l.numeral + ' · ' + l.name.replace('The Law of ','');
+    preview.appendChild(span);
+  });
+  showScreen('screen-title');
+}
+document.getElementById('btn-begin').addEventListener('click', function(){
+  portalIndex = 0; answers = []; runes = [];
+  document.documentElement.style.setProperty('--accent', '#c9973a');
+  emberField('#c9973a');
+  showActIntro(ACTS[0]);
+});
 
-  const currentLaw = LAWS[portalIndex];
-
-  function startTitle(){ setStage('title'); }
-  function startJourney(){
-    setPortalIndex(0); setAnswers([]); setRunes([]);
-    setPendingAct(ACTS[0]);
-    setStage('actintro');
-  }
-
-  function completePortal(score){
-    const newAnswers = [...answers, score];
-    const newRunes = [...runes, currentLaw.rune];
-    setAnswers(newAnswers);
-    setRunes(newRunes);
-
-    const nextIndex = portalIndex + 1;
-    if(nextIndex >= LAWS.length){
-      setStage('calc');
-      return;
-    }
-    const nextLaw = LAWS[nextIndex];
-    setPortalIndex(nextIndex);
-    if(nextLaw.act !== currentLaw.act){
-      setPendingAct(ACTS[nextLaw.act - 1]);
-      setStage('actintro');
-    }
-  }
-
-  function goToPortalAfterAct(){ setStage('portal'); }
-
-  function finishCalc(){ setStage('results'); }
-
-  function restart(){
-    setStage('title');
-    setPortalIndex(0); setAnswers([]); setRunes([]);
-  }
-
-  const accentForStage = stage === 'portal' ? currentLaw.accent : (stage === 'actintro' ? '#c9973a' : '#c9973a');
-
-  return (
-    <React.Fragment>
-      <EmberField accent={accentForStage} />
-      {stage !== 'boot' && stage !== 'title' && (
-        <HUD portalIndex={portalIndex} runes={runes} act={LAWS[Math.min(portalIndex, 7)] ? ACTS[LAWS[Math.min(portalIndex,7)].act-1] : ACTS[0]} muted={muted} setMuted={setMuted} />
-      )}
-      {stage === 'boot' && <BootScreen onDone={startTitle} muted={muted} />}
-      {stage === 'title' && <TitleScreen onStart={startJourney} />}
-      {stage === 'actintro' && (
-        <ActIntroScreen act={pendingAct} onDone={goToPortalAfterAct} muted={muted} />
-      )}
-      {stage === 'portal' && (
-        <PortalScene law={currentLaw} index={portalIndex} onComplete={completePortal} muted={muted} />
-      )}
-      {stage === 'calc' && <CalculatingScreen onDone={finishCalc} />}
-      {stage === 'results' && (
-        <ResultsScreen answers={answers} runes={runes} onRestart={restart} muted={muted} />
-      )}
-    </React.Fragment>
-  );
+/* ============================================================
+   ACT INTRO
+   ============================================================ */
+function showActIntro(act){
+  SFX.act();
+  document.getElementById('act-roman').textContent = act.roman;
+  document.getElementById('act-name').textContent = act.name;
+  document.getElementById('act-tag').textContent = '"' + act.tag + '"';
+  var lawsInAct = LAWS.filter(function(l){ return l.act === act.n; });
+  var lawsEl = document.getElementById('act-laws');
+  lawsEl.innerHTML = '';
+  lawsInAct.forEach(function(l){
+    var item = document.createElement('div');
+    item.className = 'act-law-item';
+    item.innerHTML = '<div class="act-law-num">LAW '+l.numeral+'</div><div class="act-law-name">'+escapeHtml(l.name.replace('The Law of ',''))+'</div>';
+    lawsEl.appendChild(item);
+  });
+  var btn = document.getElementById('btn-enter-act');
+  btn.textContent = 'Enter Act ' + act.roman;
+  btn.onclick = function(){
+    showScreen('screen-portal');
+    portalScene(LAWS[portalIndex], portalIndex);
+  };
+  showScreen('screen-actintro');
+  updateHUD();
 }
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+/* ============================================================
+   PORTAL
+   ============================================================ */
+function portalScene(law, idx){
+  document.documentElement.style.setProperty('--accent', law.accent);
+  emberField(law.accent);
+  document.getElementById('portal-core').innerHTML = portalGlyphSvg(law.glyph, law.accent, 44);
+  document.getElementById('portal-num').textContent = 'PORTAL ' + law.numeral + ' OF VIII';
+  document.getElementById('portal-title').textContent = law.name;
+  document.getElementById('portal-sub').textContent = '"' + law.tagline + '"';
+  var body = document.getElementById('portal-body');
+  body.innerHTML = '<div class="typewriter-box" id="tw-box"></div>';
+  var twBox = document.getElementById('tw-box');
+  runTypewriter(twBox, law.teaching, 14, function(){
+    setTimeout(function(){ showTrial(law, idx); }, 350);
+  });
+  updateHUD();
+}
+
+function showTrial(law, idx){
+  var body = document.getElementById('portal-body');
+  body.innerHTML =
+    '<div class="trial-box">'+
+      '<p class="trial-label">The Trial</p>'+
+      '<p class="trial-q">'+escapeHtml(law.q.text)+'</p>'+
+      '<p class="trial-sub">'+escapeHtml(law.q.sub)+'</p>'+
+      '<div id="trial-options"></div>'+
+    '</div>';
+  setTimeout(function(){
+    var optWrap = document.getElementById('trial-options');
+    if(!optWrap) return;
+    law.q.options.forEach(function(o, i){
+      var b = document.createElement('button');
+      b.className = 'opt';
+      b.style.animationDelay = (i*0.08)+'s';
+      b.innerHTML = '<span class="opt-l">'+o.l+'</span><span>'+escapeHtml(o.text)+'</span>';
+      b.addEventListener('click', function(){ selectOption(law, idx, o, b, optWrap); });
+      optWrap.appendChild(b);
+    });
+  }, 250);
+}
+
+function selectOption(law, idx, opt, btnEl, optWrap){
+  if(optWrap.dataset.chosen) return;
+  optWrap.dataset.chosen = '1';
+  var children = optWrap.querySelectorAll('.opt');
+  children.forEach(function(b){ b.disabled = true; });
+  btnEl.classList.add('chosen');
+  SFX.select();
+  setTimeout(function(){ showRune(law, idx, opt.score); }, 650);
+}
+
+function showRune(law, idx, score){
+  SFX.rune();
+  answers.push(score);
+  runes.push(law.rune);
+  var body = document.getElementById('portal-body');
+  body.innerHTML =
+    '<div class="rune-collect-wrap">'+
+      '<hr class="rule">'+
+      '<div class="rune-word">'+law.rune+'</div>'+
+      '<p class="rune-caption">'+escapeHtml(law.runeLine)+'</p>'+
+      '<div class="rune-callout">'+
+        '<p class="eyebrow">Rune Claimed</p>'+
+        '<p>You carry this word forward. It will complete your pledge at the final threshold.</p>'+
+      '</div>'+
+      '<button class="btn" id="btn-portal-continue">'+(idx===7 ? 'Face the Final Threshold →' : 'Pass Through the Portal →')+'</button>'+
+    '</div>';
+  document.getElementById('btn-portal-continue').addEventListener('click', function(){ nextPortal(idx); });
+  updateHUD();
+}
+
+function nextPortal(idx){
+  var nextIdx = idx + 1;
+  if(nextIdx >= LAWS.length){ showCalc(); return; }
+  var nextLaw = LAWS[nextIdx];
+  portalIndex = nextIdx;
+  if(nextLaw.act !== LAWS[idx].act){
+    showActIntro(ACTS[nextLaw.act-1]);
+  } else {
+    showScreen('screen-portal');
+    portalScene(nextLaw, nextIdx);
+  }
+}
+
+/* ============================================================
+   CALCULATING
+   ============================================================ */
+function showCalc(){
+  showScreen('screen-calc');
+  var msgs = [
+    "Weighing your responses across all eight laws…",
+    "Binding your eight collected runes into a pledge…",
+    "Locating your archetype within the spectrum…"
+  ];
+  var msgEl = document.getElementById('calc-msg');
+  var i = 0;
+  msgEl.textContent = msgs[0];
+  var iv = setInterval(function(){
+    i = Math.min(msgs.length-1, i+1);
+    msgEl.textContent = msgs[i];
+  }, 1100);
+  setTimeout(function(){
+    clearInterval(iv);
+    showResults();
+  }, 3400);
+}
+
+/* ============================================================
+   RESULTS
+   ============================================================ */
+var PLEDGE_LINES = {
+  ADMIT:"admit what moves in me",
+  EXPOSE:"expose what I have hidden",
+  ENOUGH:"call enough what already is",
+  TEND:"tend what decays",
+  RIDE:"ride what impulse brings",
+  DISCERN:"discern before I cross",
+  SEE:"see before I suffer",
+  GROUND:"stand grounded in what ends"
+};
+
+function showResults(){
+  SFX.finale();
+  var total = answers.reduce(function(s,a){ return s+a; }, 0);
+  var arch = getArchetype(total);
+
+  var pledgeParts = runes.map(function(r){ return PLEDGE_LINES[r]; });
+  var pledgeSentence = 'I will ' + pledgeParts.join(', ').replace(/, ([^,]*)$/, ', and $1') + '.';
+
+  var pledgeRunesHtml = runes.map(function(r){ return '<span class="pledge-rune mono">'+r+'</span>'; }).join('');
+
+  var lawBarsHtml = LAWS.map(function(law, i){
+    return '<div class="law-row">'+
+      '<div class="law-name">'+escapeHtml(law.name.replace('The Law of ',''))+'</div>'+
+      '<div class="bar-track"><div class="bar-fill" data-pct="'+((answers[i]/5)*100)+'%" style="width:0%"></div></div>'+
+      '<div class="bar-score">'+answers[i]+' / 5</div>'+
+    '</div>';
+  }).join('');
+
+  var html =
+    '<p class="eyebrow" style="margin-bottom:1.2rem">The Final Threshold — You Have Been Reoriented</p>'+
+    '<div class="r-hero">'+
+      '<div class="r-symbol">'+archetypeSvg(arch.id, 96)+'</div>'+
+      '<div><h2 class="r-name">'+arch.name+'</h2><p class="r-tagline">"'+arch.tagline+'"</p></div>'+
+    '</div>'+
+    '<div class="pledge-box">'+
+      '<p class="eyebrow" style="margin-bottom:.8rem">Your Reorientation Pledge</p>'+
+      '<div class="pledge-runes">'+pledgeRunesHtml+'</div>'+
+      '<p class="pledge-text">'+escapeHtml(pledgeSentence)+'</p>'+
+    '</div>'+
+    '<div class="score-strip">'+
+      '<div class="score-cell"><p class="eyebrow">Total Score</p><p class="score-val">'+total+' / 40</p></div>'+
+      '<div class="score-cell"><p class="eyebrow">Orientation</p><p class="score-val" style="font-size:1.1rem">'+arch.orient+'</p></div>'+
+      '<div class="score-cell"><p class="eyebrow">Score Range</p><p class="score-val" style="font-size:1.1rem">'+arch.range[0]+'–'+arch.range[1]+'</p></div>'+
+    '</div>'+
+    '<p class="r-desc">'+escapeHtml(arch.desc)+'</p>'+
+    '<hr class="rule">'+
+    '<p class="eyebrow" style="margin-bottom:1.2rem">Score by Law of Pain</p>'+
+    '<div class="law-bars">'+lawBarsHtml+'</div>'+
+    '<div class="growth">'+
+      '<p class="eyebrow" style="color:var(--gold);margin-bottom:.5rem">Growth Practice</p>'+
+      '<p class="growth-text">'+escapeHtml(arch.growth)+'</p>'+
+    '</div>'+
+    '<div class="result-actions"><button class="btn" id="btn-restart">Walk the Portals Again</button></div>';
+
+  document.getElementById('results-body').innerHTML = html;
+  document.getElementById('btn-restart').addEventListener('click', restart);
+  showScreen('screen-results');
+  updateHUD();
+
+  requestAnimationFrame(function(){
+    setTimeout(function(){
+      document.querySelectorAll('.bar-fill').forEach(function(el){ el.style.width = el.dataset.pct; });
+    }, 300);
+  });
+}
+
+function restart(){
+  document.getElementById('boot-lines').innerHTML = '';
+  document.getElementById('boot-enter').innerHTML = '';
+  document.getElementById('boot-bar-fill').style.width = '0%';
+  document.getElementById('hud').classList.remove('show');
+  showTitle();
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+startBoot();
+
+})();
 </script>
 </body>
 </html>
