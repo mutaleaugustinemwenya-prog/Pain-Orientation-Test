@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eight Laws of Pain</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#050403; --void:#0a0806; --ash:#161209; --fog:#2a2314;
+  --gold:#c9973a; --gold-d:#7a5a1a; --gold-dim:rgba(201,151,58,.12);
+  --bone:#f0ead6; --ghost:#9a8f72; --danger:#8a2a1f;
+  --accent:#c9973a; --accent-dim:rgba(201,151,58,.14); --accent-d:#7a5a1a;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--black); color:var(--bone);
+  font-family:'EB Garamond',Georgia,serif; font-size:18px; line-height:1.7;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden; min-height:100vh;
+}
+.mono{font-family:'JetBrains Mono',monospace}
+.eyebrow{font-family:'Cinzel',serif;font-size:.62rem;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--ghost)}
+.display{font-family:'Cinzel',serif;font-weight:600;line-height:1.08}
+button{font-family:inherit;background:none;border:none;color:inherit;cursor:pointer}
+
+/* ---------- Ambient field ---------- */
+#field{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 80% 70% at 50% 40%, transparent 40%, rgba(0,0,0,.75) 100%);
+}
+.scanlines{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.05;
+  background:repeating-linear-gradient(to bottom, transparent 0 2px, #000 2px 4px);
+  mix-blend-mode:overlay;
+}
+.ember{position:absolute;border-radius:50%;background:var(--accent);opacity:0;
+  animation:float-ember linear infinite;filter:blur(.5px);
+  box-shadow:0 0 6px var(--accent);
+}
+@keyframes float-ember{
+  0%{opacity:0;transform:translateY(0) translateX(0)}
+  10%{opacity:.55}
+  90%{opacity:.35}
+  100%{opacity:0;transform:translateY(-110vh) translateX(var(--drift,20px))}
+}
+
+#root{position:relative;z-index:5;min-height:100vh}
+
+/* ---------- Layout shells ---------- */
+.screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:5rem 1.5rem 3rem;position:relative;animation:screenIn .6s ease both;}
+@keyframes screenIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.wrap{max-width:680px;width:100%;position:relative;z-index:2}
+.wrap-wide{max-width:760px}
+
+hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
+
+/* ---------- Buttons ---------- */
+.btn{
+  background:transparent;border:1px solid var(--accent);color:var(--bone);
+  font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+  padding:1rem 2.6rem;transition:background .3s,box-shadow .3s,transform .15s;
+}
+.btn:hover{background:var(--accent-dim);box-shadow:0 0 30px var(--accent-dim);transform:translateY(-1px)}
+.btn:disabled{opacity:.25;pointer-events:none}
+.btn-ghost{
+  color:var(--ghost);font-family:'Cinzel',serif;font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;
+  padding:.6rem 0;transition:color .2s;
+}
+.btn-ghost:hover{color:var(--bone)}
+
+/* ---------- Boot ---------- */
+#boot{align-items:flex-start;justify-content:center}
+.boot-box{max-width:640px;width:100%}
+.boot-line{font-size:.86rem;color:var(--ghost);margin-bottom:.4rem;white-space:pre-wrap}
+.boot-line .ok{color:var(--accent)}
+.boot-cursor{display:inline-block;width:8px;height:1em;background:var(--accent);vertical-align:-2px;
+  animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+.boot-bar-track{height:3px;background:var(--fog);width:100%;margin:1.6rem 0;position:relative;overflow:hidden}
+.boot-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent-d),var(--accent));width:0%;transition:width .25s linear}
+
+/* ---------- Title ---------- */
+#title{text-align:center}
+.title-glow::before{content:'';position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 45% at 50% 35%, rgba(201,151,58,.10) 0%, transparent 72%);
+}
+.title-main{font-size:clamp(2.1rem,7vw,4.3rem);color:var(--bone);display:block}
+.title-sub{font-size:clamp(2.1rem,7vw,4.3rem);color:var(--accent);font-style:italic;display:block;font-family:'EB Garamond',serif;font-weight:600}
+.title-tag{color:var(--ghost);font-style:italic;margin:1rem 0 2.2rem;font-size:1.05rem}
+.title-desc{color:var(--ghost);text-align:justify;hyphens:auto;margin-bottom:2.4rem;font-size:1rem}
+.law-preview{display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem;margin-top:2.6rem;opacity:.7}
+.law-chip{border:1px solid var(--fog);padding:.4rem .8rem;font-size:.62rem;font-family:'Cinzel',serif;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ghost)}
+
+/* ---------- HUD ---------- */
+#hud{position:fixed;top:0;left:0;right:0;z-index:50;
+  background:linear-gradient(to bottom, rgba(5,4,3,.92), rgba(5,4,3,0));
+  padding:.9rem 1.2rem .6rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+}
+.hud-act{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;color:var(--accent);white-space:nowrap}
+.hud-dots{display:flex;gap:6px;flex:1;min-width:180px;justify-content:center}
+.hud-dot{width:22px;height:22px;border-radius:50%;border:1px solid var(--fog);display:flex;align-items:center;justify-content:center;
+  font-size:.5rem;font-family:'Cinzel',serif;color:var(--ghost);transition:all .4s;position:relative;flex-shrink:0}
+.hud-dot.done{border-color:var(--accent);color:var(--accent);box-shadow:0 0 10px var(--accent-dim)}
+.hud-dot.current{border-color:var(--bone);color:var(--bone);animation:pulseDot 1.6s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{box-shadow:0 0 0 rgba(240,234,214,0)}50%{box-shadow:0 0 12px rgba(240,234,214,.5)}}
+.hud-meter{display:flex;align-items:center;gap:.5rem;min-width:120px}
+.hud-meter-track{width:90px;height:3px;background:var(--fog)}
+.hud-meter-fill{height:100%;background:linear-gradient(90deg,var(--accent-d),var(--accent));transition:width .8s ease}
+.hud-mute{font-size:.85rem;color:var(--ghost);border:1px solid var(--fog);width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hud-mute:hover{color:var(--bone);border-color:var(--ghost)}
+
+/* ---------- Act intro ---------- */
+#act-intro{text-align:center}
+.act-roman{font-family:'Cinzel',serif;font-size:5.5rem;color:var(--accent-d);opacity:.5;line-height:1;margin-bottom:.4rem}
+.act-name{font-family:'Cinzel',serif;font-size:clamp(1.6rem,5vw,2.6rem);letter-spacing:.08em;color:var(--bone);margin-bottom:1rem}
+.act-tag{color:var(--ghost);font-style:italic;margin-bottom:2.4rem;font-size:1.05rem}
+.act-laws{display:flex;justify-content:center;gap:2.2rem;margin-bottom:2.6rem;flex-wrap:wrap}
+.act-law-item{text-align:center;opacity:.85}
+.act-law-num{font-family:'Cinzel',serif;font-size:.6rem;color:var(--ghost);letter-spacing:.2em}
+.act-law-name{font-family:'Cinzel',serif;font-size:.82rem;color:var(--bone);margin-top:.3rem;letter-spacing:.04em}
+
+/* ---------- Portal scene ---------- */
+#portal{padding-top:7rem;align-items:center}
+.portal-frame{position:relative;width:150px;height:150px;margin:0 auto 1.6rem;display:flex;align-items:center;justify-content:center}
+.portal-ring{position:absolute;inset:0;border-radius:50%;border:1px solid var(--accent-d);opacity:.55}
+.portal-ring.r2{inset:12px;animation:spinSlow 22s linear infinite}
+.portal-ring.r3{inset:24px;animation:spinSlow 16s linear infinite reverse;opacity:.35}
+@keyframes spinSlow{to{transform:rotate(360deg)}}
+.portal-core{width:92px;height:92px;border-radius:50%;background:radial-gradient(circle, var(--accent-dim), transparent 70%);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 40px var(--accent-dim), inset 0 0 30px rgba(0,0,0,.6);
+  animation:corePulse 3.4s ease-in-out infinite;
+}
+@keyframes corePulse{0%,100%{box-shadow:0 0 30px var(--accent-dim), inset 0 0 24px rgba(0,0,0,.6)}50%{box-shadow:0 0 52px var(--accent-dim), inset 0 0 30px rgba(0,0,0,.6)}}
+.portal-num{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.3em;text-align:center;color:var(--accent);margin-bottom:.3rem}
+.portal-title{font-family:'Cinzel',serif;font-size:clamp(1.5rem,4.4vw,2.15rem);text-align:center;color:var(--bone);margin-bottom:.3rem}
+.portal-sub{text-align:center;color:var(--ghost);font-style:italic;margin-bottom:2rem;font-size:.98rem}
+
+.typewriter-box{min-height:5.4rem;margin-bottom:1.6rem}
+.tw-line{font-size:1.04rem;line-height:1.85;color:var(--bone);text-align:justify;hyphens:auto;margin-bottom:.9rem}
+.tw-cursor{display:inline-block;width:9px;height:1em;background:var(--accent);vertical-align:-3px;animation:blink .9s step-end infinite}
+.skip-hint{text-align:center;color:var(--ghost);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+  opacity:.55;margin-bottom:1.4rem;cursor:pointer}
+.skip-hint:hover{opacity:.9}
+
+.rune-callout{border-left:2px solid var(--accent-d);padding:1rem 1.4rem;background:var(--accent-dim);margin:1.6rem 0 2rem}
+.rune-callout .eyebrow{color:var(--accent);margin-bottom:.5rem}
+.rune-callout p{font-style:italic;color:var(--ghost);font-size:.94rem;line-height:1.75}
+
+/* ---------- Trial (question) ---------- */
+.trial-box{margin-top:.6rem;animation:fadeUp .5s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.trial-label{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.28em;text-transform:uppercase;color:var(--ghost);margin-bottom:.7rem}
+.trial-q{font-size:clamp(1.05rem,2.6vw,1.35rem);line-height:1.45;color:var(--bone);margin-bottom:.5rem}
+.trial-sub{font-style:italic;color:var(--ghost);font-size:.9rem;margin-bottom:1.6rem}
+.opt{
+  display:flex;align-items:flex-start;gap:1rem;width:100%;text-align:left;
+  background:var(--ash);border:1px solid var(--fog);color:var(--bone);
+  font-size:.98rem;line-height:1.55;padding:.9rem 1.2rem;margin-bottom:.55rem;
+  transition:border-color .2s,background .2s,transform .15s;opacity:0;animation:optIn .45s ease both;
+}
+@keyframes optIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+.opt:hover{border-color:var(--accent);transform:translateX(4px)}
+.opt.chosen{border-color:var(--accent);background:var(--accent-dim)}
+.opt-l{font-family:'Cinzel',serif;font-size:.56rem;font-weight:600;color:var(--ghost);flex-shrink:0;padding-top:.28rem;min-width:1rem}
+.opt.chosen .opt-l{color:var(--accent)}
+
+/* ---------- Rune collect / portal close ---------- */
+.rune-collect-wrap{text-align:center;margin-top:1.8rem}
+.rune-word{font-family:'Cinzel',serif;font-size:1.6rem;letter-spacing:.16em;color:var(--accent);
+  animation:runeReveal .8s ease both;text-shadow:0 0 22px var(--accent-dim)}
+@keyframes runeReveal{from{opacity:0;letter-spacing:.5em}to{opacity:1;letter-spacing:.16em}}
+.rune-caption{color:var(--ghost);font-style:italic;font-size:.88rem;margin-top:.6rem}
+
+/* ---------- Calculating / results ---------- */
+#calc{text-align:center;gap:1.6rem}
+.spinner{width:56px;height:56px;border:1px solid var(--fog);border-top-color:var(--accent);border-radius:50%;
+  animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.calc-msg{font-style:italic;color:var(--ghost);min-height:1.6em}
+
+#results{padding-top:6rem}
+.r-hero{display:flex;align-items:center;gap:1.8rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.r-symbol{flex-shrink:0;animation:reveal .7s ease both,glow 3.5s ease-in-out .7s infinite}
+@keyframes reveal{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:scale(1)}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 3px rgba(201,151,58,.3))}50%{filter:drop-shadow(0 0 16px rgba(201,151,58,.7))}}
+.r-name{font-family:'Cinzel',serif;font-size:clamp(1.7rem,5vw,2.9rem);font-style:italic;color:var(--gold);line-height:1}
+.r-tagline{font-style:italic;color:var(--ghost);margin-top:.3rem}
+.pledge-box{border:1px solid var(--fog);padding:1.6rem;margin:1.8rem 0;background:rgba(201,151,58,.03)}
+.pledge-runes{display:flex;flex-wrap:wrap;gap:.5rem .7rem;margin-bottom:1rem}
+.pledge-rune{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.12em;color:var(--accent);
+  border:1px solid var(--accent-d);padding:.3rem .6rem}
+.pledge-text{font-style:italic;color:var(--bone);line-height:1.9;font-size:1.02rem}
+.score-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--fog);border:1px solid var(--fog);margin:1.8rem 0}
+.score-cell{background:var(--ash);padding:1rem 1.2rem}
+.score-val{font-family:'Cinzel',serif;font-size:1.5rem;color:var(--accent)}
+.r-desc{color:var(--bone);text-align:justify;hyphens:auto;line-height:1.85;margin-bottom:.4rem}
+.law-bars{margin-top:1.2rem}
+.law-row{display:flex;align-items:center;gap:1rem;margin-bottom:.85rem}
+.law-name{font-size:.8rem;color:var(--ghost);width:150px;flex-shrink:0}
+.bar-track{flex:1;height:1px;background:var(--fog);position:relative}
+.bar-fill{position:absolute;left:0;top:-1.5px;bottom:-1.5px;background:linear-gradient(90deg,var(--gold-d),var(--gold));width:0%;transition:width 1.2s ease}
+.bar-score{font-size:.7rem;color:var(--ghost);width:2.6rem;text-align:right}
+.growth{border-left:2px solid var(--gold-d);padding:1.1rem 1.5rem;background:rgba(201,151,58,.04);margin:1.8rem 0 2.2rem}
+.growth-text{font-style:italic;color:var(--ghost);font-size:.94rem;line-height:1.75}
+.result-actions{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:1rem}
+
+@media(max-width:560px){
+  .score-strip{grid-template-columns:1fr 1fr}
+  .law-name{width:106px;font-size:.72rem}
+  .hud-dots{order:3;flex-basis:100%}
+}
+</style>
+</head>
+<body>
+<div id="field"></div>
+<div class="vignette"></div>
+<div class="scanlines"></div>
+<div id="root"></div>
+
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef, useCallback, useMemo } = React;
+
+/* ============================================================
+   SOUND — tiny WebAudio chime engine, no external assets
+   ============================================================ */
+let audioCtx = null;
+function getCtx(){
+  if(!audioCtx){
+    try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ audioCtx = null; }
+  }
+  return audioCtx;
+}
+function chime(freqs, dur, muted){
+  if(muted) return;
+  const ctx = getCtx();
+  if(!ctx) return;
+  const now = ctx.currentTime;
+  freqs.forEach((f, i)=>{
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(f, now);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.06, now + 0.02 + i*0.03);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur + i*0.03);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(now + i*0.03);
+    osc.stop(now + dur + i*0.03 + 0.05);
+  });
+}
+const SFX = {
+  boot: (m)=>chime([220], 0.4, m),
+  advance: (m)=>chime([330, 440], 0.5, m),
+  select: (m)=>chime([392], 0.25, m),
+  rune: (m)=>chime([523.25, 659.25, 783.99], 1.1, m),
+  act: (m)=>chime([196, 246.94, 293.66], 1.4, m),
+  finale: (m)=>chime([261.63, 329.63, 392, 523.25], 2, m),
+};
+
+/* ============================================================
+   EMBER FIELD — ambient particles, mounted once
+   ============================================================ */
+function EmberField({ accent }){
+  useEffect(()=>{
+    const field = document.getElementById('field');
+    field.style.setProperty('--accent', accent);
+    field.innerHTML = '';
+    const n = window.innerWidth < 640 ? 14 : 26;
+    for(let i=0;i<n;i++){
+      const d = document.createElement('div');
+      d.className = 'ember';
+      const size = 1 + Math.random()*2.4;
+      d.style.width = size+'px';
+      d.style.height = size+'px';
+      d.style.left = Math.random()*100+'%';
+      d.style.bottom = '-10px';
+      d.style.setProperty('--drift', (Math.random()*60-30)+'px');
+      const dur = 10 + Math.random()*14;
+      d.style.animationDuration = dur+'s';
+      d.style.animationDelay = (Math.random()*dur)+'s';
+      field.appendChild(d);
+    }
+  }, [accent]);
+  return null;
+}
+
+/* ============================================================
+   TYPEWRITER — reveals text progressively, click-to-skip
+   ============================================================ */
+function Typewriter({ lines, speed = 16, onDone, startDelay = 0 }){
+  const [visibleLines, setVisibleLines] = useState([]);
+  const [charIdx, setCharIdx] = useState(0);
+  const [lineIdx, setLineIdx] = useState(0);
+  const [done, setDone] = useState(false);
+  const timeoutRef = useRef(null);
+  const skippedRef = useRef(false);
+
+  useEffect(()=>{
+    setVisibleLines([]); setCharIdx(0); setLineIdx(0); setDone(false); skippedRef.current = false;
+  }, [lines]);
+
+  useEffect(()=>{
+    if(done) return;
+    if(lineIdx >= lines.length){
+      setDone(true);
+      if(onDone) onDone();
+      return;
+    }
+    const current = lines[lineIdx];
+    if(charIdx === 0 && startDelay > 0 && lineIdx === 0){
+      timeoutRef.current = setTimeout(()=>{ tick(current); }, startDelay);
+      return () => clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(()=>{ tick(current); }, speed);
+    return () => clearTimeout(timeoutRef.current);
+    function tick(currentLine){
+      if(charIdx < currentLine.length){
+        setCharIdx(c => c + 1);
+      } else {
+        setVisibleLines(v => [...v, currentLine]);
+        setLineIdx(i => i + 1);
+        setCharIdx(0);
+      }
+    }
+  }, [charIdx, lineIdx, done]);
+
+  function skip(){
+    if(done || skippedRef.current) return;
+    skippedRef.current = true;
+    clearTimeout(timeoutRef.current);
+    setVisibleLines(lines);
+    setLineIdx(lines.length);
+    setCharIdx(0);
+    setDone(true);
+    if(onDone) onDone();
+  }
+
+  const inProgress = lineIdx < lines.length ? lines[lineIdx].slice(0, charIdx) : '';
+
+  return (
+    <div className="typewriter-box" onClick={skip}>
+      {visibleLines.map((l, i) => <p className="tw-line" key={i}>{l}</p>)}
+      {!done && lineIdx < lines.length && (
+        <p className="tw-line">{inProgress}<span className="tw-cursor"></span></p>
+      )}
+      {!done && <div className="skip-hint">tap to reveal</div>}
+    </div>
+  );
+}
+
+/* ============================================================
+   DATA — the eight laws, in three-act order
+   (questions & scoring mirror The Pain Orientation Test)
+   ============================================================ */
+const LAWS = [
+  {
+    id:"malevolence", numeral:"I", act:1,
+    name:"The Law of Malevolence",
+    tagline:"There is a currency of harm, and you have already spent some of it.",
+    accent:"#b4432e",
+    glyph:"mask",
+    rune:"ADMIT",
+    runeLine:"To admit the capacity for harm is not confession for punishment. It is the precondition for responsibility.",
+    teaching:[
+      "The first portal does not ask what has been done to you. It asks what lives in you, undone, unused, or already spent.",
+      "Every psyche carries the same currency: the capacity to wound, to dominate, to look away while someone else pays the cost. You did not choose to be built this way. You are, however, responsible for what you do with it.",
+      "This is not an accusation. It is an inventory. What you can name, you can no longer be ambushed by."
+    ],
+    q:{
+      text:"When life delivers deliberate-seeming cruelty — illness arriving at the worst moment, loss appearing without invitation — what is your most honest first response?",
+      sub:"Consider your instinctive reaction, not the response you wish you had.",
+      options:[
+        {l:"A",text:"I feel betrayed. The universe owes me better than this.",score:1},
+        {l:"B",text:"I withdraw quickly. Non-engagement is the surest form of protection.",score:2},
+        {l:"C",text:"I grow angry and push through regardless. Rage is, at minimum, motion.",score:3},
+        {l:"D",text:"I search for meaning within it, even when meaning does not readily appear.",score:4},
+        {l:"E",text:"I hold it without requiring resolution. Cruelty is real and I remain present.",score:5}
+      ]
+    }
+  },
+  {
+    id:"vulnerability", numeral:"II", act:1,
+    name:"The Law of Vulnerability",
+    tagline:"The crack is not the damage. It is the design.",
+    accent:"#6a4d9c",
+    glyph:"crack",
+    rune:"EXPOSE",
+    runeLine:"What you can name, you can no longer be ambushed by — but what you refuse to show, you cannot ever mend. Kintsugi does not hide the break. It gilds it.",
+    teaching:[
+      "Somewhere behind this door is the place you have been most careful to guard: not because it is shameful, but because it is tender.",
+      "Armor feels like protection. It has a price all the same — the things unsaid, untried, unbecome, because being guarded felt safer than being seen.",
+      "The gold in kintsugi is never hidden. It is the break, repaired, made the most beautiful part of the vessel. Your confidence is on the other side of what you have been hiding."
+    ],
+    q:{
+      text:"Someone you trust witnesses a moment of genuine weakness in you: tears, fear, or undisguised need. What occurs within you in that instant?",
+      sub:"Not what you say aloud, but what moves through you before words form.",
+      options:[
+        {l:"A",text:"Shame so acute that I immediately begin constructing reasons the moment did not happen.",score:1},
+        {l:"B",text:"I redirect with humour or a subject-change, and later punish myself privately.",score:2},
+        {l:"C",text:"Discomfort, followed by acceptance. Being seen is a cost I occasionally pay.",score:3},
+        {l:"D",text:"Mild exposure, quickly metabolised. Authentic presence is preferable to performed strength.",score:4},
+        {l:"E",text:"Relief. Shared vulnerability is the closest approximation of safety I have found.",score:5}
+      ]
+    }
+  },
+  {
+    id:"unsatisfactoriness", numeral:"III", act:1,
+    name:"The Law of Unsatisfactoriness",
+    tagline:"Nothing ever feels quite like enough. Not the win, not the rest, not the reassurance.",
+    accent:"#8f8465",
+    glyph:"ripple",
+    rune:"ENOUGH",
+    runeLine:"The ache for more is not a personal failure. It is the baseline hum of a restless mind — and presence is the one place that hum cannot reach.",
+    teaching:[
+      "Every craving satisfied opens a new one. Every arrival reveals a further destination. This is not a modern complaint; it is the oldest observation about attention there is.",
+      "The mind is built to want, and wanting does not stop simply because it gets what it asked for.",
+      "Presence does not end the craving. It only stops asking the craving to be the answer. That reversal — presence first, peace second — is the whole of this portal's teaching."
+    ],
+    q:{
+      text:"You attain something you pursued with considerable effort. Within weeks, the satisfaction has drained away entirely. How do you account for this?",
+      sub:"The goal was reached. The feeling did not persist.",
+      options:[
+        {l:"A",text:"I chose the wrong objective. The next one will finally prove sufficient.",score:1},
+        {l:"B",text:"I feel deceived by the process. I continue working but suspect it is without purpose.",score:2},
+        {l:"C",text:"I have begun to recognise the pattern, yet I continue pursuing the next thing regardless.",score:3},
+        {l:"D",text:"I accept that satisfaction is transient. I pursue for the intrinsic value of the doing.",score:4},
+        {l:"E",text:"The emptiness is instructive. It redirects attention toward what cannot be acquired.",score:5}
+      ]
+    }
+  },
+  {
+    id:"decay", numeral:"IV", act:2,
+    name:"The Law of Decay",
+    tagline:"What you love is already leaving. Slowly enough to argue with. Not slowly enough to stop.",
+    accent:"#9c6a2e",
+    glyph:"hourglass",
+    rune:"TEND",
+    runeLine:"Two disciplines meet decay honestly: maranasati, which rehearses the ending until it loses its power to ambush you, and the deliberate strengthening of the body, which answers entropy not with denial but with resistance.",
+    teaching:[
+      "Nothing you love holds its shape. The body erodes a little each year. Bonds loosen. Empires that once seemed permanent are already, quietly, becoming rubble.",
+      "There are only two honest replies to this. The first is maranasati — meeting the fact of ending directly and often, breath by breath, until familiarity dulls its ambush. The second is strength: the deliberate, physical practice of building capacity against entropy, not as denial of decay but as a form of care for what is still here.",
+      "Denial argues with the erosion. Tending it — through meditation on impermanence and through the discipline of the body — meets it honestly, and loves what remains more precisely because the clock is visible."
+    ],
+    q:{
+      text:"You observe something you love in gradual decline: a relationship, a body, a season of life that is diminishing. What is your response?",
+      sub:"The erosion is slow and visible. You can see it as it happens.",
+      options:[
+        {l:"A",text:"I deny it for as long as denial remains viable, and renegotiate with reality later.",score:1},
+        {l:"B",text:"I accelerate. I either repair it quickly or conclude it before grief becomes unavoidable.",score:2},
+        {l:"C",text:"I remain, conflicted, attempting to arrest something that cannot be arrested.",score:3},
+        {l:"D",text:"I tend to what remains with greater care precisely because I know the time is finite.",score:4},
+        {l:"E",text:"Decay is intrinsic to what I love. That recognition makes the loving more deliberate.",score:5}
+      ]
+    }
+  },
+  {
+    id:"impulse", numeral:"V", act:2,
+    name:"The Law of Impulse",
+    tagline:"Something in you moved before you chose. It always will.",
+    accent:"#a13a2e",
+    glyph:"pulse",
+    rune:"RIDE",
+    runeLine:"Three integrations meet the current: keep the memory of what it has done, detach from the reward it advertises, and radically accept whatever bill follows.",
+    teaching:[
+      "Long before an argument could be made to you, something in you had already moved — a current older than thought, older than the self that claims to be steering.",
+      "It cannot be defeated. It can only be known: its memory kept rather than erased, its promised reward tested against what it has actually delivered, its cost accepted in full, without denial and without punishing yourself in place of repair.",
+      "The current does not decide where the boat goes. It only decides how fast the boat moves once someone stops rowing."
+    ],
+    q:{
+      text:"Pain generates an impulse toward motion: toward food, distraction, intoxication, departure, or disappearance. When that pull arrives, what governs your response?",
+      sub:"This concerns the moment before action, not the response you would prefer to have.",
+      options:[
+        {l:"A",text:"The impulse prevails. Discomfort is a problem I address without delay.",score:1},
+        {l:"B",text:"I substitute one impulse for a more acceptable one. The flight continues by other means.",score:2},
+        {l:"C",text:"I register the impulse and sometimes pause. At other times I do not pause.",score:3},
+        {l:"D",text:"I can tolerate the discomfort, though it requires effort. A gap between impulse and action exists.",score:4},
+        {l:"E",text:"The impulse is information. I observe it arise and decide deliberately whether to act.",score:5}
+      ]
+    }
+  },
+  {
+    id:"irreversibility", numeral:"VI", act:2,
+    name:"The Law of Irreversibility",
+    tagline:"The sand does not return to the top of the glass.",
+    accent:"#7a6a45",
+    glyph:"gate",
+    rune:"DISCERN",
+    runeLine:"Discernment is not caution, and it is not delay for its own sake. It is looking directly at a threshold before crossing it, and acting anyway, with open eyes, when acting is right.",
+    teaching:[
+      "Some things, once done, belong to the past absolutely. The word spoken cannot be unspoken. The struck match cannot be unstruck.",
+      "Most suffering born of this law is not the suffering of the act itself — it is the suffering of having acted without seeing clearly first, and discovering only afterward what the act has closed off forever.",
+      "There is no undoing what has already been done. There is only the sharpening of what comes next."
+    ],
+    q:{
+      text:"Something cannot be undone. A particular door has closed permanently. At what cost do you carry this fact, and through what medium does that cost express itself?",
+      sub:"Bring to mind a specific door that has already shut behind you.",
+      options:[
+        {l:"A",text:"I rehearse the alternative timeline with considerable persistence. The door should still be open.",score:1},
+        {l:"B",text:"I occupy myself so thoroughly that the closed door remains at the periphery of awareness.",score:2},
+        {l:"C",text:"I grieve it properly, though I return to rehearsal more frequently than I would wish.",score:3},
+        {l:"D",text:"I acknowledge the loss, honour it with appropriate grief, and allow it to become history.",score:4},
+        {l:"E",text:"The closed door brings clarity about the next one. Irreversibility is a form of orientation.",score:5}
+      ]
+    }
+  },
+  {
+    id:"misperception", numeral:"VII", act:3,
+    name:"The Law of Misperception",
+    tagline:"We do not suffer only because reality is painful. We suffer because reality passes through a biased mind.",
+    accent:"#2f4a72",
+    glyph:"eye",
+    rune:"SEE",
+    runeLine:"Reality, perception, interpretation, and meaning are four separate steps, not one event. The distance between reality and meaning is where suffering is made.",
+    teaching:[
+      "Between what happens and how it hurts stands an interpreter, and the interpreter is rarely neutral. The mind edits reality before you have any say in the edit.",
+      "This is not concerned with becoming positive. It is concerned with becoming accurate — pausing between the event and the story you have already started telling about it.",
+      "Wisdom is not seeing everything. Wisdom is seeing your own distortions before they become your destiny."
+    ],
+    q:{
+      text:"You discover that a pain you have been carrying was constructed, at least in part, upon a narrative of your own making. What do you do with that discovery?",
+      sub:"The suffering was genuine. The story that sustained it was partially invented.",
+      options:[
+        {l:"A",text:"I defend the narrative. If I revise it, the validity of everything I felt becomes uncertain.",score:1},
+        {l:"B",text:"I experience embarrassment and quietly set the entire episode aside without examination.",score:2},
+        {l:"C",text:"I accept the revision with some relief and some residual resistance to what it implies.",score:3},
+        {l:"D",text:"I welcome it. A more accurate understanding, even a painful one, is worth possessing.",score:4},
+        {l:"E",text:"My interpretive frameworks are always provisional. I anticipate revision and receive it as growth.",score:5}
+      ]
+    }
+  },
+  {
+    id:"mortality", numeral:"VIII", act:3,
+    name:"The Law of Mortality",
+    tagline:"Death is the only subject the mind returns to without ever closing the file.",
+    accent:"#3d4b52",
+    glyph:"circle",
+    rune:"GROUND",
+    runeLine:"Amor fati, memento mori, and maranasati are three doors into the same room: not resolution, but a steadier way of holding what will not resolve.",
+    teaching:[
+      "You are going to die. So is everyone you love. This workbook does not attempt to close that file. It only offers three ways of holding the question so it stops running your life from the dark.",
+      "Amor fati: want your fate exactly as it is, ending included. Memento mori: remember it often and plainly until it stops feeling like an intrusion. Maranasati: sit with it directly, breath by breath, until familiarity becomes a form of strength.",
+      "The circle was always going to close. What you practice is how you meet that."
+    ],
+    q:{
+      text:"You are going to die. So is everyone you love. When this fact is genuinely present to you — not as abstraction but as felt reality — what does it produce in you?",
+      sub:"Not your considered philosophy of death, but what occurs in the body when the fact is real.",
+      options:[
+        {l:"A",text:"Panic, avoidance, an immediate and urgent need to redirect attention elsewhere.",score:1},
+        {l:"B",text:"A persistent low register of dread that I manage by not confronting it directly.",score:2},
+        {l:"C",text:"Grief at certain moments, peace at others. I remain in the process of working this through.",score:3},
+        {l:"D",text:"Clarity about what matters. Death is the condition that makes genuine priorities possible.",score:4},
+        {l:"E",text:"Groundedness. Mortality is not the problem to be solved. It is the context within which I live.",score:5}
+      ]
+    }
+  }
+];
+
+const ACTS = [
+  { n:1, roman:"I", name:"The Descent", tag:"Before you can be reoriented, you must first admit what pain actually is." },
+  { n:2, roman:"II", name:"The Trials", tag:"Time will erode you, urges will pull at you, and some doors close forever. Meet them with open eyes." },
+  { n:3, roman:"III", name:"The Revelation", tag:"See clearly. Face the end. Then rise — reoriented." },
+];
+
+const ARCHETYPES = [
+  {
+    id:"avoider", name:"The Avoider", range:[8,14], orient:"Avoidance",
+    tagline:"If I move with sufficient speed, pain will not find me.",
+    desc:"Your dominant orientation is flight. Pain is understood as a fundamental threat requiring minimisation, escape, or pre-emptive suppression. You have developed highly capable systems of avoidance: sustained productivity, distraction, and the redirection of attention before suffering can fully register. This is not cowardice. It is a coherent strategy that was, at some point, genuinely necessary. The cost of avoidance, however, is compound. Pain that is deferred does not dissolve. It tends to reconstitute itself later with greater force and without forewarning.",
+    growth:"Select one impulse to avoid this week and do not act on it immediately. Allow the discomfort to be present for sixty seconds without intervention. The objective is not endurance. It is the discovery, through direct experience, that discomfort does not produce the consequences you have been working to prevent."
+  },
+  {
+    id:"resister", name:"The Resister", range:[15,21], orient:"Resistance",
+    tagline:"Pain is the adversary. I intend to outlast it.",
+    desc:"You do not flee pain. You oppose it. Your orientation is one of sustained resistance: suffering is a problem to be solved, a weakness to be eliminated, an adversary to be worn down through persistence. This produces genuine capability. You are durable and methodical, and you are often regarded as a model of resilience by those around you. The structural problem is that resistance requires continuous expenditure. Some pains are not amenable to force. They require accommodation. The energy invested in not-feeling something frequently exceeds the cost of the feeling itself.",
+    growth:"Identify one pain you have been managing through sustained opposition. Ask yourself what it would mean to lay that effort down for a single day. This is not concession. It is a controlled experiment in contact. What you discover in that interval is more instructive than anything further resistance can produce."
+  },
+  {
+    id:"negotiator", name:"The Negotiator", range:[22,28], orient:"Negotiation",
+    tagline:"I will work with pain, provided pain proves workable.",
+    desc:"You are in sustained dialogue with suffering. You neither evade it nor overwhelm it. You interpret, reframe, contextualise, and bargain until you have arrived at terms on which you can continue. This orientation produces considerable wisdom, genuine empathy, and a flexibility of mind that most people take years to develop. The limitation is conditional engagement. You are available to pain when it yields insight or narrative coherence. You struggle with suffering that resists interpretation entirely. Not all pain contains a lesson. Your growth requires bearing the kind that offers nothing.",
+    growth:"Identify a pain that is currently resisting your efforts to interpret it. Spend time with it this week without attempting to extract meaning. Allow it to be purposeless. The capacity to remain present with what cannot be understood is itself a form of maturity distinct from, and complementary to, the interpretive skill you already possess."
+  },
+  {
+    id:"witness", name:"The Witness", range:[29,35], orient:"Witnessing",
+    tagline:"I observe what arises. I am not constituted by what I feel.",
+    desc:"Your relationship with pain is characterised by a quality of presence that requires sustained cultivation and is rarely achieved. You are capable of experiencing suffering fully while simultaneously maintaining a stable observing position. This is not dissociation. It is genuine perspective: the understanding, held in the body as well as the mind, that emotional states are events occurring within you rather than conditions that define you. The shadow of this orientation is subtle but real. Witnessing can shade into studied detachment. Clarity, applied as defence, becomes distance. Ensure you are arriving fully into your life rather than observing it from a measured remove.",
+    growth:"Attend this week to whether your capacity for observation ever functions as a means of withholding full arrival into an experience. Allow yourself to be moved, not only to be aware. The witness is most valuable when it serves genuine presence, not when it is employed as a substitute for it."
+  },
+  {
+    id:"integrator", name:"The Integrator", range:[36,40], orient:"Integration",
+    tagline:"Pain is not contrary to living. It is constituent of it.",
+    desc:"Your orientation represents a rare and hard-won completion of the cycle that pain requires. You have moved through sufficient suffering, and remained, such that pain has been assimilated into your understanding of what it means to be alive. You do not seek it out. You do not recoil from it either. Mortality produces clarity rather than terror. Vulnerability registers as proximity rather than exposure. Loss is genuine and grief is honest, but neither destabilises you at your foundation. This is not the absence of pain. It is pain's full inhabitation.",
+    growth:"The primary work at this orientation is transmission. Your integration is most fully expressed when you create conditions in which others, who are earlier in this process, can proceed at their own pace. Be generous with what you have learned. Not as instruction. As presence."
+  }
+];
+
+function getArchetype(total){
+  return ARCHETYPES.find(a => total >= a.range[0] && total <= a.range[1]) || ARCHETYPES[2];
+}
+
+/* ============================================================
+   ICONS — small inline SVG glyphs, one per portal + per archetype
+   ============================================================ */
+function PortalGlyph({ type, color, size = 46 }){
+  const s = size;
+  const stroke = color;
+  const paths = {
+    mask: <><circle cx="23" cy="23" r="16" fill="none" stroke={stroke} strokeWidth="1.4"/><path d="M23 7 L23 39" stroke={stroke} strokeWidth="1.2"/><circle cx="17" cy="20" r="2" fill={stroke}/><circle cx="29" cy="26" r="2" fill="none" stroke={stroke} strokeWidth="1.2"/></>,
+    crack: <><circle cx="23" cy="23" r="16" fill="none" stroke={stroke} strokeWidth="1.4"/><path d="M23 8 L19 20 L26 24 L18 38" fill="none" stroke={stroke} strokeWidth="1.3"/></>,
+    ripple: <><circle cx="23" cy="23" r="16" fill="none" stroke={stroke} strokeWidth="1" opacity=".5"/><circle cx="23" cy="23" r="10" fill="none" stroke={stroke} strokeWidth="1.2" opacity=".8"/><circle cx="23" cy="23" r="3" fill={stroke}/></>,
+    hourglass: <><path d="M12 8 H34 L23 23 L34 38 H12 L23 23 Z" fill="none" stroke={stroke} strokeWidth="1.3"/><path d="M16 12 H30" stroke={stroke} strokeWidth="1"/><path d="M16 34 H30" stroke={stroke} strokeWidth="1"/></>,
+    pulse: <><path d="M6 23 H16 L20 12 L26 34 L30 23 H40" fill="none" stroke={stroke} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round"/></>,
+    gate: <><rect x="10" y="10" width="26" height="28" fill="none" stroke={stroke} strokeWidth="1.3"/><path d="M23 10 V38" stroke={stroke} strokeWidth="1"/><circle cx="19" cy="24" r="1.6" fill={stroke}/></>,
+    eye: <><path d="M6 23 Q23 9 40 23 Q23 37 6 23 Z" fill="none" stroke={stroke} strokeWidth="1.3"/><circle cx="23" cy="23" r="6" fill="none" stroke={stroke} strokeWidth="1.2"/><circle cx="23" cy="23" r="2.2" fill={stroke}/></>,
+    circle: <><circle cx="23" cy="23" r="16" fill="none" stroke={stroke} strokeWidth="1.4"/><circle cx="23" cy="23" r="1.6" fill={stroke}/></>,
+  };
+  return <svg width={s} height={s} viewBox="0 0 46 46">{paths[type]}</svg>;
+}
+
+function archetypeSvg(id, size){
+  const g="#c9973a", gd="#7a5a1a", b="#f0ead6", a="#1a1608", gh="#9a8f72", bk="#080705";
+  const c = size/2, r = size*0.46;
+  const bg = <circle cx={c} cy={c} r={r} fill={a} stroke={gd} strokeWidth="0.8"/>;
+  if(id==="avoider") return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    {bg}
+    <line x1={c-size*.30} y1={c-size*.10} x2={c+size*.22} y2={c-size*.10} stroke={g} strokeWidth="1.4" strokeLinecap="round"/>
+    <line x1={c-size*.36} y1={c} x2={c+size*.28} y2={c} stroke={g} strokeWidth="1.8" strokeLinecap="round"/>
+    <line x1={c-size*.30} y1={c+size*.10} x2={c+size*.22} y2={c+size*.10} stroke={g} strokeWidth="1.4" strokeLinecap="round"/>
+    <polygon points={`${c+size*.34},${c} ${c+size*.22},${c-size*.08} ${c+size*.22},${c+size*.08}`} fill={g}/>
+    <path d={`M${c-size*.04} ${c+size*.22} A${size*.23} ${size*.23} 0 1 1 ${c-size*.04} ${c-size*.22}`} fill="none" stroke={gh} strokeWidth="1.3" strokeLinecap="round"/>
+  </svg>;
+  if(id==="resister") return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    {bg}
+    <path d={`M${c} ${c-size*.30} L${c-size*.22} ${c-size*.14} L${c-size*.22} ${c+size*.08} Q${c-size*.22} ${c+size*.30} ${c} ${c+size*.32} Q${c+size*.22} ${c+size*.30} ${c+size*.22} ${c+size*.08} L${c+size*.22} ${c-size*.14} Z`} fill="#1e1408" stroke={g} strokeWidth="1.6"/>
+    <line x1={c} y1={c-size*.22} x2={c} y2={c+size*.24} stroke={g} strokeWidth="1.5" strokeLinecap="round"/>
+    <line x1={c-size*.17} y1={c+size*.01} x2={c+size*.17} y2={c+size*.01} stroke={g} strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>;
+  if(id==="negotiator") return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    {bg}
+    <line x1={c} y1={c-size*.30} x2={c} y2={c+size*.32} stroke={g} strokeWidth="1.4" strokeLinecap="round"/>
+    <line x1={c-size*.28} y1={c-size*.05} x2={c+size*.28} y2={c-size*.05} stroke={g} strokeWidth="1.4" strokeLinecap="round"/>
+    <polygon points={`${c},${c+size*.30} ${c-size*.07},${c+size*.38} ${c+size*.07},${c+size*.38}`} fill={g}/>
+  </svg>;
+  if(id==="witness") return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    {bg}
+    <path d={`M${c-size*.34} ${c} Q${c} ${c-size*.22} ${c+size*.34} ${c} Q${c} ${c+size*.22} ${c-size*.34} ${c} Z`} fill="#14100a" stroke={b} strokeWidth="1.4"/>
+    <circle cx={c} cy={c} r={size*.13} fill="#1e1408" stroke={g} strokeWidth="1.2"/>
+    <circle cx={c} cy={c} r={size*.07} fill={bk}/>
+  </svg>;
+  // integrator
+  let dots=[], sPts=[];
+  for(let i=0;i<8;i++){ const a2=(i*45*Math.PI)/180; dots.push(<circle key={i} cx={(c+size*.22*Math.cos(a2)).toFixed(1)} cy={(c+size*.22*Math.sin(a2)).toFixed(1)} r={size*.09} fill={a} stroke={g} strokeWidth="0.9"/>); }
+  for(let i=0;i<16;i++){ const a2=((i*22.5-90)*Math.PI)/180, r2 = i%2===0?size*.16:size*.08; sPts.push(`${(c+r2*Math.cos(a2)).toFixed(1)},${(c+r2*Math.sin(a2)).toFixed(1)}`); }
+  return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    {bg}
+    <circle cx={c} cy={c} r={size*.43} fill="none" stroke={gd} strokeWidth="0.5"/>
+    {dots}
+    <polygon points={sPts.join(' ')} fill={g} stroke={bk} strokeWidth="0.4"/>
+    <circle cx={c} cy={c} r={size*.04} fill={b}/>
+  </svg>;
+}
+
+/* ============================================================
+   HUD
+   ============================================================ */
+function HUD({ portalIndex, runes, act, muted, setMuted }){
+  const pct = Math.min(100, Math.round((runes.length/8)*100));
+  return (
+    <div id="hud">
+      <div className="hud-act mono">ACT {act?.roman || ''} · {act?.name || ''}</div>
+      <div className="hud-dots">
+        {LAWS.map((law, i)=>{
+          const isDone = runes.includes(law.id);
+          const isCurrent = i === portalIndex;
+          return <div key={law.id} className={"hud-dot" + (isDone?" done":"") + (isCurrent?" current":"")} title={law.name}>
+            {isDone ? "✓" : law.numeral}
+          </div>;
+        })}
+      </div>
+      <div className="hud-meter">
+        <span className="eyebrow" style={{fontSize:'.55rem'}}>Orientation</span>
+        <div className="hud-meter-track"><div className="hud-meter-fill" style={{width:pct+'%'}}></div></div>
+      </div>
+      <button className="hud-mute" onClick={()=>setMuted(m=>!m)} title={muted ? "Unmute" : "Mute"}>
+        {muted ? "🔇" : "🔊"}
+      </button>
+    </div>
+  );
+}
+
+/* ============================================================
+   SCREENS
+   ============================================================ */
+function BootScreen({ onDone, muted }){
+  const bootLines = useMemo(()=>[
+    "PAIN OS v8.0.1 — initializing reorientation protocol...",
+    "loading law modules ................ [8/8] OK",
+    "loading pain orientation index ...... OK",
+    "calibrating discernment threshold ... OK",
+    "the eight portals are ready.",
+  ], []);
+  const [shown, setShown] = useState(0);
+  const [pct, setPct] = useState(0);
+  useEffect(()=>{
+    SFX.boot(muted);
+    const iv = setInterval(()=>{
+      setShown(s=>{
+        if(s < bootLines.length){ return s+1; }
+        clearInterval(iv);
+        return s;
+      });
+    }, 420);
+    return ()=>clearInterval(iv);
+  }, []);
+  useEffect(()=>{
+    const iv = setInterval(()=> setPct(p => Math.min(100, p + 4)), 60);
+    return ()=>clearInterval(iv);
+  }, []);
+  return (
+    <div className="screen" id="boot">
+      <div className="boot-box mono">
+        {bootLines.slice(0, shown).map((l,i)=>(
+          <div className="boot-line" key={i}>
+            {l}{i === bootLines.length-1 && <span className="ok"> ✓</span>}
+          </div>
+        ))}
+        <div className="boot-bar-track"><div className="boot-bar-fill" style={{width:pct+'%'}}></div></div>
+        {shown >= bootLines.length && (
+          <button className="btn" onClick={onDone} style={{marginTop:'1.4rem'}}>Enter</button>
+        )}
+        {shown < bootLines.length && <span className="boot-cursor"></span>}
+      </div>
+    </div>
+  );
+}
+
+function TitleScreen({ onStart }){
+  return (
+    <div className="screen title-glow" id="title">
+      <div className="wrap">
+        <p className="eyebrow" style={{marginBottom:'1.8rem'}}>An Interactive Reorientation, in Three Acts</p>
+        <span className="display title-main">Eight Laws</span>
+        <span className="title-sub">of Pain</span>
+        <p className="title-tag">The Reorientation Protocol</p>
+        <p className="title-desc">
+          Pain is not the exception to a well-built life. It is a structural feature of any life lived with
+          genuine engagement. Ahead of you stand eight portals, each built from a law that governs how
+          suffering moves through a human being. You will not escape any of them. You will only learn to
+          pass through with your eyes open. At the end, the same instrument used by <em>The Pain Orientation
+          Test</em> will name where you currently stand.
+        </p>
+        <button className="btn" onClick={onStart}>Begin the Descent</button>
+        <div className="law-preview">
+          {LAWS.map(l => <span className="law-chip" key={l.id}>{l.numeral} · {l.name.replace('The Law of ','')}</span>)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ActIntroScreen({ act, onDone, muted }){
+  useEffect(()=>{ SFX.act(muted); }, []);
+  const lawsInAct = LAWS.filter(l => l.act === act.n);
+  return (
+    <div className="screen" id="act-intro">
+      <div className="wrap">
+        <div className="act-roman">{act.roman}</div>
+        <div className="act-name">{act.name}</div>
+        <p className="act-tag">"{act.tag}"</p>
+        <div className="act-laws">
+          {lawsInAct.map(l=>(
+            <div className="act-law-item" key={l.id}>
+              <div className="act-law-num">LAW {l.numeral}</div>
+              <div className="act-law-name">{l.name.replace('The Law of ','')}</div>
+            </div>
+          ))}
+        </div>
+        <button className="btn" onClick={onDone}>Enter Act {act.roman}</button>
+      </div>
+    </div>
+  );
+}
+
+function PortalScene({ law, index, onComplete, muted }){
+  const [phase, setPhase] = useState('teaching'); // teaching -> trial -> rune
+  const [chosen, setChosen] = useState(null);
+  const [optionsShown, setOptionsShown] = useState(false);
+
+  useEffect(()=>{
+    setPhase('teaching'); setChosen(null); setOptionsShown(false);
+    const root = document.documentElement;
+    root.style.setProperty('--accent', law.accent);
+  }, [law]);
+
+  function handleTeachingDone(){
+    setTimeout(()=>{ setPhase('trial'); setTimeout(()=>setOptionsShown(true), 250); }, 350);
+  }
+
+  function selectOption(opt){
+    if(chosen) return;
+    setChosen(opt);
+    SFX.select(muted);
+    setTimeout(()=>{
+      setPhase('rune');
+      SFX.rune(muted);
+    }, 650);
+  }
+
+  return (
+    <div className="screen" id="portal" style={{'--accent': law.accent}}>
+      <div className="wrap">
+        <div className="portal-frame">
+          <div className="portal-ring r3"></div>
+          <div className="portal-ring r2"></div>
+          <div className="portal-ring"></div>
+          <div className="portal-core">
+            <PortalGlyph type={law.glyph} color={law.accent} />
+          </div>
+        </div>
+        <div className="portal-num mono">PORTAL {law.numeral} OF VIII</div>
+        <h2 className="portal-title">{law.name}</h2>
+        <p className="portal-sub">"{law.tagline}"</p>
+
+        {phase === 'teaching' && (
+          <Typewriter lines={law.teaching} onDone={handleTeachingDone} muted={muted} speed={14} />
+        )}
+
+        {phase !== 'teaching' && (
+          <div className="trial-box">
+            <p className="trial-label">The Trial</p>
+            <p className="trial-q">{law.q.text}</p>
+            <p className="trial-sub">{law.q.sub}</p>
+            {optionsShown && (
+              <div>
+                {law.q.options.map((o, i)=>(
+                  <button
+                    key={o.l}
+                    className={"opt" + (chosen && chosen.l===o.l ? " chosen":"")}
+                    style={{animationDelay:(i*0.08)+'s'}}
+                    onClick={()=>selectOption(o)}
+                    disabled={!!chosen}
+                  >
+                    <span className="opt-l">{o.l}</span><span>{o.text}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {phase === 'rune' && (
+          <div className="rune-collect-wrap">
+            <hr className="rule" />
+            <div className="rune-word">{law.rune}</div>
+            <p className="rune-caption">{law.runeLine}</p>
+            <div className="rune-callout">
+              <p className="eyebrow">Rune Claimed</p>
+              <p>You carry this word forward. It will complete your pledge at the final threshold.</p>
+            </div>
+            <button className="btn" onClick={()=>onComplete(chosen.score)}>
+              {index === 7 ? "Face the Final Threshold →" : "Pass Through the Portal →"}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CalculatingScreen({ onDone }){
+  const msgs = [
+    "Weighing your responses across all eight laws…",
+    "Binding your eight collected runes into a pledge…",
+    "Locating your archetype within the spectrum…",
+  ];
+  const [i, setI] = useState(0);
+  useEffect(()=>{
+    const iv = setInterval(()=> setI(v => Math.min(msgs.length-1, v+1)), 1100);
+    const t = setTimeout(onDone, 3400);
+    return ()=>{ clearInterval(iv); clearTimeout(t); };
+  }, []);
+  return (
+    <div className="screen" id="calc">
+      <div className="spinner"></div>
+      <p className="eyebrow">Compiling your orientation</p>
+      <p className="calc-msg">{msgs[i]}</p>
+    </div>
+  );
+}
+
+function ResultsScreen({ answers, runes, onRestart, muted }){
+  const total = answers.reduce((s,a)=>s+a, 0);
+  const arch = getArchetype(total);
+
+  useEffect(()=>{
+    SFX.finale(muted);
+    requestAnimationFrame(()=> setTimeout(()=>{
+      document.querySelectorAll('.bar-fill').forEach(el=>{ el.style.width = el.dataset.pct; });
+    }, 300));
+  }, []);
+
+  const pledgeLines = {
+    ADMIT:"admit what moves in me",
+    EXPOSE:"expose what I have hidden",
+    ENOUGH:"call enough what already is",
+    TEND:"tend what decays",
+    RIDE:"ride what impulse brings",
+    DISCERN:"discern before I cross",
+    SEE:"see before I suffer",
+    GROUND:"stand grounded in what ends",
+  };
+  const pledgeSentence = "I will " + runes.map(r=>pledgeLines[r]).join(", ").replace(/, ([^,]*)$/, ", and $1") + ".";
+
+  return (
+    <div className="screen" id="results">
+      <div className="wrap wrap-wide">
+        <p className="eyebrow" style={{marginBottom:'1.2rem'}}>The Final Threshold — You Have Been Reoriented</p>
+
+        <div className="r-hero">
+          <div className="r-symbol">{archetypeSvg(arch.id, 96)}</div>
+          <div>
+            <h2 className="r-name">{arch.name}</h2>
+            <p className="r-tagline">"{arch.tagline}"</p>
+          </div>
+        </div>
+
+        <div className="pledge-box">
+          <p className="eyebrow" style={{marginBottom:'.8rem'}}>Your Reorientation Pledge</p>
+          <div className="pledge-runes">
+            {runes.map(r => <span className="pledge-rune mono" key={r}>{r}</span>)}
+          </div>
+          <p className="pledge-text">{pledgeSentence}</p>
+        </div>
+
+        <div className="score-strip">
+          <div className="score-cell"><p className="eyebrow">Total Score</p><p className="score-val">{total} / 40</p></div>
+          <div className="score-cell"><p className="eyebrow">Orientation</p><p className="score-val" style={{fontSize:'1.1rem'}}>{arch.orient}</p></div>
+          <div className="score-cell"><p className="eyebrow">Score Range</p><p className="score-val" style={{fontSize:'1.1rem'}}>{arch.range[0]}–{arch.range[1]}</p></div>
+        </div>
+
+        <p className="r-desc">{arch.desc}</p>
+
+        <hr className="rule" />
+        <p className="eyebrow" style={{marginBottom:'1.2rem'}}>Score by Law of Pain</p>
+        <div className="law-bars">
+          {LAWS.map((law, i)=>(
+            <div className="law-row" key={law.id}>
+              <div className="law-name">{law.name.replace('The Law of ','')}</div>
+              <div className="bar-track"><div className="bar-fill" data-pct={(answers[i]/5)*100+'%'} style={{width:'0%'}}></div></div>
+              <div className="bar-score">{answers[i]} / 5</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="growth">
+          <p className="eyebrow" style={{color:'var(--gold)', marginBottom:'.5rem'}}>Growth Practice</p>
+          <p className="growth-text">{arch.growth}</p>
+        </div>
+
+        <div className="result-actions">
+          <button className="btn" onClick={onRestart}>Walk the Portals Again</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   APP — state machine
+   ============================================================ */
+function App(){
+  const [stage, setStage] = useState('boot'); // boot -> title -> actintro -> portal -> calc -> results
+  const [portalIndex, setPortalIndex] = useState(0);
+  const [answers, setAnswers] = useState([]);
+  const [runes, setRunes] = useState([]);
+  const [muted, setMuted] = useState(false);
+  const [pendingAct, setPendingAct] = useState(ACTS[0]);
+
+  const currentLaw = LAWS[portalIndex];
+
+  function startTitle(){ setStage('title'); }
+  function startJourney(){
+    setPortalIndex(0); setAnswers([]); setRunes([]);
+    setPendingAct(ACTS[0]);
+    setStage('actintro');
+  }
+
+  function completePortal(score){
+    const newAnswers = [...answers, score];
+    const newRunes = [...runes, currentLaw.rune];
+    setAnswers(newAnswers);
+    setRunes(newRunes);
+
+    const nextIndex = portalIndex + 1;
+    if(nextIndex >= LAWS.length){
+      setStage('calc');
+      return;
+    }
+    const nextLaw = LAWS[nextIndex];
+    setPortalIndex(nextIndex);
+    if(nextLaw.act !== currentLaw.act){
+      setPendingAct(ACTS[nextLaw.act - 1]);
+      setStage('actintro');
+    }
+  }
+
+  function goToPortalAfterAct(){ setStage('portal'); }
+
+  function finishCalc(){ setStage('results'); }
+
+  function restart(){
+    setStage('title');
+    setPortalIndex(0); setAnswers([]); setRunes([]);
+  }
+
+  const accentForStage = stage === 'portal' ? currentLaw.accent : (stage === 'actintro' ? '#c9973a' : '#c9973a');
+
+  return (
+    <React.Fragment>
+      <EmberField accent={accentForStage} />
+      {stage !== 'boot' && stage !== 'title' && (
+        <HUD portalIndex={portalIndex} runes={runes} act={LAWS[Math.min(portalIndex, 7)] ? ACTS[LAWS[Math.min(portalIndex,7)].act-1] : ACTS[0]} muted={muted} setMuted={setMuted} />
+      )}
+      {stage === 'boot' && <BootScreen onDone={startTitle} muted={muted} />}
+      {stage === 'title' && <TitleScreen onStart={startJourney} />}
+      {stage === 'actintro' && (
+        <ActIntroScreen act={pendingAct} onDone={goToPortalAfterAct} muted={muted} />
+      )}
+      {stage === 'portal' && (
+        <PortalScene law={currentLaw} index={portalIndex} onComplete={completePortal} muted={muted} />
+      )}
+      {stage === 'calc' && <CalculatingScreen onDone={finishCalc} />}
+      {stage === 'results' && (
+        <ResultsScreen answers={answers} runes={runes} onRestart={restart} muted={muted} />
+      )}
+    </React.Fragment>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>
