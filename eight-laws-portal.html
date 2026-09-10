@@ -229,6 +229,23 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
   .law-name{width:106px;font-size:.72rem}
   .hud-dots{order:3;flex-basis:100%}
 }
+
+/* ---------- Resume banner ---------- */
+.resume-banner{border:1px solid var(--accent-d);background:var(--accent-dim);padding:1rem 1.4rem;margin-bottom:1.6rem;text-align:left}
+.resume-banner .eyebrow{margin-bottom:.5rem;color:var(--accent)}
+.resume-banner p.desc{color:var(--ghost);font-size:.92rem;margin-bottom:1rem}
+.btn-sm{padding:.7rem 1.6rem;font-size:.64rem}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration:0.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:0.01ms !important;
+    scroll-behavior:auto !important;
+  }
+  .ember{display:none}
+}
 </style>
 </head>
 <body>
@@ -381,6 +398,61 @@ function escapeHtml(s){
   });
 }
 
+var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+/* ============================================================
+   PERSISTENCE — resume a half-finished assessment or journey
+   ============================================================ */
+var STORAGE_KEY = 'eight-laws-pain-v1';
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      phase: currentPhase,
+      qIdx: qIdx, answers: answers,
+      portalIndex: portalIndex, runes: runes
+    }));
+  }catch(e){}
+}
+function loadState(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){ return null; }
+}
+function clearState(){
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+}
+
+/* ============================================================
+   CLIPBOARD — copy the final pledge/result as plain text
+   ============================================================ */
+function fallbackCopy(text, done){
+  try{
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    var ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    done(ok);
+  }catch(e){ done(false); }
+}
+function copyToClipboard(text, btnEl){
+  var original = btnEl.textContent;
+  function done(ok){
+    btnEl.textContent = ok ? 'Copied ✓' : 'Copy Failed — Select Manually';
+    setTimeout(function(){ btnEl.textContent = original; }, 1800);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){ done(true); }).catch(function(){ fallbackCopy(text, done); });
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+
 /* ============================================================
    EMBER FIELD — ambient particles
    ============================================================ */
@@ -388,6 +460,7 @@ function emberField(accent){
   var field = document.getElementById('field');
   field.style.setProperty('--accent', accent);
   field.innerHTML = '';
+  if(REDUCED_MOTION) return;
   var n = window.innerWidth < 640 ? 14 : 26;
   for(var i=0;i<n;i++){
     var d = document.createElement('div');
@@ -409,6 +482,13 @@ function emberField(accent){
    TYPEWRITER — reveals text progressively, click-to-skip
    ============================================================ */
 function runTypewriter(container, lines, speed, onDone){
+  if(REDUCED_MOTION){
+    var full = '';
+    lines.forEach(function(l){ full += '<p class="tw-line">'+escapeHtml(l)+'</p>'; });
+    container.innerHTML = full;
+    if(onDone) onDone();
+    return;
+  }
   var lineIdx = 0, charIdx = 0, done = false;
   var timer = null;
   container.innerHTML = '<div class="skip-hint">tap to reveal</div>';
@@ -771,6 +851,7 @@ var qIdx = 0;
 var answers = new Array(8).fill(null);
 var portalIndex = 0;
 var runes = [];
+var currentPhase = 'quiz';
 
 function showScreen(id){
   var els = document.querySelectorAll('.screen');
@@ -798,10 +879,12 @@ document.getElementById('btn-begin-test').addEventListener('click', startTest);
    ============================================================ */
 function startTest(){
   qIdx = 0; answers = new Array(8).fill(null);
+  currentPhase = 'quiz';
   document.getElementById('progress-bar').classList.add('show');
   updateProgress();
   showScreen('screen-question');
   renderQuestion();
+  saveState();
 }
 
 function renderQuestion(){
@@ -840,6 +923,7 @@ function selectAnswer(score){
   SFX.select();
   renderQuestion();
   updateProgress();
+  saveState();
 }
 
 function refreshNext(){
@@ -857,11 +941,11 @@ function updateProgress(){
 
 document.getElementById('btn-next').addEventListener('click', function(){
   if(answers[qIdx]===null) return;
-  if(qIdx < LAWS.length-1){ qIdx++; renderQuestion(); }
+  if(qIdx < LAWS.length-1){ qIdx++; renderQuestion(); saveState(); }
   else finishTest();
 });
 document.getElementById('btn-back').addEventListener('click', function(){
-  if(qIdx>0){ qIdx--; renderQuestion(); }
+  if(qIdx>0){ qIdx--; renderQuestion(); saveState(); }
 });
 
 /* ============================================================
@@ -902,9 +986,11 @@ function showJourneyTitle(){
 }
 document.getElementById('btn-begin-journey').addEventListener('click', function(){
   portalIndex = 0; runes = [];
+  currentPhase = 'journey';
   document.documentElement.style.setProperty('--accent', '#c9973a');
   emberField('#c9973a');
   showActIntro(ACTS[0]);
+  saveState();
 });
 
 /* ============================================================
@@ -1020,6 +1106,7 @@ function showRune(law, idx){
     '</div>';
   document.getElementById('btn-portal-continue').addEventListener('click', function(){ nextPortal(idx); });
   updateHUD();
+  saveState();
 }
 
 function nextPortal(idx){
@@ -1034,6 +1121,7 @@ function nextPortal(idx){
   }
   var nextLaw = LAWS[nextIdx];
   portalIndex = nextIdx;
+  saveState();
   if(nextLaw.act !== LAWS[idx].act){
     showActIntro(ACTS[nextLaw.act-1]);
   } else {
@@ -1056,8 +1144,26 @@ var PLEDGE_LINES = {
   GROUND:"stand grounded in what ends"
 };
 
+function buildSummaryText(total, arch, pledgeSentence){
+  var lines = [];
+  lines.push('EIGHT LAWS OF PAIN — MY REORIENTATION');
+  lines.push('');
+  lines.push('Archetype: ' + arch.name + ' (' + arch.orient + ')');
+  lines.push('Total Score: ' + total + ' / 40');
+  lines.push('');
+  lines.push('My Pledge:');
+  lines.push(pledgeSentence);
+  lines.push('');
+  lines.push('Score by Law:');
+  LAWS.forEach(function(law, i){
+    lines.push('  ' + law.name.replace('The Law of ','') + ': ' + answers[i] + '/5');
+  });
+  return lines.join('\n');
+}
+
 function showResults(){
   SFX.finale();
+  clearState();
   var total = answers.reduce(function(s,a){ return s+a; }, 0);
   var arch = getArchetype(total);
 
@@ -1098,10 +1204,13 @@ function showResults(){
       '<p class="eyebrow" style="color:var(--gold);margin-bottom:.5rem">Growth Practice</p>'+
       '<p class="growth-text">'+escapeHtml(arch.growth)+'</p>'+
     '</div>'+
-    '<div class="result-actions"><button class="btn" id="btn-restart">Take the Assessment Again</button></div>';
+    '<div class="result-actions"><button class="btn" id="btn-copy-pledge">Copy My Reorientation</button><button class="btn" id="btn-restart">Take the Assessment Again</button></div>';
 
   document.getElementById('results-body').innerHTML = html;
   document.getElementById('btn-restart').addEventListener('click', restart);
+  document.getElementById('btn-copy-pledge').addEventListener('click', function(){
+    copyToClipboard(buildSummaryText(total, arch, pledgeSentence), this);
+  });
   showScreen('screen-results');
   updateHUD();
 
@@ -1114,12 +1223,58 @@ function showResults(){
 
 function restart(){
   qIdx = 0; answers = new Array(8).fill(null); runes = []; portalIndex = 0;
+  currentPhase = 'quiz';
+  clearState();
   document.getElementById('progress-bar').classList.remove('show');
   document.getElementById('progress-fill').style.width = '0%';
   document.getElementById('hud').classList.remove('show');
   document.documentElement.style.setProperty('--accent', '#c9973a');
   showScreen('screen-cover');
 }
+
+/* ============================================================
+   RESUME — offer to continue a saved assessment or journey
+   ============================================================ */
+function resumeFrom(saved){
+  answers = saved.answers || new Array(8).fill(null);
+  runes = saved.runes || [];
+  portalIndex = saved.portalIndex || 0;
+  qIdx = saved.qIdx || 0;
+  if(saved.phase === 'journey'){
+    currentPhase = 'journey';
+    var law = LAWS[Math.min(portalIndex, 7)];
+    document.documentElement.style.setProperty('--accent', law.accent);
+    emberField(law.accent);
+    showScreen('screen-portal');
+    portalScene(law, portalIndex);
+  } else {
+    currentPhase = 'quiz';
+    document.getElementById('progress-bar').classList.add('show');
+    updateProgress();
+    showScreen('screen-question');
+    renderQuestion();
+  }
+}
+
+(function initResume(){
+  var saved = loadState();
+  if(!saved) return;
+  var wrap = document.querySelector('#screen-cover .wrap');
+  var beginBtn = document.getElementById('btn-begin-test');
+  var banner = document.createElement('div');
+  banner.className = 'resume-banner';
+  var label = saved.phase === 'journey' ? 'Resume Your Journey' : 'Resume the Assessment';
+  var desc = saved.phase === 'journey'
+    ? 'You left off inside the portals, with ' + (saved.runes ? saved.runes.length : 0) + ' of 8 runes claimed.'
+    : 'You left off on question ' + ((saved.qIdx||0)+1) + ' of 8.';
+  banner.innerHTML = '<p class="eyebrow">Progress Found</p><p class="desc">'+desc+'</p>';
+  var btn = document.createElement('button');
+  btn.className = 'btn btn-sm';
+  btn.textContent = label;
+  btn.addEventListener('click', function(){ resumeFrom(saved); });
+  banner.appendChild(btn);
+  wrap.insertBefore(banner, beginBtn);
+})();
 
 })();
 </script>
