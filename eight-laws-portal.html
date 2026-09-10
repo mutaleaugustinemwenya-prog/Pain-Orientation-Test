@@ -46,6 +46,17 @@ button{font-family:inherit;background:none;border:none;color:inherit;cursor:poin
 
 #root{position:relative;z-index:5;min-height:100vh}
 
+/* ---------- Iris transition ---------- */
+#iris{position:fixed;inset:0;z-index:60;pointer-events:none;background:var(--black);
+  clip-path:circle(0% at 50% 50%);}
+#iris.closing{clip-path:circle(150% at 50% 50%);transition:clip-path .28s cubic-bezier(.6,0,.4,1)}
+#iris.opening{clip-path:circle(0% at 50% 50%);transition:clip-path .48s cubic-bezier(.2,1,.3,1)}
+
+/* ---------- Ripple (button/option feedback) ---------- */
+.ripple{position:absolute;border-radius:50%;background:rgba(240,234,214,.35);transform:scale(0);
+  animation:rippleAnim .6s ease-out forwards;pointer-events:none}
+@keyframes rippleAnim{to{transform:scale(2.6);opacity:0}}
+
 /* ---------- Progress bar (quiz phase) ---------- */
 #progress-bar{position:fixed;top:0;left:0;right:0;height:2px;background:var(--fog);z-index:999;display:none}
 #progress-bar.show{display:block}
@@ -64,6 +75,7 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 
 /* ---------- Buttons ---------- */
 .btn{
+  position:relative;overflow:hidden;
   background:transparent;border:1px solid var(--accent);color:var(--bone);
   font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
   padding:1rem 2.6rem;transition:background .3s,box-shadow .3s,transform .15s;
@@ -123,7 +135,7 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 .hud-meter{display:flex;align-items:center;gap:.5rem;min-width:120px}
 .hud-meter-track{width:90px;height:3px;background:var(--fog)}
 .hud-meter-fill{height:100%;background:linear-gradient(90deg,var(--accent-d),var(--accent));transition:width .8s ease}
-.hud-mute{font-size:.85rem;color:var(--ghost);border:1px solid var(--fog);width:26px;height:26px;border-radius:50%;
+.hud-mute{position:relative;overflow:hidden;font-size:.85rem;color:var(--ghost);border:1px solid var(--fog);width:26px;height:26px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .hud-mute:hover{color:var(--bone);border-color:var(--ghost)}
 
@@ -139,7 +151,8 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 
 /* ---------- Portal scene ---------- */
 #screen-portal{padding-top:7rem;align-items:center}
-.portal-frame{position:relative;width:150px;height:150px;margin:0 auto 1.6rem;display:flex;align-items:center;justify-content:center}
+.portal-frame{position:relative;width:150px;height:150px;margin:0 auto 1.6rem;display:flex;align-items:center;justify-content:center;
+  transform-style:preserve-3d;transition:transform .18s ease-out;will-change:transform}
 .portal-ring{position:absolute;inset:0;border-radius:50%;border:1px solid var(--accent-d);opacity:.55}
 .portal-ring.r2{inset:12px;animation:spinSlow 22s linear infinite}
 .portal-ring.r3{inset:24px;animation:spinSlow 16s linear infinite reverse;opacity:.35}
@@ -149,7 +162,9 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
   box-shadow:0 0 40px var(--accent-dim), inset 0 0 30px rgba(0,0,0,.6);
   animation:corePulse 3.4s ease-in-out infinite;
 }
+.portal-core.narrating{animation:corePulseFast 1.1s ease-in-out infinite}
 @keyframes corePulse{0%,100%{box-shadow:0 0 30px var(--accent-dim), inset 0 0 24px rgba(0,0,0,.6)}50%{box-shadow:0 0 52px var(--accent-dim), inset 0 0 30px rgba(0,0,0,.6)}}
+@keyframes corePulseFast{0%,100%{box-shadow:0 0 34px var(--accent-dim), inset 0 0 24px rgba(0,0,0,.6);transform:scale(1)}50%{box-shadow:0 0 64px var(--accent-dim), inset 0 0 34px rgba(0,0,0,.6);transform:scale(1.04)}}
 .portal-num{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.3em;text-align:center;color:var(--accent);margin-bottom:.3rem}
 .portal-title{font-family:'Cinzel',serif;font-size:clamp(1.5rem,4.4vw,2.15rem);text-align:center;color:var(--bone);margin-bottom:.3rem}
 .portal-sub{text-align:center;color:var(--ghost);font-style:italic;margin-bottom:2rem;font-size:.98rem}
@@ -173,6 +188,7 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 .trial-q{font-size:clamp(1.05rem,2.6vw,1.35rem);line-height:1.45;color:var(--bone);margin-bottom:.5rem}
 .trial-sub{font-style:italic;color:var(--ghost);font-size:.9rem;margin-bottom:1.6rem}
 .opt{
+  position:relative;overflow:hidden;
   display:flex;align-items:flex-start;gap:1rem;width:100%;text-align:left;
   background:var(--ash);border:1px solid var(--fog);color:var(--bone);
   font-size:.98rem;line-height:1.55;padding:.9rem 1.2rem;margin-bottom:.55rem;
@@ -252,6 +268,7 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 <div id="field"></div>
 <div class="vignette"></div>
 <div class="scanlines"></div>
+<div id="iris"></div>
 <div id="progress-bar"><div id="progress-fill"></div></div>
 
 <div id="hud">
@@ -274,7 +291,7 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
     <p class="title-tag">The Eight Laws of Pain</p>
     <p class="title-desc">
       Pain is not the exception to a well-constructed life. It is a structural feature of any life
-      lived with genuine engagement. Answer eight questions honestly — there are no correct responses,
+      lived with genuine engagement. Answer eight questions honestly. There are no correct responses,
       only honest ones. Then walk the eight portals built from the laws themselves, and watch your own
       answers reflected back inside the doors built to hold them.
     </p>
@@ -401,6 +418,58 @@ function escapeHtml(s){
 var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
 /* ============================================================
+   VOICE — narrates the typewriter text in a deep, low voice
+   ============================================================ */
+var VOICE = null;
+function pickVoice(){
+  if(!window.speechSynthesis) return;
+  var voices = speechSynthesis.getVoices();
+  if(!voices || !voices.length) return;
+  var preferredNames = ['Daniel','Google UK English Male','Microsoft David','Microsoft David Desktop','Alex','Fred','Google US English Male','Oliver','Arthur'];
+  var found = null;
+  for(var i=0;i<preferredNames.length && !found;i++){
+    for(var j=0;j<voices.length;j++){
+      if(voices[j].name.indexOf(preferredNames[i]) !== -1){ found = voices[j]; break; }
+    }
+  }
+  if(!found){
+    for(var k=0;k<voices.length && !found;k++){
+      if(/male/i.test(voices[k].name) && /^en/i.test(voices[k].lang)) found = voices[k];
+    }
+  }
+  if(!found){
+    for(var m=0;m<voices.length && !found;m++){
+      if(/^en/i.test(voices[m].lang)) found = voices[m];
+    }
+  }
+  VOICE = found || voices[0];
+}
+if(window.speechSynthesis){
+  pickVoice();
+  speechSynthesis.onvoiceschanged = pickVoice;
+}
+function stopSpeech(){
+  if(window.speechSynthesis){ try{ speechSynthesis.cancel(); }catch(e){} }
+}
+function speakLines(lines){
+  if(!window.speechSynthesis || muted) return;
+  try{
+    speechSynthesis.cancel();
+    var core = document.getElementById('portal-core');
+    lines.forEach(function(text){
+      var u = new SpeechSynthesisUtterance(text);
+      if(VOICE) u.voice = VOICE;
+      u.pitch = 0.55;
+      u.rate = 0.92;
+      u.volume = 1;
+      u.onstart = function(){ if(core) core.classList.add('narrating'); };
+      u.onend = function(){ if(core) core.classList.remove('narrating'); };
+      speechSynthesis.speak(u);
+    });
+  }catch(e){}
+}
+
+/* ============================================================
    PERSISTENCE — resume a half-finished assessment or journey
    ============================================================ */
 var STORAGE_KEY = 'eight-laws-pain-v1';
@@ -443,7 +512,7 @@ function fallbackCopy(text, done){
 function copyToClipboard(text, btnEl){
   var original = btnEl.textContent;
   function done(ok){
-    btnEl.textContent = ok ? 'Copied ✓' : 'Copy Failed — Select Manually';
+    btnEl.textContent = ok ? 'Copied ✓' : 'Copy Failed';
     setTimeout(function(){ btnEl.textContent = original; }, 1800);
   }
   if(navigator.clipboard && navigator.clipboard.writeText){
@@ -461,7 +530,7 @@ function emberField(accent){
   field.style.setProperty('--accent', accent);
   field.innerHTML = '';
   if(REDUCED_MOTION) return;
-  var n = window.innerWidth < 640 ? 14 : 26;
+  var n = window.innerWidth < 640 ? 20 : 38;
   for(var i=0;i<n;i++){
     var d = document.createElement('div');
     d.className = 'ember';
@@ -482,6 +551,7 @@ function emberField(accent){
    TYPEWRITER — reveals text progressively, click-to-skip
    ============================================================ */
 function runTypewriter(container, lines, speed, onDone){
+  speakLines(lines);
   if(REDUCED_MOTION){
     var full = '';
     lines.forEach(function(l){ full += '<p class="tw-line">'+escapeHtml(l)+'</p>'; });
@@ -491,7 +561,7 @@ function runTypewriter(container, lines, speed, onDone){
   }
   var lineIdx = 0, charIdx = 0, done = false;
   var timer = null;
-  container.innerHTML = '<div class="skip-hint">tap to reveal</div>';
+  container.innerHTML = '<div class="skip-hint">tap to skip</div>';
 
   function render(){
     var html = '';
@@ -499,12 +569,12 @@ function runTypewriter(container, lines, speed, onDone){
     if(lineIdx < lines.length){
       html += '<p class="tw-line">'+escapeHtml(lines[lineIdx].slice(0,charIdx))+'<span class="tw-cursor"></span></p>';
     }
-    container.innerHTML = html + (done ? '' : '<div class="skip-hint">tap to reveal</div>');
+    container.innerHTML = html + (done ? '' : '<div class="skip-hint">tap to skip</div>');
   }
 
   function tick(){
     if(done) return;
-    if(lineIdx >= lines.length){ finish(); return; }
+    if(lineIdx >= lines.length){ finish(false); return; }
     var current = lines[lineIdx];
     if(charIdx < current.length){
       charIdx++;
@@ -517,17 +587,18 @@ function runTypewriter(container, lines, speed, onDone){
     }
   }
 
-  function finish(){
+  function finish(skippedByUser){
     if(done) return;
     done = true;
     clearTimeout(timer);
     var html = '';
     lines.forEach(function(l){ html += '<p class="tw-line">'+escapeHtml(l)+'</p>'; });
     container.innerHTML = html;
+    if(skippedByUser) stopSpeech();
     if(onDone) onDone();
   }
 
-  container.onclick = finish;
+  container.onclick = function(){ finish(true); };
   render();
   timer = setTimeout(tick, speed);
 }
@@ -553,7 +624,7 @@ var LAWS = [
       "This is not an accusation. It is an inventory. What you can name, you can no longer be ambushed by."
     ],
     q:{
-      text:"When life delivers deliberate-seeming cruelty — illness arriving at the worst moment, loss appearing without invitation — what is your most honest first response?",
+      text:"When life delivers deliberate-seeming cruelty, illness arriving at the worst moment, loss appearing without invitation, what is your most honest first response?",
       sub:"Consider your instinctive reaction, not the response you wish you had.",
       options:[
         {l:"A",text:"I feel betrayed. The universe owes me better than this.",score:1},
@@ -571,10 +642,10 @@ var LAWS = [
     accent:"#6a4d9c",
     glyph:"crack",
     rune:"EXPOSE",
-    runeLine:"What you can name, you can no longer be ambushed by — but what you refuse to show, you cannot ever mend. Kintsugi does not hide the break. It gilds it.",
+    runeLine:"What you can name, you can no longer be ambushed by. But what you refuse to show, you cannot ever mend. Kintsugi does not hide the break. It gilds it.",
     teaching:[
       "Somewhere behind this door is the place you have been most careful to guard: not because it is shameful, but because it is tender.",
-      "Armor feels like protection. It has a price all the same — the things unsaid, untried, unbecome, because being guarded felt safer than being seen.",
+      "Armor feels like protection. It has a price all the same: the things unsaid, untried, unbecome, because being guarded felt safer than being seen.",
       "The gold in kintsugi is never hidden. It is the break, repaired, made the most beautiful part of the vessel. Your confidence is on the other side of what you have been hiding."
     ],
     q:{
@@ -596,11 +667,11 @@ var LAWS = [
     accent:"#8f8465",
     glyph:"ripple",
     rune:"ENOUGH",
-    runeLine:"The ache for more is not a personal failure. It is the baseline hum of a restless mind — and presence is the one place that hum cannot reach.",
+    runeLine:"The ache for more is not a personal failure. It is the baseline hum of a restless mind, and presence is the one place that hum cannot reach.",
     teaching:[
       "Every craving satisfied opens a new one. Every arrival reveals a further destination. This is not a modern complaint; it is the oldest observation about attention there is.",
       "The mind is built to want, and wanting does not stop simply because it gets what it asked for.",
-      "Presence does not end the craving. It only stops asking the craving to be the answer. That reversal — presence first, peace second — is the whole of this portal's teaching."
+      "Presence does not end the craving. It only stops asking the craving to be the answer. That reversal, presence first, peace second, is the whole of this portal's teaching."
     ],
     q:{
       text:"You attain something you pursued with considerable effort. Within weeks, the satisfaction has drained away entirely. How do you account for this?",
@@ -624,8 +695,8 @@ var LAWS = [
     runeLine:"Two disciplines meet decay honestly: maranasati, which rehearses the ending until it loses its power to ambush you, and the deliberate strengthening of the body, which answers entropy not with denial but with resistance.",
     teaching:[
       "Nothing you love holds its shape. The body erodes a little each year. Bonds loosen. Empires that once seemed permanent are already, quietly, becoming rubble.",
-      "There are only two honest replies to this. The first is maranasati — meeting the fact of ending directly and often, breath by breath, until familiarity dulls its ambush. The second is strength: the deliberate, physical practice of building capacity against entropy, not as denial of decay but as a form of care for what is still here.",
-      "Denial argues with the erosion. Tending it — through meditation on impermanence and through the discipline of the body — meets it honestly, and loves what remains more precisely because the clock is visible."
+      "There are only two honest replies to this. The first is maranasati, meeting the fact of ending directly and often, breath by breath, until familiarity dulls its ambush. The second is strength: the deliberate, physical practice of building capacity against entropy, not as denial of decay but as a form of care for what is still here.",
+      "Denial argues with the erosion. Tending it, through meditation on impermanence and through the discipline of the body, meets it honestly, and loves what remains more precisely because the clock is visible."
     ],
     q:{
       text:"You observe something you love in gradual decline: a relationship, a body, a season of life that is diminishing. What is your response?",
@@ -648,7 +719,7 @@ var LAWS = [
     rune:"RIDE",
     runeLine:"Three integrations meet the current: keep the memory of what it has done, detach from the reward it advertises, and radically accept whatever bill follows.",
     teaching:[
-      "Long before an argument could be made to you, something in you had already moved — a current older than thought, older than the self that claims to be steering.",
+      "Long before an argument could be made to you, something in you had already moved: a current older than thought, older than the self that claims to be steering.",
       "It cannot be defeated. It can only be known: its memory kept rather than erased, its promised reward tested against what it has actually delivered, its cost accepted in full, without denial and without punishing yourself in place of repair.",
       "The current does not decide where the boat goes. It only decides how fast the boat moves once someone stops rowing."
     ],
@@ -674,7 +745,7 @@ var LAWS = [
     runeLine:"Discernment is not caution, and it is not delay for its own sake. It is looking directly at a threshold before crossing it, and acting anyway, with open eyes, when acting is right.",
     teaching:[
       "Some things, once done, belong to the past absolutely. The word spoken cannot be unspoken. The struck match cannot be unstruck.",
-      "Most suffering born of this law is not the suffering of the act itself — it is the suffering of having acted without seeing clearly first, and discovering only afterward what the act has closed off forever.",
+      "Most suffering born of this law is not the suffering of the act itself. It is the suffering of having acted without seeing clearly first, and discovering only afterward what the act has closed off forever.",
       "There is no undoing what has already been done. There is only the sharpening of what comes next."
     ],
     q:{
@@ -699,7 +770,7 @@ var LAWS = [
     runeLine:"Reality, perception, interpretation, and meaning are four separate steps, not one event. The distance between reality and meaning is where suffering is made.",
     teaching:[
       "Between what happens and how it hurts stands an interpreter, and the interpreter is rarely neutral. The mind edits reality before you have any say in the edit.",
-      "This is not concerned with becoming positive. It is concerned with becoming accurate — pausing between the event and the story you have already started telling about it.",
+      "This is not concerned with becoming positive. It is concerned with becoming accurate: pausing between the event and the story you have already started telling about it.",
       "Wisdom is not seeing everything. Wisdom is seeing your own distortions before they become your destiny."
     ],
     q:{
@@ -728,7 +799,7 @@ var LAWS = [
       "The circle was always going to close. What you practice is how you meet that."
     ],
     q:{
-      text:"You are going to die. So is everyone you love. When this fact is genuinely present to you — not as abstraction but as felt reality — what does it produce in you?",
+      text:"You are going to die. So is everyone you love. When this fact is genuinely present to you, not as abstraction but as felt reality, what does it produce in you?",
       sub:"Not your considered philosophy of death, but what occurs in the body when the fact is real.",
       options:[
         {l:"A",text:"Panic, avoidance, an immediate and urgent need to redirect attention elsewhere.",score:1},
@@ -744,7 +815,7 @@ var LAWS = [
 var ACTS = [
   { n:1, roman:"I", name:"The Descent", tag:"Before you can be reoriented, you must first admit what pain actually is." },
   { n:2, roman:"II", name:"The Trials", tag:"Time will erode you, urges will pull at you, and some doors close forever. Meet them with open eyes." },
-  { n:3, roman:"III", name:"The Revelation", tag:"See clearly. Face the end. Then rise — reoriented." }
+  { n:3, roman:"III", name:"The Revelation", tag:"See clearly. Face the end. Then rise, reoriented." }
 ];
 
 var ARCHETYPES = [
@@ -853,11 +924,23 @@ var portalIndex = 0;
 var runes = [];
 var currentPhase = 'quiz';
 
-function showScreen(id){
+function applyScreen(id){
   var els = document.querySelectorAll('.screen');
   for(var i=0;i<els.length;i++){ els[i].classList.remove('active'); }
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
+}
+function showScreen(id, instant){
+  if(REDUCED_MOTION || instant){ applyScreen(id); return; }
+  var iris = document.getElementById('iris');
+  iris.classList.remove('opening');
+  iris.classList.add('closing');
+  setTimeout(function(){
+    applyScreen(id);
+    iris.classList.remove('closing');
+    void iris.offsetWidth;
+    iris.classList.add('opening');
+  }, 280);
 }
 
 /* ============================================================
@@ -1021,9 +1104,46 @@ function updateHUD(){
 
 document.getElementById('hud-mute').addEventListener('click', function(){
   muted = !muted;
+  if(muted) stopSpeech();
   this.textContent = muted ? '🔇' : '🔊';
   this.title = muted ? 'Unmute' : 'Mute';
 });
+
+/* ============================================================
+   RIPPLE + PORTAL TILT — click feedback and pointer parallax
+   ============================================================ */
+document.addEventListener('click', function(e){
+  if(REDUCED_MOTION) return;
+  var target = e.target.closest && e.target.closest('.btn, .opt, .hud-mute');
+  if(!target) return;
+  var rect = target.getBoundingClientRect();
+  var size = Math.max(rect.width, rect.height);
+  var span = document.createElement('span');
+  span.className = 'ripple';
+  span.style.width = span.style.height = size+'px';
+  span.style.left = (e.clientX - rect.left - size/2)+'px';
+  span.style.top = (e.clientY - rect.top - size/2)+'px';
+  target.appendChild(span);
+  setTimeout(function(){ if(span.parentNode) span.parentNode.removeChild(span); }, 650);
+});
+
+document.addEventListener('pointermove', function(e){
+  if(REDUCED_MOTION) return;
+  var frame = document.querySelector('#screen-portal.active .portal-frame');
+  if(!frame) return;
+  var rect = frame.getBoundingClientRect();
+  var dx = (e.clientX - (rect.left + rect.width/2)) / rect.width;
+  var dy = (e.clientY - (rect.top + rect.height/2)) / rect.height;
+  var rotY = Math.max(-1, Math.min(1, dx)) * 12;
+  var rotX = Math.max(-1, Math.min(1, dy)) * -12;
+  frame.style.transform = 'perspective(600px) rotateX('+rotX.toFixed(2)+'deg) rotateY('+rotY.toFixed(2)+'deg)';
+});
+function resetPortalTilt(){
+  var frame = document.querySelector('#screen-portal.active .portal-frame');
+  if(frame) frame.style.transform = '';
+}
+document.addEventListener('pointerup', resetPortalTilt);
+document.addEventListener('pointerleave', resetPortalTilt);
 
 /* ============================================================
    ACT INTRO
@@ -1081,7 +1201,7 @@ function showYourStand(law, idx){
       '<div class="opt chosen" style="opacity:1;animation:none;cursor:default">'+
         '<span class="opt-l">'+chosenOpt.l+'</span><span>'+escapeHtml(chosenOpt.text)+'</span>'+
       '</div>'+
-      '<p class="rune-caption" style="margin-top:1rem">That is what you answered before you ever saw this law’s name — a score of '+score+' of 5.</p>'+
+      '<p class="rune-caption" style="margin-top:1rem">That is what you answered before you ever saw this law’s name: a score of '+score+' of 5.</p>'+
       '<div style="text-align:center;margin-top:1.8rem">'+
         '<button class="btn" id="btn-claim-rune">Claim the Rune →</button>'+
       '</div>'+
@@ -1146,7 +1266,7 @@ var PLEDGE_LINES = {
 
 function buildSummaryText(total, arch, pledgeSentence){
   var lines = [];
-  lines.push('EIGHT LAWS OF PAIN — MY REORIENTATION');
+  lines.push('EIGHT LAWS OF PAIN: MY REORIENTATION');
   lines.push('');
   lines.push('Archetype: ' + arch.name + ' (' + arch.orient + ')');
   lines.push('Total Score: ' + total + ' / 40');
@@ -1181,7 +1301,7 @@ function showResults(){
   }).join('');
 
   var html =
-    '<p class="eyebrow" style="margin-bottom:1.2rem">The Final Threshold — You Have Been Reoriented</p>'+
+    '<p class="eyebrow" style="margin-bottom:1.2rem">The Final Threshold: You Have Been Reoriented</p>'+
     '<div class="r-hero">'+
       '<div class="r-symbol">'+archetypeSvg(arch.id, 96)+'</div>'+
       '<div><h2 class="r-name">'+arch.name+'</h2><p class="r-tagline">"'+arch.tagline+'"</p></div>'+
@@ -1225,6 +1345,7 @@ function restart(){
   qIdx = 0; answers = new Array(8).fill(null); runes = []; portalIndex = 0;
   currentPhase = 'quiz';
   clearState();
+  stopSpeech();
   document.getElementById('progress-bar').classList.remove('show');
   document.getElementById('progress-fill').style.width = '0%';
   document.getElementById('hud').classList.remove('show');
