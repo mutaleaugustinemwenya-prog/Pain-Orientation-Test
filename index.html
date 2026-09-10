@@ -135,9 +135,6 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 .hud-meter{display:flex;align-items:center;gap:.5rem;min-width:120px}
 .hud-meter-track{width:90px;height:3px;background:var(--fog)}
 .hud-meter-fill{height:100%;background:linear-gradient(90deg,var(--accent-d),var(--accent));transition:width .8s ease}
-.hud-mute{position:relative;overflow:hidden;font-size:.85rem;color:var(--ghost);border:1px solid var(--fog);width:26px;height:26px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.hud-mute:hover{color:var(--bone);border-color:var(--ghost)}
 
 /* ---------- Act intro ---------- */
 #screen-actintro{text-align:center}
@@ -282,7 +279,6 @@ a.btn{text-decoration:none;display:inline-block}
     <span class="eyebrow" style="font-size:.55rem">Orientation</span>
     <div class="hud-meter-track"><div class="hud-meter-fill" id="hud-meter-fill" style="width:0%"></div></div>
   </div>
-  <button class="hud-mute" id="hud-mute" title="Mute">🔊</button>
 </div>
 
 <div id="root">
@@ -1052,18 +1048,12 @@ function updateHUD(){
   document.getElementById('hud-meter-fill').style.width = pct + '%';
 }
 
-document.getElementById('hud-mute').addEventListener('click', function(){
-  muted = !muted;
-  this.textContent = muted ? '🔇' : '🔊';
-  this.title = muted ? 'Unmute' : 'Mute';
-});
-
 /* ============================================================
    RIPPLE + PORTAL TILT — click feedback and pointer parallax
    ============================================================ */
 document.addEventListener('click', function(e){
   if(REDUCED_MOTION) return;
-  var target = e.target.closest && e.target.closest('.btn, .opt, .hud-mute');
+  var target = e.target.closest && e.target.closest('.btn, .opt');
   if(!target) return;
   var rect = target.getBoundingClientRect();
   var size = Math.max(rect.width, rect.height);
