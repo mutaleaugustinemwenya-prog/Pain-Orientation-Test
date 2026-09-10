@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eight Laws of Pain</title>
+<title>Act IV: The Myth</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Spectral:wght@300;400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -260,6 +260,24 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 .resume-banner p.desc{color:var(--ghost);font-size:.92rem;margin-bottom:1rem}
 .btn-sm{padding:.7rem 1.6rem;font-size:.64rem}
 
+/* ---------- Premium hub / resolve ---------- */
+.arch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem;margin-top:2rem}
+.arch-card{
+  position:relative;overflow:hidden;text-align:left;
+  display:flex;flex-direction:column;gap:.6rem;
+  background:var(--ash);border:1px solid var(--fog);color:var(--bone);
+  padding:1.2rem 1.3rem;transition:border-color .2s,background .2s,transform .15s;
+}
+.arch-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.arch-card-name{font-family:'Cinzel',serif;font-size:.92rem;letter-spacing:.04em;color:var(--bone)}
+.arch-card-tag{font-style:italic;color:var(--ghost);font-size:.82rem;line-height:1.5}
+.hub-actions{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.mud-domain{margin-bottom:2.4rem}
+.mud-text{color:var(--bone);text-align:justify;hyphens:auto;line-height:1.85;margin-bottom:.7rem;font-family:'Spectral','EB Garamond',Georgia,serif;font-weight:300}
+.mud-shift{color:var(--ghost);font-style:italic}
+.mud-shift-label{color:var(--accent);font-style:normal;font-family:'Cinzel',serif;font-size:.62rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;margin-right:.55rem;display:inline-block}
+.mute-btn{position:fixed;top:1rem;right:1rem;z-index:50}
+a.btn, a.btn-ghost{text-decoration:none;display:inline-block}
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce){
   *, *::before, *::after{
@@ -277,101 +295,49 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 <div class="vignette"></div>
 <div class="scanlines"></div>
 <div id="iris"></div>
-<div id="progress-bar"><div id="progress-fill"></div></div>
-
-<div id="hud">
-  <div class="hud-act mono" id="hud-act"></div>
-  <div class="hud-dots" id="hud-dots"></div>
-  <div class="hud-meter">
-    <span class="eyebrow" style="font-size:.55rem">Orientation</span>
-    <div class="hud-meter-track"><div class="hud-meter-fill" id="hud-meter-fill" style="width:0%"></div></div>
-  </div>
-  <button class="hud-mute" id="hud-mute" title="Mute">🔊</button>
-</div>
+<button class="hud-mute mute-btn" id="hud-mute" title="Mute">🔊</button>
 
 <div id="root">
 
-<section class="screen active title-glow" id="screen-cover">
+<section class="screen active title-glow" id="screen-resolve">
   <div class="wrap">
-    <p class="eyebrow" style="margin-bottom:1.8rem">A Psychological Assessment, Then a Journey</p>
-    <span class="display title-main">Pain Orientation</span>
-    <span class="title-sub">Test</span>
-    <p class="title-tag">The Eight Laws of Pain</p>
+    <p class="eyebrow" style="margin-bottom:1.8rem">Act IV: The Myth</p>
+    <span class="display title-main" style="font-size:clamp(1.9rem,6vw,3.2rem)">Which Shape Is Yours?</span>
     <p class="title-desc">
-      Pain is not the exception to a well-constructed life. It is a structural feature of any life
-      lived with genuine engagement. Answer eight questions honestly. There are no correct responses,
-      only honest ones. Then walk the eight portals built from the laws themselves, and watch your own
-      answers reflected back inside the doors built to hold them.
+      This layer continues directly from your result in the Pain Orientation Test. If you already have
+      a result, choose it below. If you have not taken the test yet, take it first, it is free, and the
+      result will bring you straight back here.
     </p>
-    <button class="btn" id="btn-begin-test">Begin the Assessment</button>
-    <div class="law-preview" id="law-preview"></div>
+    <div id="arch-chooser" class="arch-grid"></div>
+    <p style="margin-top:2.2rem;text-align:center"><a class="btn-ghost" href="../index.html">&larr; Take the Free Test First</a></p>
   </div>
 </section>
 
-<section class="screen" id="screen-question">
-  <div class="q-wrap">
-    <p class="q-law" id="q-law"></p>
-    <div class="q-meta">
-      <span class="eyebrow mono" id="q-counter"></span>
-      <div class="dots" id="q-dots"></div>
+<section class="screen title-glow" id="screen-hub">
+  <div class="wrap" style="text-align:center">
+    <div class="saga-icon" id="hub-icon"></div>
+    <p class="eyebrow" style="margin-bottom:.6rem">Act IV: The Myth</p>
+    <h2 class="saga-title" id="hub-name"></h2>
+    <p class="r-tagline" id="hub-tagline" style="margin-bottom:2.6rem"></p>
+    <div class="hub-actions">
+      <button class="btn" id="btn-enter-myth">Enter the Myth</button>
+      <button class="btn" id="btn-enter-mud">The Archetypes in the Mud</button>
     </div>
-    <h2 class="trial-q" id="q-text"></h2>
-    <p class="trial-sub" id="q-sub"></p>
-    <div id="q-options"></div>
-    <div class="q-nav">
-      <button class="btn-ghost" id="btn-back">← Back</button>
-      <button class="btn-next" id="btn-next">Continue →</button>
+    <p style="margin-top:1.8rem"><button class="btn-ghost" id="btn-hub-back">Not you? Choose again</button></p>
+  </div>
+</section>
+
+<section class="screen" id="screen-mud">
+  <div class="wrap wrap-wide">
+    <div class="saga-icon-sm" id="mud-icon"></div>
+    <p class="eyebrow" style="text-align:center;margin-bottom:.4rem" id="mud-eyebrow">The Archetypes in the Mud</p>
+    <h2 class="portal-title" id="mud-name" style="margin-bottom:.3rem"></h2>
+    <p class="portal-sub" style="margin-bottom:2.6rem">How this orientation operates under real, ordinary conditions: relationships, status, office politics, wealth, and the group.</p>
+    <div id="mud-body"></div>
+    <div class="result-actions" style="margin-top:1rem">
+      <button class="btn" id="btn-mud-back">Back to the Hub</button>
     </div>
   </div>
-</section>
-
-<section class="screen" id="screen-calc">
-  <div class="spinner"></div>
-  <p class="eyebrow" id="calc-eyebrow">Compiling your orientation</p>
-  <p class="calc-msg" id="calc-msg"></p>
-</section>
-
-<section class="screen title-glow" id="screen-journey-title">
-  <div class="wrap">
-    <p class="eyebrow" style="margin-bottom:1.8rem">Your Pattern Is Mapped</p>
-    <span class="display title-main" style="font-size:clamp(1.9rem,6vw,3.4rem)">Now, the Portals</span>
-    <p class="title-tag">Eight doors, each built from a law your answers already confirmed.</p>
-    <p class="title-desc">
-      You have just told the truth about yourself in eight sentences chosen from a list. What follows
-      will tell you why. Walk through each law in turn, across three acts, and watch your own answer
-      reflected back to you inside the portal built to hold it.
-    </p>
-    <button class="btn" id="btn-begin-journey">Begin the Descent</button>
-  </div>
-</section>
-
-<section class="screen" id="screen-actintro">
-  <div class="wrap">
-    <div class="act-roman" id="act-roman"></div>
-    <div class="act-name" id="act-name"></div>
-    <p class="act-tag" id="act-tag"></p>
-    <div class="act-laws" id="act-laws"></div>
-    <button class="btn" id="btn-enter-act"></button>
-  </div>
-</section>
-
-<section class="screen" id="screen-portal">
-  <div class="wrap">
-    <div class="portal-frame">
-      <div class="portal-ring r3"></div>
-      <div class="portal-ring r2"></div>
-      <div class="portal-ring"></div>
-      <div class="portal-core" id="portal-core"></div>
-    </div>
-    <div class="portal-num mono" id="portal-num"></div>
-    <h2 class="portal-title" id="portal-title"></h2>
-    <p class="portal-sub" id="portal-sub"></p>
-    <div id="portal-body"></div>
-  </div>
-</section>
-
-<section class="screen" id="screen-results">
-  <div class="wrap wrap-wide" id="results-body"></div>
 </section>
 
 <section class="screen" id="screen-saga-intro">
@@ -400,7 +366,8 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
     <p class="saga-epigraph" id="saga-epigraph"></p>
     <div class="result-actions">
       <button class="btn" id="btn-copy-saga">Copy My Myth</button>
-      <button class="btn" id="btn-saga-restart">Begin Again</button>
+      <button class="btn" id="btn-mud-from-close">The Archetypes in the Mud</button>
+      <button class="btn" id="btn-saga-restart">Return to the Hub</button>
     </div>
   </div>
 </section>
@@ -453,31 +420,7 @@ function escapeHtml(s){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
   });
 }
-
 var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-
-/* ============================================================
-   PERSISTENCE — resume a half-finished assessment or journey
-   ============================================================ */
-var STORAGE_KEY = 'eight-laws-pain-v1';
-function saveState(){
-  try{
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      phase: currentPhase,
-      qIdx: qIdx, answers: answers,
-      portalIndex: portalIndex, runes: runes
-    }));
-  }catch(e){}
-}
-function loadState(){
-  try{
-    var raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : null;
-  }catch(e){ return null; }
-}
-function clearState(){
-  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
-}
 
 /* ============================================================
    CLIPBOARD — copy the final pledge/result as plain text
@@ -534,9 +477,6 @@ function emberField(accent){
   }
 }
 
-/* ============================================================
-   TYPEWRITER — reveals text progressively, click-to-skip
-   ============================================================ */
 function runTypewriter(container, lines, speed, onDone){
   if(REDUCED_MOTION){
     var full = '';
@@ -588,221 +528,6 @@ function runTypewriter(container, lines, speed, onDone){
   timer = setTimeout(tick, speed);
 }
 
-/* ============================================================
-   DATA — the eight laws, in three-act order.
-   Each law's `q` is used twice: once as a quiz question (Pain
-   Orientation Test phase), once as the reflection shown back to
-   the reader inside that law's portal (journey phase).
-   ============================================================ */
-var LAWS = [
-  {
-    id:"malevolence", numeral:"I", act:1,
-    name:"The Law of Malevolence",
-    tagline:"There is a currency of harm, and you have already spent some of it.",
-    accent:"#b4432e",
-    glyph:"mask",
-    rune:"ADMIT",
-    runeLine:"To admit the capacity for harm is not confession for punishment. It is the precondition for responsibility.",
-    teaching:[
-      "The first portal does not ask what has been done to you. It asks what lives in you, undone, unused, or already spent.",
-      "Every psyche carries the same currency: the capacity to wound, to dominate, to look away while someone else pays the cost. You did not choose to be built this way. You are, however, responsible for what you do with it.",
-      "This is not an accusation. It is an inventory. What you can name, you can no longer be ambushed by."
-    ],
-    q:{
-      text:"When life delivers deliberate-seeming cruelty, illness arriving at the worst moment, loss appearing without invitation, what is your most honest first response?",
-      sub:"Consider your instinctive reaction, not the response you wish you had.",
-      options:[
-        {l:"A",text:"I feel betrayed. The universe owes me better than this.",score:1},
-        {l:"B",text:"I withdraw quickly. Non-engagement is the surest form of protection.",score:2},
-        {l:"C",text:"I grow angry and push through regardless. Rage is, at minimum, motion.",score:3},
-        {l:"D",text:"I search for meaning within it, even when meaning does not readily appear.",score:4},
-        {l:"E",text:"I hold it without requiring resolution. Cruelty is real and I remain present.",score:5}
-      ]
-    }
-  },
-  {
-    id:"vulnerability", numeral:"II", act:1,
-    name:"The Law of Vulnerability",
-    tagline:"The crack is not the damage. It is the design.",
-    accent:"#6a4d9c",
-    glyph:"crack",
-    rune:"EXPOSE",
-    runeLine:"What you can name, you can no longer be ambushed by. But what you refuse to show, you cannot ever mend. Kintsugi does not hide the break. It gilds it.",
-    teaching:[
-      "Somewhere behind this door is the place you have been most careful to guard: not because it is shameful, but because it is tender.",
-      "Armor feels like protection. It has a price all the same: the things unsaid, untried, unbecome, because being guarded felt safer than being seen.",
-      "The gold in kintsugi is never hidden. It is the break, repaired, made the most beautiful part of the vessel. Your confidence is on the other side of what you have been hiding."
-    ],
-    q:{
-      text:"Someone you trust witnesses a moment of genuine weakness in you: tears, fear, or undisguised need. What occurs within you in that instant?",
-      sub:"Not what you say aloud, but what moves through you before words form.",
-      options:[
-        {l:"A",text:"Shame so acute that I immediately begin constructing reasons the moment did not happen.",score:1},
-        {l:"B",text:"I redirect with humour or a subject-change, and later punish myself privately.",score:2},
-        {l:"C",text:"Discomfort, followed by acceptance. Being seen is a cost I occasionally pay.",score:3},
-        {l:"D",text:"Mild exposure, quickly metabolised. Authentic presence is preferable to performed strength.",score:4},
-        {l:"E",text:"Relief. Shared vulnerability is the closest approximation of safety I have found.",score:5}
-      ]
-    }
-  },
-  {
-    id:"unsatisfactoriness", numeral:"III", act:1,
-    name:"The Law of Unsatisfactoriness",
-    tagline:"Nothing ever feels quite like enough. Not the win, not the rest, not the reassurance.",
-    accent:"#8f8465",
-    glyph:"ripple",
-    rune:"ENOUGH",
-    runeLine:"The ache for more is not a personal failure. It is the baseline hum of a restless mind, and presence is the one place that hum cannot reach.",
-    teaching:[
-      "Every craving satisfied opens a new one. Every arrival reveals a further destination. This is not a modern complaint; it is the oldest observation about attention there is.",
-      "The mind is built to want, and wanting does not stop simply because it gets what it asked for.",
-      "Presence does not end the craving. It only stops asking the craving to be the answer. That reversal, presence first, peace second, is the whole of this portal's teaching."
-    ],
-    q:{
-      text:"You attain something you pursued with considerable effort. Within weeks, the satisfaction has drained away entirely. How do you account for this?",
-      sub:"The goal was reached. The feeling did not persist.",
-      options:[
-        {l:"A",text:"I chose the wrong objective. The next one will finally prove sufficient.",score:1},
-        {l:"B",text:"I feel deceived by the process. I continue working but suspect it is without purpose.",score:2},
-        {l:"C",text:"I have begun to recognise the pattern, yet I continue pursuing the next thing regardless.",score:3},
-        {l:"D",text:"I accept that satisfaction is transient. I pursue for the intrinsic value of the doing.",score:4},
-        {l:"E",text:"The emptiness is instructive. It redirects attention toward what cannot be acquired.",score:5}
-      ]
-    }
-  },
-  {
-    id:"decay", numeral:"IV", act:2,
-    name:"The Law of Decay",
-    tagline:"What you love is already leaving. Slowly enough to argue with. Not slowly enough to stop.",
-    accent:"#9c6a2e",
-    glyph:"hourglass",
-    rune:"TEND",
-    runeLine:"Two disciplines meet decay honestly: maranasati, which rehearses the ending until it loses its power to ambush you, and the deliberate strengthening of the body, which answers entropy not with denial but with resistance.",
-    teaching:[
-      "Nothing you love holds its shape. The body erodes a little each year. Bonds loosen. Empires that once seemed permanent are already, quietly, becoming rubble.",
-      "There are only two honest replies to this. The first is maranasati, meeting the fact of ending directly and often, breath by breath, until familiarity dulls its ambush. The second is strength: the deliberate, physical practice of building capacity against entropy, not as denial of decay but as a form of care for what is still here.",
-      "Denial argues with the erosion. Tending it, through meditation on impermanence and through the discipline of the body, meets it honestly, and loves what remains more precisely because the clock is visible."
-    ],
-    q:{
-      text:"You observe something you love in gradual decline: a relationship, a body, a season of life that is diminishing. What is your response?",
-      sub:"The erosion is slow and visible. You can see it as it happens.",
-      options:[
-        {l:"A",text:"I deny it for as long as denial remains viable, and renegotiate with reality later.",score:1},
-        {l:"B",text:"I accelerate. I either repair it quickly or conclude it before grief becomes unavoidable.",score:2},
-        {l:"C",text:"I remain, conflicted, attempting to arrest something that cannot be arrested.",score:3},
-        {l:"D",text:"I tend to what remains with greater care precisely because I know the time is finite.",score:4},
-        {l:"E",text:"Decay is intrinsic to what I love. That recognition makes the loving more deliberate.",score:5}
-      ]
-    }
-  },
-  {
-    id:"impulse", numeral:"V", act:2,
-    name:"The Law of Impulse",
-    tagline:"Something in you moved before you chose. It always will.",
-    accent:"#a13a2e",
-    glyph:"pulse",
-    rune:"RIDE",
-    runeLine:"Three integrations meet the current: keep the memory of what it has done, detach from the reward it advertises, and radically accept whatever bill follows.",
-    teaching:[
-      "Long before an argument could be made to you, something in you had already moved: a current older than thought, older than the self that claims to be steering.",
-      "It cannot be defeated. It can only be known: its memory kept rather than erased, its promised reward tested against what it has actually delivered, its cost accepted in full, without denial and without punishing yourself in place of repair.",
-      "The current does not decide where the boat goes. It only decides how fast the boat moves once someone stops rowing."
-    ],
-    q:{
-      text:"Pain generates an impulse toward motion: toward food, distraction, intoxication, departure, or disappearance. When that pull arrives, what governs your response?",
-      sub:"This concerns the moment before action, not the response you would prefer to have.",
-      options:[
-        {l:"A",text:"The impulse prevails. Discomfort is a problem I address without delay.",score:1},
-        {l:"B",text:"I substitute one impulse for a more acceptable one. The flight continues by other means.",score:2},
-        {l:"C",text:"I register the impulse and sometimes pause. At other times I do not pause.",score:3},
-        {l:"D",text:"I can tolerate the discomfort, though it requires effort. A gap between impulse and action exists.",score:4},
-        {l:"E",text:"The impulse is information. I observe it arise and decide deliberately whether to act.",score:5}
-      ]
-    }
-  },
-  {
-    id:"irreversibility", numeral:"VI", act:2,
-    name:"The Law of Irreversibility",
-    tagline:"The sand does not return to the top of the glass.",
-    accent:"#7a6a45",
-    glyph:"gate",
-    rune:"DISCERN",
-    runeLine:"Discernment is not caution, and it is not delay for its own sake. It is looking directly at a threshold before crossing it, and acting anyway, with open eyes, when acting is right.",
-    teaching:[
-      "Some things, once done, belong to the past absolutely. The word spoken cannot be unspoken. The struck match cannot be unstruck.",
-      "Most suffering born of this law is not the suffering of the act itself. It is the suffering of having acted without seeing clearly first, and discovering only afterward what the act has closed off forever.",
-      "There is no undoing what has already been done. There is only the sharpening of what comes next."
-    ],
-    q:{
-      text:"Something cannot be undone. A particular door has closed permanently. At what cost do you carry this fact, and through what medium does that cost express itself?",
-      sub:"Bring to mind a specific door that has already shut behind you.",
-      options:[
-        {l:"A",text:"I rehearse the alternative timeline with considerable persistence. The door should still be open.",score:1},
-        {l:"B",text:"I occupy myself so thoroughly that the closed door remains at the periphery of awareness.",score:2},
-        {l:"C",text:"I grieve it properly, though I return to rehearsal more frequently than I would wish.",score:3},
-        {l:"D",text:"I acknowledge the loss, honour it with appropriate grief, and allow it to become history.",score:4},
-        {l:"E",text:"The closed door brings clarity about the next one. Irreversibility is a form of orientation.",score:5}
-      ]
-    }
-  },
-  {
-    id:"misperception", numeral:"VII", act:3,
-    name:"The Law of Misperception",
-    tagline:"We do not suffer only because reality is painful. We suffer because reality passes through a biased mind.",
-    accent:"#2f4a72",
-    glyph:"eye",
-    rune:"SEE",
-    runeLine:"Reality, perception, interpretation, and meaning are four separate steps, not one event. The distance between reality and meaning is where suffering is made.",
-    teaching:[
-      "Between what happens and how it hurts stands an interpreter, and the interpreter is rarely neutral. The mind edits reality before you have any say in the edit.",
-      "This is not concerned with becoming positive. It is concerned with becoming accurate: pausing between the event and the story you have already started telling about it.",
-      "Wisdom is not seeing everything. Wisdom is seeing your own distortions before they become your destiny."
-    ],
-    q:{
-      text:"You discover that a pain you have been carrying was constructed, at least in part, upon a narrative of your own making. What do you do with that discovery?",
-      sub:"The suffering was genuine. The story that sustained it was partially invented.",
-      options:[
-        {l:"A",text:"I defend the narrative. If I revise it, the validity of everything I felt becomes uncertain.",score:1},
-        {l:"B",text:"I experience embarrassment and quietly set the entire episode aside without examination.",score:2},
-        {l:"C",text:"I accept the revision with some relief and some residual resistance to what it implies.",score:3},
-        {l:"D",text:"I welcome it. A more accurate understanding, even a painful one, is worth possessing.",score:4},
-        {l:"E",text:"My interpretive frameworks are always provisional. I anticipate revision and receive it as growth.",score:5}
-      ]
-    }
-  },
-  {
-    id:"mortality", numeral:"VIII", act:3,
-    name:"The Law of Mortality",
-    tagline:"Death is the only subject the mind returns to without ever closing the file.",
-    accent:"#3d4b52",
-    glyph:"circle",
-    rune:"GROUND",
-    runeLine:"Amor fati, memento mori, and maranasati are three doors into the same room: not resolution, but a steadier way of holding what will not resolve.",
-    teaching:[
-      "You are going to die. So is everyone you love. This workbook does not attempt to close that file. It only offers three ways of holding the question so it stops running your life from the dark.",
-      "Amor fati: want your fate exactly as it is, ending included. Memento mori: remember it often and plainly until it stops feeling like an intrusion. Maranasati: sit with it directly, breath by breath, until familiarity becomes a form of strength.",
-      "The circle was always going to close. What you practice is how you meet that."
-    ],
-    q:{
-      text:"You are going to die. So is everyone you love. When this fact is genuinely present to you, not as abstraction but as felt reality, what does it produce in you?",
-      sub:"Not your considered philosophy of death, but what occurs in the body when the fact is real.",
-      options:[
-        {l:"A",text:"Panic, avoidance, an immediate and urgent need to redirect attention elsewhere.",score:1},
-        {l:"B",text:"A persistent low register of dread that I manage by not confronting it directly.",score:2},
-        {l:"C",text:"Grief at certain moments, peace at others. I remain in the process of working this through.",score:3},
-        {l:"D",text:"Clarity about what matters. Death is the condition that makes genuine priorities possible.",score:4},
-        {l:"E",text:"Groundedness. Mortality is not the problem to be solved. It is the context within which I live.",score:5}
-      ]
-    }
-  }
-];
-
-var ACTS = [
-  { n:1, roman:"I", name:"The Descent", tag:"Before you can be reoriented, you must first admit what pain actually is." },
-  { n:2, roman:"II", name:"The Trials", tag:"Time will erode you, urges will pull at you, and some doors close forever. Meet them with open eyes." },
-  { n:3, roman:"III", name:"The Revelation", tag:"See clearly. Face the end. Then rise, reoriented." }
-];
-
 var ARCHETYPES = [
   {
     id:"avoider", name:"The Avoider", range:[8,14], orient:"Avoidance",
@@ -836,13 +561,6 @@ var ARCHETYPES = [
   }
 ];
 
-function getArchetype(total){
-  for(var i=0;i<ARCHETYPES.length;i++){
-    var a = ARCHETYPES[i];
-    if(total >= a.range[0] && total <= a.range[1]) return a;
-  }
-  return ARCHETYPES[2];
-}
 
 /* ============================================================
    SAGAS — Act IV: The Myth. A Campbellian monomyth, one per
@@ -1037,24 +755,6 @@ var SAGAS = {
   }
 };
 
-/* ============================================================
-   ICONS — small inline SVG glyphs, one per portal + per archetype
-   ============================================================ */
-function portalGlyphSvg(type, color, size){
-  size = size || 46;
-  var paths = {
-    mask: '<circle cx="23" cy="23" r="16" fill="none" stroke="'+color+'" stroke-width="1.4"/><path d="M23 7 L23 39" stroke="'+color+'" stroke-width="1.2"/><circle cx="17" cy="20" r="2" fill="'+color+'"/><circle cx="29" cy="26" r="2" fill="none" stroke="'+color+'" stroke-width="1.2"/>',
-    crack: '<circle cx="23" cy="23" r="16" fill="none" stroke="'+color+'" stroke-width="1.4"/><path d="M23 8 L19 20 L26 24 L18 38" fill="none" stroke="'+color+'" stroke-width="1.3"/>',
-    ripple: '<circle cx="23" cy="23" r="16" fill="none" stroke="'+color+'" stroke-width="1" opacity=".5"/><circle cx="23" cy="23" r="10" fill="none" stroke="'+color+'" stroke-width="1.2" opacity=".8"/><circle cx="23" cy="23" r="3" fill="'+color+'"/>',
-    hourglass: '<path d="M12 8 H34 L23 23 L34 38 H12 L23 23 Z" fill="none" stroke="'+color+'" stroke-width="1.3"/><path d="M16 12 H30" stroke="'+color+'" stroke-width="1"/><path d="M16 34 H30" stroke="'+color+'" stroke-width="1"/>',
-    pulse: '<path d="M6 23 H16 L20 12 L26 34 L30 23 H40" fill="none" stroke="'+color+'" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>',
-    gate: '<rect x="10" y="10" width="26" height="28" fill="none" stroke="'+color+'" stroke-width="1.3"/><path d="M23 10 V38" stroke="'+color+'" stroke-width="1"/><circle cx="19" cy="24" r="1.6" fill="'+color+'"/>',
-    eye: '<path d="M6 23 Q23 9 40 23 Q23 37 6 23 Z" fill="none" stroke="'+color+'" stroke-width="1.3"/><circle cx="23" cy="23" r="6" fill="none" stroke="'+color+'" stroke-width="1.2"/><circle cx="23" cy="23" r="2.2" fill="'+color+'"/>',
-    circle: '<circle cx="23" cy="23" r="16" fill="none" stroke="'+color+'" stroke-width="1.4"/><circle cx="23" cy="23" r="1.6" fill="'+color+'"/>'
-  };
-  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 46 46">'+(paths[type]||'')+'</svg>';
-}
-
 function archetypeSvg(id, size){
   var g="#c9973a", gd="#7a5a1a", b="#f0ead6", a="#1a1608", gh="#9a8f72", bk="#080705";
   var c = size/2, r = size*0.46;
@@ -1093,15 +793,6 @@ function archetypeSvg(id, size){
   return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'">'+body+'</svg>';
 }
 
-/* ============================================================
-   STATE
-   ============================================================ */
-var qIdx = 0;
-var answers = new Array(8).fill(null);
-var portalIndex = 0;
-var runes = [];
-var currentPhase = 'quiz';
-
 function applyScreen(id){
   var els = document.querySelectorAll('.screen');
   for(var i=0;i<els.length;i++){ els[i].classList.remove('active'); }
@@ -1122,172 +813,7 @@ function showScreen(id, instant){
 }
 
 /* ============================================================
-   COVER
-   ============================================================ */
-(function initCover(){
-  var preview = document.getElementById('law-preview');
-  LAWS.forEach(function(l){
-    var span = document.createElement('span');
-    span.className = 'law-chip';
-    span.textContent = l.numeral + ' · ' + l.name.replace('The Law of ','');
-    preview.appendChild(span);
-  });
-})();
-document.getElementById('btn-begin-test').addEventListener('click', startTest);
-
-/* ============================================================
-   QUIZ (Pain Orientation Test phase)
-   ============================================================ */
-function startTest(){
-  qIdx = 0; answers = new Array(8).fill(null);
-  currentPhase = 'quiz';
-  document.getElementById('progress-bar').classList.add('show');
-  updateProgress();
-  showScreen('screen-question');
-  renderQuestion();
-  saveState();
-}
-
-function renderQuestion(){
-  var law = LAWS[qIdx];
-  document.getElementById('q-law').textContent = law.name.toUpperCase();
-  document.getElementById('q-counter').textContent = (qIdx+1) + ' of ' + LAWS.length;
-  document.getElementById('q-text').textContent = law.q.text;
-  document.getElementById('q-sub').textContent = law.q.sub;
-
-  var dotsEl = document.getElementById('q-dots');
-  dotsEl.innerHTML = '';
-  LAWS.forEach(function(l, i){
-    var d = document.createElement('div');
-    d.className = 'dot' + (i < qIdx ? ' answered' : i === qIdx ? ' current' : '');
-    dotsEl.appendChild(d);
-  });
-
-  var optsEl = document.getElementById('q-options');
-  optsEl.innerHTML = '';
-  law.q.options.forEach(function(o){
-    var b = document.createElement('button');
-    b.className = 'opt' + (answers[qIdx]===o.score ? ' chosen' : '');
-    b.style.opacity = '1';
-    b.style.animation = 'none';
-    b.innerHTML = '<span class="opt-l">'+o.l+'</span><span>'+escapeHtml(o.text)+'</span>';
-    b.addEventListener('click', function(){ selectAnswer(o.score); });
-    optsEl.appendChild(b);
-  });
-
-  document.getElementById('btn-back').disabled = qIdx===0;
-  refreshNext();
-}
-
-function selectAnswer(score){
-  answers[qIdx] = score;
-  SFX.select();
-  renderQuestion();
-  updateProgress();
-  saveState();
-}
-
-function refreshNext(){
-  var btn = document.getElementById('btn-next');
-  var ready = answers[qIdx] !== null;
-  btn.classList.toggle('ready', ready);
-  btn.textContent = (ready && qIdx===LAWS.length-1) ? 'See What the Portals Reveal →' : 'Continue →';
-}
-
-function updateProgress(){
-  var answeredCount = answers.filter(function(a){ return a!==null; }).length;
-  var pct = Math.round((answeredCount/8)*100);
-  document.getElementById('progress-fill').style.width = pct+'%';
-}
-
-document.getElementById('btn-next').addEventListener('click', function(){
-  if(answers[qIdx]===null) return;
-  if(qIdx < LAWS.length-1){ qIdx++; renderQuestion(); saveState(); }
-  else finishTest();
-});
-document.getElementById('btn-back').addEventListener('click', function(){
-  if(qIdx>0){ qIdx--; renderQuestion(); saveState(); }
-});
-
-/* ============================================================
-   CALCULATING (shared between quiz-end and journey-end)
-   ============================================================ */
-function runCalc(eyebrow, msgs, duration, callback){
-  document.getElementById('calc-eyebrow').textContent = eyebrow;
-  showScreen('screen-calc');
-  var msgEl = document.getElementById('calc-msg');
-  var i = 0;
-  msgEl.textContent = msgs[0];
-  var step = duration / msgs.length;
-  var iv = setInterval(function(){
-    i = Math.min(msgs.length-1, i+1);
-    msgEl.textContent = msgs[i];
-  }, step);
-  setTimeout(function(){
-    clearInterval(iv);
-    callback();
-  }, duration);
-}
-
-function finishTest(){
-  document.getElementById('progress-fill').style.width = '100%';
-  runCalc('Compiling your orientation', [
-    "Reading your instinctive responses…",
-    "Mapping them against the eight laws…",
-    "Preparing the portals that will confirm them…"
-  ], 3000, showJourneyTitle);
-}
-
-/* ============================================================
-   JOURNEY TITLE (transition from test to portals)
-   ============================================================ */
-function showJourneyTitle(){
-  document.getElementById('progress-bar').classList.remove('show');
-  showScreen('screen-journey-title');
-}
-document.getElementById('btn-begin-journey').addEventListener('click', function(){
-  portalIndex = 0; runes = [];
-  currentPhase = 'journey';
-  document.documentElement.style.setProperty('--accent', '#c9973a');
-  emberField('#c9973a');
-  showActIntro(ACTS[0]);
-  saveState();
-});
-
-/* ============================================================
-   HUD (journey phase)
-   ============================================================ */
-function updateHUD(){
-  var hud = document.getElementById('hud');
-  hud.classList.add('show');
-  var law = LAWS[Math.min(portalIndex,7)];
-  var act = ACTS[law.act-1];
-  document.getElementById('hud-act').textContent = 'ACT ' + act.roman + ' · ' + act.name;
-
-  var dotsEl = document.getElementById('hud-dots');
-  dotsEl.innerHTML = '';
-  LAWS.forEach(function(l, i){
-    var d = document.createElement('div');
-    var doneNow = i < runes.length;
-    var isCurrent = i === portalIndex;
-    d.className = 'hud-dot' + (doneNow ? ' done' : '') + (isCurrent ? ' current' : '');
-    d.title = l.name;
-    d.textContent = doneNow ? '✓' : l.numeral;
-    dotsEl.appendChild(d);
-  });
-
-  var pct = Math.min(100, Math.round((runes.length/8)*100));
-  document.getElementById('hud-meter-fill').style.width = pct + '%';
-}
-
-document.getElementById('hud-mute').addEventListener('click', function(){
-  muted = !muted;
-  this.textContent = muted ? '🔇' : '🔊';
-  this.title = muted ? 'Unmute' : 'Mute';
-});
-
-/* ============================================================
-   RIPPLE + PORTAL TILT — click feedback and pointer parallax
+   RIPPLE — click feedback
    ============================================================ */
 document.addEventListener('click', function(e){
   if(REDUCED_MOTION) return;
@@ -1304,232 +830,7 @@ document.addEventListener('click', function(e){
   setTimeout(function(){ if(span.parentNode) span.parentNode.removeChild(span); }, 650);
 });
 
-document.addEventListener('pointermove', function(e){
-  if(REDUCED_MOTION) return;
-  var frame = document.querySelector('#screen-portal.active .portal-frame');
-  if(!frame) return;
-  var rect = frame.getBoundingClientRect();
-  var dx = (e.clientX - (rect.left + rect.width/2)) / rect.width;
-  var dy = (e.clientY - (rect.top + rect.height/2)) / rect.height;
-  var rotY = Math.max(-1, Math.min(1, dx)) * 12;
-  var rotX = Math.max(-1, Math.min(1, dy)) * -12;
-  frame.style.transform = 'perspective(600px) rotateX('+rotX.toFixed(2)+'deg) rotateY('+rotY.toFixed(2)+'deg)';
-});
-function resetPortalTilt(){
-  var frame = document.querySelector('#screen-portal.active .portal-frame');
-  if(frame) frame.style.transform = '';
-}
-document.addEventListener('pointerup', resetPortalTilt);
-document.addEventListener('pointerleave', resetPortalTilt);
 
-/* ============================================================
-   ACT INTRO
-   ============================================================ */
-function showActIntro(act){
-  SFX.act();
-  document.getElementById('act-roman').textContent = act.roman;
-  document.getElementById('act-name').textContent = act.name;
-  document.getElementById('act-tag').textContent = '"' + act.tag + '"';
-  var lawsInAct = LAWS.filter(function(l){ return l.act === act.n; });
-  var lawsEl = document.getElementById('act-laws');
-  lawsEl.innerHTML = '';
-  lawsInAct.forEach(function(l){
-    var item = document.createElement('div');
-    item.className = 'act-law-item';
-    item.innerHTML = '<div class="act-law-num">LAW '+l.numeral+'</div><div class="act-law-name">'+escapeHtml(l.name.replace('The Law of ',''))+'</div>';
-    lawsEl.appendChild(item);
-  });
-  var btn = document.getElementById('btn-enter-act');
-  btn.textContent = 'Enter Act ' + act.roman;
-  btn.onclick = function(){
-    showScreen('screen-portal');
-    portalScene(LAWS[portalIndex], portalIndex);
-  };
-  showScreen('screen-actintro');
-  updateHUD();
-}
-
-/* ============================================================
-   PORTAL
-   ============================================================ */
-function portalScene(law, idx){
-  document.documentElement.style.setProperty('--accent', law.accent);
-  emberField(law.accent);
-  document.getElementById('portal-core').innerHTML = portalGlyphSvg(law.glyph, law.accent, 44);
-  document.getElementById('portal-num').textContent = 'PORTAL ' + law.numeral + ' OF VIII';
-  document.getElementById('portal-title').textContent = law.name;
-  document.getElementById('portal-sub').textContent = '"' + law.tagline + '"';
-  var body = document.getElementById('portal-body');
-  body.innerHTML = '<div class="typewriter-box" id="tw-box"></div>';
-  var twBox = document.getElementById('tw-box');
-  runTypewriter(twBox, law.teaching, 70, function(){
-    setTimeout(function(){ showYourStand(law, idx); }, 350);
-  });
-  updateHUD();
-}
-
-function showYourStand(law, idx){
-  var body = document.getElementById('portal-body');
-  var score = answers[idx];
-  var chosenOpt = law.q.options.filter(function(o){ return o.score === score; })[0];
-  body.innerHTML =
-    '<div class="trial-box">'+
-      '<p class="trial-label">Where You Stood</p>'+
-      '<div class="opt chosen" style="opacity:1;animation:none;cursor:default">'+
-        '<span class="opt-l">'+chosenOpt.l+'</span><span>'+escapeHtml(chosenOpt.text)+'</span>'+
-      '</div>'+
-      '<p class="rune-caption" style="margin-top:1rem">That is what you answered before you ever saw this law’s name: a score of '+score+' of 5.</p>'+
-      '<div style="text-align:center;margin-top:1.8rem">'+
-        '<button class="btn" id="btn-claim-rune">Claim the Rune →</button>'+
-      '</div>'+
-    '</div>';
-  document.getElementById('btn-claim-rune').addEventListener('click', function(){ showRune(law, idx); });
-}
-
-function showRune(law, idx){
-  SFX.rune();
-  runes.push(law.rune);
-  var body = document.getElementById('portal-body');
-  body.innerHTML =
-    '<div class="rune-collect-wrap">'+
-      '<hr class="rule">'+
-      '<div class="rune-word">'+law.rune+'</div>'+
-      '<p class="rune-caption">'+escapeHtml(law.runeLine)+'</p>'+
-      '<div class="rune-callout">'+
-        '<p class="eyebrow">Rune Claimed</p>'+
-        '<p>You carry this word forward. It will complete your pledge at the final threshold.</p>'+
-      '</div>'+
-      '<button class="btn" id="btn-portal-continue">'+(idx===7 ? 'Face the Final Threshold →' : 'Pass Through the Portal →')+'</button>'+
-    '</div>';
-  document.getElementById('btn-portal-continue').addEventListener('click', function(){ nextPortal(idx); });
-  updateHUD();
-  saveState();
-}
-
-function nextPortal(idx){
-  var nextIdx = idx + 1;
-  if(nextIdx >= LAWS.length){
-    runCalc('Sealing your reorientation', [
-      "Weighing your responses across all eight laws…",
-      "Binding your eight collected runes into a pledge…",
-      "Locating your archetype within the spectrum…"
-    ], 3000, showResults);
-    return;
-  }
-  var nextLaw = LAWS[nextIdx];
-  portalIndex = nextIdx;
-  saveState();
-  if(nextLaw.act !== LAWS[idx].act){
-    showActIntro(ACTS[nextLaw.act-1]);
-  } else {
-    showScreen('screen-portal');
-    portalScene(nextLaw, nextIdx);
-  }
-}
-
-/* ============================================================
-   RESULTS
-   ============================================================ */
-var PLEDGE_LINES = {
-  ADMIT:"admit what moves in me",
-  EXPOSE:"expose what I have hidden",
-  ENOUGH:"call enough what already is",
-  TEND:"tend what decays",
-  RIDE:"ride what impulse brings",
-  DISCERN:"discern before I cross",
-  SEE:"see before I suffer",
-  GROUND:"stand grounded in what ends"
-};
-
-function buildSummaryText(total, arch, pledgeSentence){
-  var lines = [];
-  lines.push('EIGHT LAWS OF PAIN: MY REORIENTATION');
-  lines.push('');
-  lines.push('Archetype: ' + arch.name + ' (' + arch.orient + ')');
-  lines.push('Total Score: ' + total + ' / 40');
-  lines.push('');
-  lines.push('My Pledge:');
-  lines.push(pledgeSentence);
-  lines.push('');
-  lines.push('Score by Law:');
-  LAWS.forEach(function(law, i){
-    lines.push('  ' + law.name.replace('The Law of ','') + ': ' + answers[i] + '/5');
-  });
-  return lines.join('\n');
-}
-
-function showResults(){
-  SFX.finale();
-  clearState();
-  var total = answers.reduce(function(s,a){ return s+a; }, 0);
-  var arch = getArchetype(total);
-
-  var pledgeParts = runes.map(function(r){ return PLEDGE_LINES[r]; });
-  var pledgeSentence = 'I will ' + pledgeParts.join(', ').replace(/, ([^,]*)$/, ', and $1') + '.';
-
-  var pledgeRunesHtml = runes.map(function(r){ return '<span class="pledge-rune mono">'+r+'</span>'; }).join('');
-
-  var lawBarsHtml = LAWS.map(function(law, i){
-    return '<div class="law-row">'+
-      '<div class="law-name">'+escapeHtml(law.name.replace('The Law of ',''))+'</div>'+
-      '<div class="bar-track"><div class="bar-fill" data-pct="'+((answers[i]/5)*100)+'%" style="width:0%"></div></div>'+
-      '<div class="bar-score">'+answers[i]+' / 5</div>'+
-    '</div>';
-  }).join('');
-
-  var html =
-    '<p class="eyebrow" style="margin-bottom:1.2rem">The Final Threshold: You Have Been Reoriented</p>'+
-    '<div class="r-hero">'+
-      '<div class="r-symbol">'+archetypeSvg(arch.id, 96)+'</div>'+
-      '<div><h2 class="r-name">'+arch.name+'</h2><p class="r-tagline">"'+arch.tagline+'"</p></div>'+
-    '</div>'+
-    '<div class="pledge-box">'+
-      '<p class="eyebrow" style="margin-bottom:.8rem">Your Reorientation Pledge</p>'+
-      '<div class="pledge-runes">'+pledgeRunesHtml+'</div>'+
-      '<p class="pledge-text">'+escapeHtml(pledgeSentence)+'</p>'+
-    '</div>'+
-    '<div class="score-strip">'+
-      '<div class="score-cell"><p class="eyebrow">Total Score</p><p class="score-val">'+total+' / 40</p></div>'+
-      '<div class="score-cell"><p class="eyebrow">Orientation</p><p class="score-val" style="font-size:1.1rem">'+arch.orient+'</p></div>'+
-      '<div class="score-cell"><p class="eyebrow">Score Range</p><p class="score-val" style="font-size:1.1rem">'+arch.range[0]+'–'+arch.range[1]+'</p></div>'+
-    '</div>'+
-    '<p class="r-desc">'+escapeHtml(arch.desc)+'</p>'+
-    '<hr class="rule">'+
-    '<p class="eyebrow" style="margin-bottom:1.2rem">Score by Law of Pain</p>'+
-    '<div class="law-bars">'+lawBarsHtml+'</div>'+
-    '<div class="growth">'+
-      '<p class="eyebrow" style="color:var(--gold);margin-bottom:.5rem">Growth Practice</p>'+
-      '<p class="growth-text">'+escapeHtml(arch.growth)+'</p>'+
-    '</div>'+
-    '<div class="result-actions"><button class="btn" id="btn-enter-saga">Enter Your Myth</button><button class="btn" id="btn-copy-pledge">Copy My Reorientation</button><button class="btn" id="btn-restart">Take the Assessment Again</button></div>';
-
-  document.getElementById('results-body').innerHTML = html;
-  document.getElementById('btn-restart').addEventListener('click', restart);
-  document.getElementById('btn-copy-pledge').addEventListener('click', function(){
-    copyToClipboard(buildSummaryText(total, arch, pledgeSentence), this);
-  });
-  document.getElementById('btn-enter-saga').addEventListener('click', function(){ startSaga(arch.id); });
-  showScreen('screen-results');
-  updateHUD();
-
-  requestAnimationFrame(function(){
-    setTimeout(function(){
-      document.querySelectorAll('.bar-fill').forEach(function(el){ el.style.width = el.dataset.pct; });
-    }, 300);
-  });
-}
-
-function restart(){
-  qIdx = 0; answers = new Array(8).fill(null); runes = []; portalIndex = 0;
-  currentPhase = 'quiz';
-  currentSagaId = null; sagaMovementIdx = 0;
-  clearState();
-  document.getElementById('progress-bar').classList.remove('show');
-  document.getElementById('progress-fill').style.width = '0%';
-  document.getElementById('hud').classList.remove('show');
-  document.documentElement.style.setProperty('--accent', '#c9973a');
-  showScreen('screen-cover');
-}
 
 /* ============================================================
    ACT IV: THE MYTH — a Campbellian saga keyed to the archetype
@@ -1598,54 +899,234 @@ function showSagaClose(){
   showScreen('screen-saga-close');
   SFX.finale();
 }
-document.getElementById('btn-copy-saga').addEventListener('click', function(){
-  var saga = SAGAS[currentSagaId];
-  copyToClipboard(saga.title.toUpperCase() + '\n\n' + saga.epigraph, this);
-});
-document.getElementById('btn-saga-restart').addEventListener('click', restart);
 
 /* ============================================================
-   RESUME — offer to continue a saved assessment or journey
+   ARCHETYPE RESOLUTION — the premium layer never re-runs the
+   quiz. It receives the reader's result via a URL parameter
+   (set by the free site's unlock link) or a small localStorage
+   key the free site writes when it shows a result, and falls
+   back to letting the reader self-select if neither is present.
    ============================================================ */
-function resumeFrom(saved){
-  answers = saved.answers || new Array(8).fill(null);
-  runes = saved.runes || [];
-  portalIndex = saved.portalIndex || 0;
-  qIdx = saved.qIdx || 0;
-  if(saved.phase === 'journey'){
-    currentPhase = 'journey';
-    var law = LAWS[Math.min(portalIndex, 7)];
-    document.documentElement.style.setProperty('--accent', law.accent);
-    emberField(law.accent);
-    showScreen('screen-portal');
-    portalScene(law, portalIndex);
-  } else {
-    currentPhase = 'quiz';
-    document.getElementById('progress-bar').classList.add('show');
-    updateProgress();
-    showScreen('screen-question');
-    renderQuestion();
-  }
+var VALID_ARCH = ['avoider','resister','negotiator','witness','integrator'];
+var ARCH_KEY = 'eight-laws-archetype';
+var currentArch = null;
+
+function findArchetype(id){
+  for(var i=0;i<ARCHETYPES.length;i++){ if(ARCHETYPES[i].id === id) return ARCHETYPES[i]; }
+  return null;
+}
+function resolveArchFromURL(){
+  try{
+    var params = new URLSearchParams(window.location.search);
+    var a = params.get('arch');
+    if(a && VALID_ARCH.indexOf(a) !== -1) return a;
+  }catch(e){}
+  return null;
+}
+function resolveArchFromStorage(){
+  try{
+    var a = localStorage.getItem(ARCH_KEY);
+    if(a && VALID_ARCH.indexOf(a) !== -1) return a;
+  }catch(e){}
+  return null;
+}
+function rememberArch(id){
+  try{ localStorage.setItem(ARCH_KEY, id); }catch(e){}
+  try{ history.replaceState(null, '', '?arch='+id); }catch(e){}
 }
 
-(function initResume(){
-  var saved = loadState();
-  if(!saved) return;
-  var wrap = document.querySelector('#screen-cover .wrap');
-  var beginBtn = document.getElementById('btn-begin-test');
-  var banner = document.createElement('div');
-  banner.className = 'resume-banner';
-  var label = saved.phase === 'journey' ? 'Resume Your Journey' : 'Resume the Assessment';
-  var desc = saved.phase === 'journey'
-    ? 'You left off inside the portals, with ' + (saved.runes ? saved.runes.length : 0) + ' of 8 runes claimed.'
-    : 'You left off on question ' + ((saved.qIdx||0)+1) + ' of 8.';
-  banner.innerHTML = '<p class="eyebrow">Progress Found</p><p class="desc">'+desc+'</p>';
-  var btn = document.createElement('button');
-  btn.className = 'btn btn-sm';
-  btn.textContent = label;
-  btn.addEventListener('click', function(){ resumeFrom(saved); });
-  banner.appendChild(btn);
-  wrap.insertBefore(banner, beginBtn);
+function enterHub(archId, instant){
+  currentArch = archId;
+  var a = findArchetype(archId);
+  var saga = SAGAS[archId];
+  document.documentElement.style.setProperty('--accent', saga.accent);
+  emberField(saga.accent);
+  document.getElementById('hub-icon').innerHTML = archetypeSvg(archId, 96);
+  document.getElementById('hub-name').textContent = a.name;
+  document.getElementById('hub-tagline').textContent = '"' + a.tagline + '"';
+  showScreen('screen-hub', instant);
+}
+
+(function initChooser(){
+  var grid = document.getElementById('arch-chooser');
+  ARCHETYPES.forEach(function(a){
+    var card = document.createElement('button');
+    card.className = 'arch-card btn';
+    card.style.cssText = 'font-family:inherit;text-transform:none;letter-spacing:normal;border-color:var(--fog)';
+    card.innerHTML = '<span>'+archetypeSvg(a.id, 40)+'</span>'+
+      '<span class="arch-card-name">'+escapeHtml(a.name)+'</span>'+
+      '<span class="arch-card-tag">&ldquo;'+escapeHtml(a.tagline)+'&rdquo;</span>';
+    card.addEventListener('click', function(){
+      rememberArch(a.id);
+      enterHub(a.id);
+    });
+    grid.appendChild(card);
+  });
+})();
+
+document.getElementById('btn-enter-myth').addEventListener('click', function(){ startSaga(currentArch); });
+document.getElementById('btn-enter-mud').addEventListener('click', function(){ showMud(currentArch); });
+document.getElementById('btn-hub-back').addEventListener('click', function(){ showScreen('screen-resolve'); });
+document.getElementById('btn-mud-back').addEventListener('click', function(){ showScreen('screen-hub'); });
+document.getElementById('btn-mud-from-close').addEventListener('click', function(){ showMud(currentArch); });
+
+var DOMAIN_LABELS = [["relationships", "Intimate Relationships"], ["status", "Status"], ["officePolitics", "Office Politics"], ["wealthCreation", "Wealth Creation"], ["groupDynamics", "Group Dynamics"]];
+var MUD = {
+  "avoider": {
+    "relationships": [
+      "In intimacy, your instinct is to leave the room, literally or emotionally, the moment a conversation gets heavy. You soften conflict by postponing it, which reads to a partner as ease in good times and absence in hard ones. The relationship gets your competence. It does not always get your presence.",
+      "Name the urge to exit before you act on it, and stay one minute longer than feels comfortable. You are not being asked to enjoy the discomfort. Only to discover it does not do what you have been assuming it will do."
+    ],
+    "status": [
+      "You treat invisibility as a strategy. Achievements get undersold, promotions that invite scrutiny get quietly declined, credit gets redirected before anyone can examine it too closely. It works. It also caps you well below your actual capacity.",
+      "Let one accomplishment stand this week without qualifying it, deflecting it, or handing the credit elsewhere. Being seen is not the danger you have filed it under."
+    ],
+    "officePolitics": [
+      "Difficult colleagues get routed around rather than confronted. Grievances go unspoken and get absorbed instead, quietly, as extra work or extra patience. You are liked. You are not always consulted, because you have trained the room not to expect friction from you.",
+      "Raise the one issue you have been quietly managing around, once, briefly, without dressing it up. Practice the sentence before you need it."
+    ],
+    "wealthCreation": [
+      "Money conversations get the same treatment as any other conflict: deferred. Rates go underpriced to avoid the risk of rejection, statements go unopened, raises go unrequested. The avoidance is not about the money. It is about what the conversation might expose.",
+      "Open the number you have been avoiding, today, for five minutes only. You do not have to solve it. You only have to look at it while remaining in the room."
+    ],
+    "groupDynamics": [
+      "In any group you become the accommodating one, deferring to consensus even when you privately see the flaw in it. You disappear into agreement because disagreement risks being the reason the group turns its attention to you.",
+      "Voice the disagreement you already have, once per meeting, briefly. A room that has never heard your objection cannot weigh it."
+    ]
+  },
+  "resister": {
+    "relationships": [
+      "Conflict becomes something to win or outlast rather than something to sit inside of with another person. You are fiercely loyal and reliably present in a crisis. What is scarcer is the version of you that arrives without armor on an ordinary Tuesday.",
+      "Let your partner's account of the last disagreement stand exactly as they told it, once, without correcting a single detail."
+    ],
+    "status": [
+      "Status gets earned through visible durability: being the one who does not break, who does not need anything, who carries more than their share without comment. Rest and help both get quietly refused, even when offered plainly, because needing something reads to you as losing ground.",
+      "Accept one offer of help this week without deflecting, minimizing, or repaying it immediately."
+    ],
+    "officePolitics": [
+      "You meet obstacles and rivals head-on, which is often exactly the right instinct and occasionally the wrong one. Disagreements escalate into contests you did not mean to start, and persistence alone becomes something colleagues route around rather than negotiate with.",
+      "Choose one disagreement this week to deliberately not fight. Watch what actually happens when you don't hold the line."
+    ],
+    "wealthCreation": [
+      "Earning becomes one more arena to dominate: long hours, high leverage, a reluctance to admit a loss or ask for financial help even when the position is genuinely difficult. Pride gets defended past the point it is still serving you.",
+      "Name one financial position you are currently holding out of pride rather than necessity, and say it out loud to someone."
+    ],
+    "groupDynamics": [
+      "You become the group's anchor under pressure, the one who takes charge when things go sideways. The same force of presence that stabilizes a crisis can crowd out quieter voices in ordinary moments, so the group defers to you rather than genuinely agreeing with you.",
+      "Ask one direct question in your next group conversation, then hold silence until someone else answers first."
+    ]
+  },
+  "negotiator": {
+    "relationships": [
+      "You work hard to interpret, reframe, and repair, and it makes you a genuinely empathetic partner. The risk is that the skill tips into managing the other person's feelings for them, offering the story before you have simply stated your own.",
+      "State a feeling once, flatly, with no explanation attached. Let it stand on its own for a moment before you reach for context."
+    ],
+    "status": [
+      "You earn standing by being reasonable, the one who sees every side of a question. Useful, and also a performance that can quietly avoid ever landing on an unpopular position of your own.",
+      "Hold one clear, unhedged opinion in public this week, and resist the urge to immediately soften it with a caveat."
+    ],
+    "officePolitics": [
+      "Office diplomacy is your natural terrain: you read the room, broker the compromise, find the workable middle. Taken too far, the same instinct becomes constant appeasement, where your own interests are the first thing traded away to keep the peace.",
+      "Enter your next negotiation by stating your own terms first, before you have heard anyone else's."
+    ],
+    "wealthCreation": [
+      "You negotiate well for other people and worse for yourself: rates get discounted early, differences get split before they need to be, pricing gets over-explained instead of simply stated. Money talk becomes something to smooth over rather than something to hold ground on.",
+      "Quote your full price once this week, then let the silence after it sit without filling it."
+    ],
+    "groupDynamics": [
+      "You are the natural mediator, translating between factions, softening the edges of every disagreement. The risk is becoming so identified with the middle ground that the group never actually learns what you, specifically, think.",
+      "Take a visible side in the next group disagreement you are part of, even a minor one."
+    ]
+  },
+  "witness": {
+    "relationships": [
+      "You bring real calm to relational storms; you rarely escalate, rarely react. The same steadiness can register to a partner as distance, being observed in a hard moment rather than joined inside it.",
+      "Let one emotion show on your face this week before you have decided what to do with it."
+    ],
+    "status": [
+      "You are genuinely comfortable outside the status game, which looks like freedom from the outside. It can also function as a way to avoid ever being evaluated, ranked, or found wanting by simply declining to enter the arena.",
+      "Let yourself want one visible thing out loud, without immediately qualifying or downplaying the want."
+    ],
+    "officePolitics": [
+      "You see office dynamics with unusual clarity and rarely get swept into them. The cost is that the clarity often stays private observation rather than voiced intervention, leaving real dysfunction to run unchecked in front of you.",
+      "Say the thing you have privately noticed, once, directly to the person who actually needs to hear it."
+    ],
+    "wealthCreation": [
+      "Your relationship to money carries notable equanimity, neither grasping nor anxious. Equanimity can tip into passivity, though, watching opportunities pass by observation rather than engagement.",
+      "Take one concrete action this week toward a financial goal you have so far only been watching."
+    ],
+    "groupDynamics": [
+      "You are the group's steady presence, rarely swept up in its currents. Steadiness without participation, though, can leave you peripheral to decisions that affect you directly.",
+      "Put yourself, not just your observation, into the group's next real decision."
+    ]
+  },
+  "integrator": {
+    "relationships": [
+      "You bring hard-won presence to intimacy and are rarely destabilized by a partner's full emotional range. The risk is quietly expecting others to have arrived where you have, and running short of patience with those still resisting or avoiding what you have already integrated.",
+      "Meet someone today at their own orientation to pain, not yours."
+    ],
+    "status": [
+      "You are largely free of status anxiety, which can look effortless from the outside. Effortlessness can isolate people who are still fighting battles you consider resolved, if you never name that you once fought them too.",
+      "Tell someone, plainly, that a status fight you have now let go of was once completely real for you."
+    ],
+    "officePolitics": [
+      "You move through office dynamics without needing to win them, and colleagues lean on that clarity more than they say. The risk is a quiet superiority: being consulted from a distance rather than genuinely on the team.",
+      "Ask for help this week with something you could, in fact, handle alone."
+    ],
+    "wealthCreation": [
+      "Your relationship to wealth is settled, free of both grasping and false modesty. That settledness can under-communicate ambition to people who need to see it stated plainly before they will trust it.",
+      "State one financial ambition out loud this week, without the usual softening caveats."
+    ],
+    "groupDynamics": [
+      "You often become the group's quiet center of gravity, the one people seek out in a crisis. The risk is being cast as the only stable one present, a role that isolates exactly as much as it honors.",
+      "Let someone else hold the center of the group this time, and stay in the room while they do."
+    ]
+  }
+};
+
+function showMud(archId){
+  currentArch = archId;
+  var a = findArchetype(archId);
+  document.getElementById('mud-icon').innerHTML = archetypeSvg(archId, 64);
+  document.getElementById('mud-name').textContent = a.name;
+  var body = document.getElementById('mud-body');
+  var html = '';
+  DOMAIN_LABELS.forEach(function(pair){
+    var key = pair[0], label = pair[1];
+    var entry = MUD[archId][key];
+    html += '<div class="mud-domain">'+
+      '<p class="eyebrow" style="color:var(--accent);margin-bottom:.7rem">'+escapeHtml(label)+'</p>'+
+      '<p class="mud-text">'+escapeHtml(entry[0])+'</p>'+
+      '<p class="mud-text mud-shift"><span class="mud-shift-label">The Shift</span>'+escapeHtml(entry[1])+'</p>'+
+    '</div>';
+  });
+  body.innerHTML = html;
+  showScreen('screen-mud');
+}
+
+document.getElementById('hud-mute').addEventListener('click', function(){
+  muted = !muted;
+  this.textContent = muted ? '🔇' : '🔊';
+  this.title = muted ? 'Unmute' : 'Mute';
+});
+
+document.getElementById('btn-copy-saga').addEventListener('click', function(){
+  var saga = SAGAS[currentArch];
+  copyToClipboard(saga.title.toUpperCase() + '\n\n' + saga.epigraph, this);
+});
+document.getElementById('btn-saga-restart').addEventListener('click', function(){
+  showScreen('screen-hub');
+});
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+(function boot(){
+  var arch = resolveArchFromURL() || resolveArchFromStorage();
+  if(arch){
+    if(resolveArchFromURL()) rememberArch(arch);
+    enterHub(arch, true);
+  }
 })();
 
 })();

@@ -237,6 +237,12 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 .growth{border-left:2px solid var(--gold-d);padding:1.1rem 1.5rem;background:rgba(201,151,58,.04);margin:1.8rem 0 2.2rem}
 .growth-text{font-style:italic;color:var(--ghost);font-size:.94rem;line-height:1.75}
 .result-actions{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:1rem}
+.premium-box{border:1px solid var(--gold-d);padding:1.6rem 1.7rem;background:linear-gradient(180deg,rgba(201,151,58,.09),rgba(201,151,58,.02));margin:2.2rem 0;text-align:center}
+.premium-box .eyebrow{color:var(--gold);margin-bottom:.7rem}
+.premium-text{color:var(--bone);font-size:.96rem;line-height:1.75;max-width:480px;margin:0 auto 1.3rem}
+.btn-gold{background:var(--gold-d);border-color:var(--gold)}
+.btn-gold:hover{background:var(--gold)}
+a.btn{text-decoration:none;display:inline-block}
 
 @media(max-width:560px){
   .score-strip{grid-template-columns:1fr 1fr}
@@ -1229,6 +1235,7 @@ function showResults(){
   clearState();
   var total = answers.reduce(function(s,a){ return s+a; }, 0);
   var arch = getArchetype(total);
+  try{ localStorage.setItem('eight-laws-archetype', arch.id); }catch(e){}
 
   var pledgeParts = runes.map(function(r){ return PLEDGE_LINES[r]; });
   var pledgeSentence = 'I will ' + pledgeParts.join(', ').replace(/, ([^,]*)$/, ', and $1') + '.';
@@ -1266,6 +1273,11 @@ function showResults(){
     '<div class="growth">'+
       '<p class="eyebrow" style="color:var(--gold);margin-bottom:.5rem">Growth Practice</p>'+
       '<p class="growth-text">'+escapeHtml(arch.growth)+'</p>'+
+    '</div>'+
+    '<div class="premium-box">'+
+      '<p class="eyebrow">Premium: Act IV</p>'+
+      '<p class="premium-text">Your result continues into a fourth act. "'+escapeHtml(arch.name)+'" has a full Campbellian myth written for it, plus a practical breakdown of how this orientation operates in relationships, status, office politics, wealth, and groups.</p>'+
+      '<a class="btn btn-gold" href="myth/index.html?arch='+arch.id+'">Unlock Act IV: The Myth</a>'+
     '</div>'+
     '<div class="result-actions"><button class="btn" id="btn-copy-pledge">Copy My Reorientation</button><button class="btn" id="btn-restart">Take the Assessment Again</button></div>';
 
