@@ -418,8 +418,13 @@ function escapeHtml(s){
 var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
 /* ============================================================
-   VOICE — narrates the typewriter text in a deep, low voice
+   VOICE — narrates the typewriter text. Prefers a recorded
+   audio file (your own voice) at narration/{id}.mp3; falls back
+   to the synthesized voice when no recording exists yet or the
+   file fails to load.
    ============================================================ */
+var NARRATION_BASE = 'narration/';
+var currentAudio = null;
 var VOICE = null;
 function pickVoice(){
   if(!window.speechSynthesis) return;
@@ -450,6 +455,12 @@ if(window.speechSynthesis){
 }
 function stopSpeech(){
   if(window.speechSynthesis){ try{ speechSynthesis.cancel(); }catch(e){} }
+  if(currentAudio){
+    try{ currentAudio.pause(); currentAudio.currentTime = 0; }catch(e){}
+    currentAudio = null;
+  }
+  var core = document.getElementById('portal-core');
+  if(core) core.classList.remove('narrating');
 }
 function speakLines(lines){
   if(!window.speechSynthesis || muted) return;
@@ -550,57 +561,98 @@ function emberField(accent){
 /* ============================================================
    TYPEWRITER — reveals text progressively, click-to-skip
    ============================================================ */
-function runTypewriter(container, lines, speed, onDone){
-  speakLines(lines);
-  if(REDUCED_MOTION){
-    var full = '';
-    lines.forEach(function(l){ full += '<p class="tw-line">'+escapeHtml(l)+'</p>'; });
-    container.innerHTML = full;
-    if(onDone) onDone();
+function runTypewriter(container, lines, speed, onDone, narrationId){
+  var core = document.getElementById('portal-core');
+  var totalChars = lines.join('').length;
+
+  function reveal(useSpeed){
+    if(REDUCED_MOTION){
+      var full = '';
+      lines.forEach(function(l){ full += '<p class="tw-line">'+escapeHtml(l)+'</p>'; });
+      container.innerHTML = full;
+      if(onDone) onDone();
+      return;
+    }
+    var lineIdx = 0, charIdx = 0, done = false;
+    var timer = null;
+    container.innerHTML = '<div class="skip-hint">tap to skip</div>';
+
+    function render(){
+      var html = '';
+      for(var i=0;i<lineIdx;i++){ html += '<p class="tw-line">'+escapeHtml(lines[i])+'</p>'; }
+      if(lineIdx < lines.length){
+        html += '<p class="tw-line">'+escapeHtml(lines[lineIdx].slice(0,charIdx))+'<span class="tw-cursor"></span></p>';
+      }
+      container.innerHTML = html + (done ? '' : '<div class="skip-hint">tap to skip</div>');
+    }
+
+    function tick(){
+      if(done) return;
+      if(lineIdx >= lines.length){ finish(false); return; }
+      var current = lines[lineIdx];
+      if(charIdx < current.length){
+        charIdx++;
+        render();
+        timer = setTimeout(tick, useSpeed);
+      } else {
+        lineIdx++; charIdx = 0;
+        render();
+        timer = setTimeout(tick, useSpeed);
+      }
+    }
+
+    function finish(skippedByUser){
+      if(done) return;
+      done = true;
+      clearTimeout(timer);
+      var html = '';
+      lines.forEach(function(l){ html += '<p class="tw-line">'+escapeHtml(l)+'</p>'; });
+      container.innerHTML = html;
+      if(skippedByUser) stopSpeech();
+      if(onDone) onDone();
+    }
+
+    container.onclick = function(){ finish(true); };
+    render();
+    timer = setTimeout(tick, useSpeed);
+  }
+
+  if(muted){
+    reveal(speed);
     return;
   }
-  var lineIdx = 0, charIdx = 0, done = false;
-  var timer = null;
-  container.innerHTML = '<div class="skip-hint">tap to skip</div>';
 
-  function render(){
-    var html = '';
-    for(var i=0;i<lineIdx;i++){ html += '<p class="tw-line">'+escapeHtml(lines[i])+'</p>'; }
-    if(lineIdx < lines.length){
-      html += '<p class="tw-line">'+escapeHtml(lines[lineIdx].slice(0,charIdx))+'<span class="tw-cursor"></span></p>';
-    }
-    container.innerHTML = html + (done ? '' : '<div class="skip-hint">tap to skip</div>');
+  if(!narrationId){
+    speakLines(lines);
+    reveal(speed);
+    return;
   }
 
-  function tick(){
-    if(done) return;
-    if(lineIdx >= lines.length){ finish(false); return; }
-    var current = lines[lineIdx];
-    if(charIdx < current.length){
-      charIdx++;
-      render();
-      timer = setTimeout(tick, speed);
-    } else {
-      lineIdx++; charIdx = 0;
-      render();
-      timer = setTimeout(tick, speed);
-    }
+  var audio = new Audio(NARRATION_BASE + narrationId + '.mp3');
+  var settled = false;
+  function useFallback(){
+    if(settled) return;
+    settled = true;
+    speakLines(lines);
+    reveal(speed);
   }
-
-  function finish(skippedByUser){
-    if(done) return;
-    done = true;
-    clearTimeout(timer);
-    var html = '';
-    lines.forEach(function(l){ html += '<p class="tw-line">'+escapeHtml(l)+'</p>'; });
-    container.innerHTML = html;
-    if(skippedByUser) stopSpeech();
-    if(onDone) onDone();
-  }
-
-  container.onclick = function(){ finish(true); };
-  render();
-  timer = setTimeout(tick, speed);
+  var fallbackTimer = setTimeout(useFallback, 2500);
+  audio.addEventListener('error', function(){ clearTimeout(fallbackTimer); useFallback(); });
+  audio.addEventListener('loadedmetadata', function(){
+    if(settled) return;
+    settled = true;
+    clearTimeout(fallbackTimer);
+    currentAudio = audio;
+    var dur = (audio.duration && isFinite(audio.duration)) ? audio.duration : 0;
+    var dynSpeed = dur > 0 ? Math.max(10, (dur*1000*0.96)/Math.max(1,totalChars)) : speed;
+    if(core) core.classList.add('narrating');
+    audio.addEventListener('ended', function(){
+      if(core) core.classList.remove('narrating');
+      if(currentAudio === audio) currentAudio = null;
+    });
+    audio.play().catch(useFallback);
+    reveal(dynSpeed);
+  });
 }
 
 /* ============================================================
@@ -1187,7 +1239,7 @@ function portalScene(law, idx){
   var twBox = document.getElementById('tw-box');
   runTypewriter(twBox, law.teaching, 14, function(){
     setTimeout(function(){ showYourStand(law, idx); }, 350);
-  });
+  }, 'portal-'+law.id);
   updateHUD();
 }
 
