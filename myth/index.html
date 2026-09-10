@@ -465,6 +465,7 @@ var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced
    file fails to load.
    ============================================================ */
 var NARRATION_BASE = '../narration/';
+var NARRATION_EXT = '.m4a';
 var currentAudio = null;
 var VOICE = null;
 function pickVoice(){
@@ -669,7 +670,7 @@ function runTypewriter(container, lines, speed, onDone, narrationId){
     return;
   }
 
-  var audio = new Audio(NARRATION_BASE + narrationId + '.mp3');
+  var audio = new Audio(NARRATION_BASE + narrationId + NARRATION_EXT);
   var settled = false;
   function useFallback(){
     if(settled) return;

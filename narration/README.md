@@ -8,19 +8,21 @@ breaks while some are missing.
 ## Naming
 
 - Portal teaching (8 files, used by both the free and premium page):
-  `portal-{lawId}.mp3`
-  e.g. `portal-malevolence.mp3`, `portal-vulnerability.mp3`, ...
+  `portal-{lawId}.m4a`
+  e.g. `portal-malevolence.m4a`, `portal-vulnerability.m4a`, ...
 
 - Saga movement (40 files, premium page only):
-  `saga-{archetypeId}-{movementNumber}.mp3`
-  e.g. `saga-avoider-1.mp3` through `saga-avoider-8.mp3`
+  `saga-{archetypeId}-{movementNumber}.m4a`
+  e.g. `saga-avoider-1.m4a` through `saga-avoider-8.m4a`
 
 ## Format
 
-Any format `<audio>` supports works (`.mp3` is assumed by the code, adjust
-the extension in `index.html` / `myth/index.html` if you record in `.m4a`
-or `.ogg` instead). Keep files reasonably compressed, this folder is
-served straight from the repo.
+`.m4a` is what a phone's built-in recorder exports by default, and
+`NARRATION_EXT` in `index.html` / `myth/index.html` is set to `.m4a` to
+match, so recordings can go straight from phone to this folder with no
+conversion step. If you ever record on a computer with something that
+exports `.mp3` instead, change `NARRATION_EXT` in both files to `.mp3`
+(one line each) rather than converting every clip.
 
 ## Where the text to read lives
 
