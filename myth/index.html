@@ -135,9 +135,6 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 .hud-meter{display:flex;align-items:center;gap:.5rem;min-width:120px}
 .hud-meter-track{width:90px;height:3px;background:var(--fog)}
 .hud-meter-fill{height:100%;background:linear-gradient(90deg,var(--accent-d),var(--accent));transition:width .8s ease}
-.hud-mute{position:relative;overflow:hidden;font-size:.85rem;color:var(--ghost);border:1px solid var(--fog);width:26px;height:26px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.hud-mute:hover{color:var(--bone);border-color:var(--ghost)}
 
 /* ---------- Act intro ---------- */
 #screen-actintro{text-align:center}
@@ -276,7 +273,6 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 .mud-text{color:var(--bone);text-align:justify;hyphens:auto;line-height:1.85;margin-bottom:.7rem;font-family:'Spectral','EB Garamond',Georgia,serif;font-weight:300}
 .mud-shift{color:var(--ghost);font-style:italic}
 .mud-shift-label{color:var(--accent);font-style:normal;font-family:'Cinzel',serif;font-size:.62rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;margin-right:.55rem;display:inline-block}
-.mute-btn{position:fixed;top:1rem;right:1rem;z-index:50}
 a.btn, a.btn-ghost{text-decoration:none;display:inline-block}
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce){
@@ -295,7 +291,6 @@ a.btn, a.btn-ghost{text-decoration:none;display:inline-block}
 <div class="vignette"></div>
 <div class="scanlines"></div>
 <div id="iris"></div>
-<button class="hud-mute mute-btn" id="hud-mute" title="Mute">🔊</button>
 
 <div id="root">
 
@@ -817,7 +812,7 @@ function showScreen(id, instant){
    ============================================================ */
 document.addEventListener('click', function(e){
   if(REDUCED_MOTION) return;
-  var target = e.target.closest && e.target.closest('.btn, .opt, .hud-mute');
+  var target = e.target.closest && e.target.closest('.btn, .opt');
   if(!target) return;
   var rect = target.getBoundingClientRect();
   var size = Math.max(rect.width, rect.height);
@@ -1103,12 +1098,6 @@ function showMud(archId){
   body.innerHTML = html;
   showScreen('screen-mud');
 }
-
-document.getElementById('hud-mute').addEventListener('click', function(){
-  muted = !muted;
-  this.textContent = muted ? '🔇' : '🔊';
-  this.title = muted ? 'Unmute' : 'Mute';
-});
 
 document.getElementById('btn-copy-saga').addEventListener('click', function(){
   var saga = SAGAS[currentArch];
