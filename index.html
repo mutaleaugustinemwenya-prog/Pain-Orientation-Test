@@ -3,349 +3,822 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pain Orientation Test</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<title>Eight Laws of Pain</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --black:    #080705;
-  --ash:      #1a1608;
-  --fog:      #352d14;
-  --gold:     #c9973a;
-  --gold-d:   #7a5a1a;
-  --gold-dim: rgba(201,151,58,0.10);
-  --bone:     #f0ead6;
-  --ghost:    #9a8f72;
+:root{
+  --black:#050403; --void:#0a0806; --ash:#161209; --fog:#2a2314;
+  --gold:#c9973a; --gold-d:#7a5a1a; --gold-dim:rgba(201,151,58,.12);
+  --bone:#f0ead6; --ghost:#9a8f72; --danger:#8a2a1f;
+  --accent:#c9973a; --accent-dim:rgba(201,151,58,.14); --accent-d:#7a5a1a;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--black);
-  color: var(--bone);
-  font-family: 'EB Garamond', Georgia, serif;
-  font-size: 18px;
-  line-height: 1.7;
-  -webkit-font-smoothing: antialiased;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--black); color:var(--bone);
+  font-family:'EB Garamond',Georgia,serif; font-size:18px; line-height:1.7;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden; min-height:100vh;
+}
+.mono{font-family:'JetBrains Mono',monospace}
+.eyebrow{font-family:'Cinzel',serif;font-size:.62rem;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--ghost)}
+.display{font-family:'Cinzel',serif;font-weight:600;line-height:1.08}
+button{font-family:inherit;background:none;border:none;color:inherit;cursor:pointer}
+
+/* ---------- Ambient field ---------- */
+#field{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 80% 70% at 50% 40%, transparent 40%, rgba(0,0,0,.75) 100%);
+}
+.scanlines{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.05;
+  background:repeating-linear-gradient(to bottom, transparent 0 2px, #000 2px 4px);
+  mix-blend-mode:overlay;
+}
+.ember{position:absolute;border-radius:50%;background:var(--accent);opacity:0;
+  animation:float-ember linear infinite;filter:blur(.5px);
+  box-shadow:0 0 6px var(--accent);
+}
+@keyframes float-ember{
+  0%{opacity:0;transform:translateY(0) translateX(0)}
+  10%{opacity:.55}
+  90%{opacity:.35}
+  100%{opacity:0;transform:translateY(-110vh) translateX(var(--drift,20px))}
 }
 
-/* Progress */
-#progress-bar { position:fixed; top:0; left:0; right:0; height:2px; background:var(--ash); z-index:999; display:none; }
-#progress-fill { height:100%; background:linear-gradient(90deg,var(--gold-d),var(--gold)); width:0%; transition:width 0.5s ease; }
+#root{position:relative;z-index:5;min-height:100vh}
 
-/* Screens */
-.screen { display:none; min-height:100vh; flex-direction:column; align-items:center; justify-content:center; padding:4rem 1.5rem; animation:fadeUp 0.5s ease both; }
-.screen.active { display:flex; }
-@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+/* ---------- Iris transition ---------- */
+#iris{position:fixed;inset:0;z-index:60;pointer-events:none;background:var(--black);
+  clip-path:circle(0% at 50% 50%);}
+#iris.closing{clip-path:circle(150% at 50% 50%);transition:clip-path .28s cubic-bezier(.6,0,.4,1)}
+#iris.opening{clip-path:circle(0% at 50% 50%);transition:clip-path .48s cubic-bezier(.2,1,.3,1)}
 
-/* Type */
-.eyebrow { font-family:'Cinzel',serif; font-size:0.62rem; font-weight:600; letter-spacing:0.3em; text-transform:uppercase; color:var(--ghost); }
-.display { font-family:'Cinzel',serif; font-weight:400; line-height:1.05; }
+/* ---------- Ripple (button/option feedback) ---------- */
+.ripple{position:absolute;border-radius:50%;background:rgba(240,234,214,.35);transform:scale(0);
+  animation:rippleAnim .6s ease-out forwards;pointer-events:none}
+@keyframes rippleAnim{to{transform:scale(2.6);opacity:0}}
 
-/* Buttons */
-.btn {
-  background:transparent; border:1px solid var(--gold); color:var(--bone);
-  font-family:'Cinzel',serif; font-size:0.72rem; font-weight:600;
-  letter-spacing:0.22em; text-transform:uppercase;
-  padding:1rem 2.8rem; cursor:pointer;
-  transition:background 0.3s, box-shadow 0.3s;
+/* ---------- Progress bar (quiz phase) ---------- */
+#progress-bar{position:fixed;top:0;left:0;right:0;height:2px;background:var(--fog);z-index:999;display:none}
+#progress-bar.show{display:block}
+#progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-d),var(--accent));width:0%;transition:width .5s ease}
+
+/* ---------- Layout shells ---------- */
+.screen{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;
+  padding:5rem 1.5rem 3rem;position:relative;animation:screenIn .6s ease both;}
+.screen.active{display:flex}
+@keyframes screenIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.wrap{max-width:680px;width:100%;position:relative;z-index:2}
+.wrap-wide{max-width:760px}
+.q-wrap{max-width:660px;width:100%;position:relative;z-index:2}
+
+hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
+
+/* ---------- Buttons ---------- */
+.btn{
+  position:relative;overflow:hidden;
+  background:transparent;border:1px solid var(--accent);color:var(--bone);
+  font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+  padding:1rem 2.6rem;transition:background .3s,box-shadow .3s,transform .15s;
 }
-.btn:hover { background:var(--gold-dim); box-shadow:0 0 28px rgba(201,151,58,0.2); }
-.btn-ghost {
-  background:none; border:none; color:var(--ghost);
-  font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:0.18em;
-  text-transform:uppercase; cursor:pointer; padding:0.6rem 0; transition:color 0.2s;
+.btn:hover{background:var(--accent-dim);box-shadow:0 0 30px var(--accent-dim);transform:translateY(-1px)}
+.btn:disabled{opacity:.25;pointer-events:none}
+.btn-ghost{
+  color:var(--ghost);font-family:'Cinzel',serif;font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;
+  padding:.6rem 0;transition:color .2s;
 }
-.btn-ghost:hover { color:var(--bone); }
-.btn-ghost:disabled { opacity:0.2; pointer-events:none; }
-.btn-next {
-  background:transparent; border:1px solid var(--gold-d); color:var(--bone);
-  font-family:'Cinzel',serif; font-size:0.65rem; font-weight:600;
-  letter-spacing:0.2em; text-transform:uppercase;
-  padding:0.85rem 2.2rem; cursor:pointer; transition:all 0.25s;
-  opacity:0.2; pointer-events:none;
+.btn-ghost:hover{color:var(--bone)}
+.btn-ghost:disabled{opacity:.2;pointer-events:none}
+.btn-next{
+  background:transparent;border:1px solid var(--accent-d);color:var(--bone);
+  font-family:'Cinzel',serif;font-size:.65rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+  padding:.85rem 2.2rem;transition:all .25s;opacity:.2;pointer-events:none;
 }
-.btn-next.ready { opacity:1; pointer-events:all; border-color:var(--gold); }
-.btn-next.ready:hover { background:var(--gold-dim); }
+.btn-next.ready{opacity:1;pointer-events:all;border-color:var(--accent)}
+.btn-next.ready:hover{background:var(--accent-dim)}
 
-/* Dividers */
-.rule { border:none; border-top:1px solid var(--fog); margin:2rem 0; }
-
-/* ── COVER ── */
-#cover { text-align:center; }
-.cover-wrap { max-width:600px; width:100%; position:relative; z-index:1; }
-#cover::before {
-  content:''; position:fixed; inset:0;
-  background:radial-gradient(ellipse 60% 50% at 50% 40%, rgba(201,151,58,0.08) 0%, transparent 70%);
-  pointer-events:none;
+/* ---------- Title / Cover ---------- */
+#screen-cover, #screen-journey-title{text-align:center}
+.title-glow::before{content:'';position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 45% at 50% 35%, rgba(201,151,58,.10) 0%, transparent 72%);
 }
-.title-main { font-size:clamp(2.6rem,8vw,5.5rem); color:var(--bone); display:block; }
-.title-em   { font-size:clamp(2.6rem,8vw,5.5rem); color:var(--gold); font-style:italic; display:block; }
-.stat-row { display:flex; justify-content:center; gap:2.5rem; flex-wrap:wrap; padding:1.4rem 0; border-top:1px solid var(--fog); border-bottom:1px solid var(--fog); margin:1.5rem 0 2rem; }
-.stat-num { font-family:'Cinzel',serif; font-size:2rem; color:var(--gold); line-height:1; display:block; }
-.intro { color:var(--ghost); font-size:1rem; line-height:1.85; text-align:justify; hyphens:auto; margin-bottom:2.5rem; }
-.preview { display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap; margin-top:3rem; opacity:0.6; }
-.preview-item { text-align:center; }
-.preview-label { font-family:'EB Garamond',serif; font-style:italic; font-size:0.78rem; color:var(--ghost); margin-top:0.4rem; }
+.title-main{font-size:clamp(2.1rem,7vw,4.3rem);color:var(--bone);display:block}
+.title-sub{font-size:clamp(2.1rem,7vw,4.3rem);color:var(--accent);font-style:italic;display:block;font-family:'EB Garamond',serif;font-weight:600}
+.title-tag{color:var(--ghost);font-style:italic;margin:1rem 0 2.2rem;font-size:1.05rem}
+.title-desc{color:var(--ghost);text-align:justify;hyphens:auto;margin-bottom:2.4rem;font-size:1rem}
+.law-preview{display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem;margin-top:2.6rem;opacity:.7}
+.law-chip{border:1px solid var(--fog);padding:.4rem .8rem;font-size:.62rem;font-family:'Cinzel',serif;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ghost)}
 
-/* ── QUESTION ── */
-#question { justify-content:flex-start; padding-top:5rem; }
-.q-wrap { max-width:660px; width:100%; }
-.q-law { font-family:'Cinzel',serif; font-size:0.6rem; font-weight:600; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold-d); margin-bottom:0.5rem; }
-.q-meta { display:flex; align-items:center; gap:0.9rem; margin-bottom:2rem; }
-.dots { display:flex; gap:5px; }
-.dot { width:7px; height:7px; border-radius:50%; border:1px solid var(--fog); transition:all 0.3s; }
-.dot.answered { background:var(--ghost); border-color:var(--ghost); }
-.dot.current  { background:var(--gold);  border-color:var(--gold); }
-.q-text { font-family:'EB Garamond',serif; font-size:clamp(1.1rem,2.8vw,1.5rem); line-height:1.4; color:var(--bone); margin-bottom:0.7rem; }
-.q-sub  { font-family:'EB Garamond',serif; font-style:italic; font-size:0.92rem; color:var(--ghost); margin-bottom:2.2rem; }
-.options { display:flex; flex-direction:column; gap:0.55rem; margin-bottom:2.2rem; }
-.option {
-  display:flex; align-items:flex-start; gap:1rem;
-  background:var(--ash); border:1px solid var(--fog);
-  color:var(--bone); font-family:'EB Garamond',serif; font-size:1rem; line-height:1.55;
-  padding:0.95rem 1.3rem; cursor:pointer; text-align:left; width:100%;
-  transition:border-color 0.2s, background 0.2s, transform 0.15s;
+/* ---------- Question (quiz phase) ---------- */
+#screen-question{justify-content:flex-start;padding-top:5rem}
+.q-law{font-family:'Cinzel',serif;font-size:.6rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--accent-d);margin-bottom:.5rem}
+.q-meta{display:flex;align-items:center;gap:.9rem;margin-bottom:2rem}
+.dots{display:flex;gap:5px}
+.dot{width:7px;height:7px;border-radius:50%;border:1px solid var(--fog);transition:all .3s}
+.dot.answered{background:var(--ghost);border-color:var(--ghost)}
+.dot.current{background:var(--accent);border-color:var(--accent)}
+.q-nav{display:flex;justify-content:space-between;align-items:center;margin-top:.6rem}
+
+/* ---------- HUD (journey phase) ---------- */
+#hud{position:fixed;top:0;left:0;right:0;z-index:50;display:none;
+  background:linear-gradient(to bottom, rgba(5,4,3,.92), rgba(5,4,3,0));
+  padding:.9rem 1.2rem .6rem;align-items:center;gap:1rem;flex-wrap:wrap;
 }
-.option:hover { border-color:rgba(201,151,58,0.45); transform:translateX(4px); }
-.option.selected { border-color:var(--gold); background:rgba(201,151,58,0.07); }
-.opt-l { font-family:'Cinzel',serif; font-size:0.58rem; font-weight:600; color:var(--ghost); flex-shrink:0; padding-top:0.3rem; min-width:1.1rem; transition:color 0.2s; }
-.option.selected .opt-l { color:var(--gold); }
-.q-nav { display:flex; justify-content:space-between; align-items:center; }
+#hud.show{display:flex}
+.hud-act{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;color:var(--accent);white-space:nowrap}
+.hud-dots{display:flex;gap:6px;flex:1;min-width:180px;justify-content:center}
+.hud-dot{width:22px;height:22px;border-radius:50%;border:1px solid var(--fog);display:flex;align-items:center;justify-content:center;
+  font-size:.5rem;font-family:'Cinzel',serif;color:var(--ghost);transition:all .4s;position:relative;flex-shrink:0}
+.hud-dot.done{border-color:var(--accent);color:var(--accent);box-shadow:0 0 10px var(--accent-dim)}
+.hud-dot.current{border-color:var(--bone);color:var(--bone);animation:pulseDot 1.6s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{box-shadow:0 0 0 rgba(240,234,214,0)}50%{box-shadow:0 0 12px rgba(240,234,214,.5)}}
+.hud-meter{display:flex;align-items:center;gap:.5rem;min-width:120px}
+.hud-meter-track{width:90px;height:3px;background:var(--fog)}
+.hud-meter-fill{height:100%;background:linear-gradient(90deg,var(--accent-d),var(--accent));transition:width .8s ease}
+.hud-mute{position:relative;overflow:hidden;font-size:.85rem;color:var(--ghost);border:1px solid var(--fog);width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hud-mute:hover{color:var(--bone);border-color:var(--ghost)}
 
-/* ── CALCULATING ── */
-#calculating { gap:1.8rem; text-align:center; }
-.spinner { width:54px; height:54px; border:1px solid var(--fog); border-top-color:var(--gold); border-radius:50%; animation:spin 1.1s linear infinite; }
-@keyframes spin { to { transform:rotate(360deg); } }
-.calc-status { font-style:italic; font-size:0.98rem; color:var(--ghost); max-width:280px; opacity:0; transition:opacity 0.4s; }
-.calc-status.show { opacity:1; }
+/* ---------- Act intro ---------- */
+#screen-actintro{text-align:center}
+.act-roman{font-family:'Cinzel',serif;font-size:5.5rem;color:var(--accent-d);opacity:.5;line-height:1;margin-bottom:.4rem}
+.act-name{font-family:'Cinzel',serif;font-size:clamp(1.6rem,5vw,2.6rem);letter-spacing:.08em;color:var(--bone);margin-bottom:1rem}
+.act-tag{color:var(--ghost);font-style:italic;margin-bottom:2.4rem;font-size:1.05rem}
+.act-laws{display:flex;justify-content:center;gap:2.2rem;margin-bottom:2.6rem;flex-wrap:wrap}
+.act-law-item{text-align:center;opacity:.85}
+.act-law-num{font-family:'Cinzel',serif;font-size:.6rem;color:var(--ghost);letter-spacing:.2em}
+.act-law-name{font-family:'Cinzel',serif;font-size:.82rem;color:var(--bone);margin-top:.3rem;letter-spacing:.04em}
 
-/* ── RESULTS ── */
-#results { justify-content:flex-start; padding-top:5rem; }
-.r-wrap { max-width:700px; width:100%; }
-.r-hero { display:flex; align-items:center; gap:2rem; flex-wrap:wrap; margin-bottom:1.4rem; }
-.r-symbol { flex-shrink:0; animation:reveal 0.7s ease both, glow 3.5s ease-in-out 0.7s infinite; }
-@keyframes reveal { from { opacity:0; transform:scale(0.88); } to { opacity:1; transform:scale(1); } }
-@keyframes glow { 0%,100% { filter:drop-shadow(0 0 2px rgba(201,151,58,0.3)); } 50% { filter:drop-shadow(0 0 14px rgba(201,151,58,0.7)); } }
-.r-name { font-family:'Cinzel',serif; font-size:clamp(1.8rem,5vw,3.2rem); font-style:italic; color:var(--gold); line-height:1.0; margin-bottom:0.4rem; }
-.r-tagline { font-style:italic; font-size:1.05rem; color:var(--ghost); }
-.score-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--fog); border:1px solid var(--fog); margin-bottom:2rem; }
-.score-cell { background:var(--ash); padding:1.1rem 1.4rem; }
-.score-val { font-family:'Cinzel',serif; font-size:1.6rem; color:var(--gold); line-height:1; margin-top:0.3rem; }
-.score-val.sm { font-family:'EB Garamond',serif; font-style:italic; font-size:1rem; padding-top:0.2rem; }
-.r-desc { font-size:1rem; line-height:1.85; text-align:justify; hyphens:auto; margin-bottom:0.5rem; }
-.law-row { display:flex; align-items:center; gap:1rem; margin-bottom:1rem; }
-.law-name { font-size:0.82rem; color:var(--ghost); width:148px; flex-shrink:0; }
-.bar-track { flex:1; height:1px; background:var(--fog); position:relative; }
-.bar-fill { position:absolute; left:0; top:-1.5px; bottom:-1.5px; background:linear-gradient(90deg,var(--gold-d),var(--gold)); width:0%; transition:width 1.3s ease; }
-.bar-score { font-size:0.72rem; color:var(--ghost); width:2.8rem; text-align:right; }
-.spec-row { display:flex; align-items:center; gap:1rem; padding:0.55rem 0; border-bottom:1px solid var(--fog); }
-.spec-name { font-style:italic; font-size:0.98rem; color:var(--ghost); width:155px; flex-shrink:0; }
-.spec-name.primary { color:var(--gold); font-size:1.05rem; }
-.spec-pct { font-size:0.7rem; color:var(--ghost); width:2.5rem; text-align:right; }
-.growth { border-left:2px solid var(--gold-d); padding:1.2rem 1.6rem; background:rgba(201,151,58,0.04); margin:1.8rem 0 2.5rem; }
-.growth-label { color:var(--gold); margin-bottom:0.55rem; }
-.growth-text { font-style:italic; font-size:0.98rem; color:var(--ghost); line-height:1.78; text-align:justify; hyphens:auto; }
+/* ---------- Portal scene ---------- */
+#screen-portal{padding-top:7rem;align-items:center}
+.portal-frame{position:relative;width:150px;height:150px;margin:0 auto 1.6rem;display:flex;align-items:center;justify-content:center;
+  transform-style:preserve-3d;transition:transform .18s ease-out;will-change:transform}
+.portal-ring{position:absolute;inset:0;border-radius:50%;border:1px solid var(--accent-d);opacity:.55}
+.portal-ring.r2{inset:12px;animation:spinSlow 22s linear infinite}
+.portal-ring.r3{inset:24px;animation:spinSlow 16s linear infinite reverse;opacity:.35}
+@keyframes spinSlow{to{transform:rotate(360deg)}}
+.portal-core{width:92px;height:92px;border-radius:50%;background:radial-gradient(circle, var(--accent-dim), transparent 70%);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 40px var(--accent-dim), inset 0 0 30px rgba(0,0,0,.6);
+  animation:corePulse 3.4s ease-in-out infinite;
+}
+.portal-core.narrating{animation:corePulseFast 1.1s ease-in-out infinite}
+@keyframes corePulse{0%,100%{box-shadow:0 0 30px var(--accent-dim), inset 0 0 24px rgba(0,0,0,.6)}50%{box-shadow:0 0 52px var(--accent-dim), inset 0 0 30px rgba(0,0,0,.6)}}
+@keyframes corePulseFast{0%,100%{box-shadow:0 0 34px var(--accent-dim), inset 0 0 24px rgba(0,0,0,.6);transform:scale(1)}50%{box-shadow:0 0 64px var(--accent-dim), inset 0 0 34px rgba(0,0,0,.6);transform:scale(1.04)}}
+.portal-num{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.3em;text-align:center;color:var(--accent);margin-bottom:.3rem}
+.portal-title{font-family:'Cinzel',serif;font-size:clamp(1.5rem,4.4vw,2.15rem);text-align:center;color:var(--bone);margin-bottom:.3rem}
+.portal-sub{text-align:center;color:var(--ghost);font-style:italic;margin-bottom:2rem;font-size:.98rem}
 
-@media(max-width:520px) {
-  .score-strip { grid-template-columns:1fr 1fr; }
-  .law-name { width:105px; font-size:0.75rem; }
-  .spec-name { width:120px; }
+.typewriter-box{min-height:5.4rem;margin-bottom:1.6rem;cursor:pointer}
+.tw-line{font-size:1.04rem;line-height:1.85;color:var(--bone);text-align:justify;hyphens:auto;margin-bottom:.9rem}
+.tw-cursor{display:inline-block;width:9px;height:1em;background:var(--accent);vertical-align:-3px;animation:blink .9s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+.skip-hint{text-align:center;color:var(--ghost);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+  opacity:.55;margin-bottom:1.4rem}
+.skip-hint:hover{opacity:.9}
+
+.rune-callout{border-left:2px solid var(--accent-d);padding:1rem 1.4rem;background:var(--accent-dim);margin:1.6rem 0 2rem}
+.rune-callout .eyebrow{color:var(--accent);margin-bottom:.5rem}
+.rune-callout p{font-style:italic;color:var(--ghost);font-size:.94rem;line-height:1.75}
+
+/* ---------- Trial / Where-you-stood / options (shared) ---------- */
+.trial-box{margin-top:.6rem;animation:fadeUp .5s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.trial-label{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.28em;text-transform:uppercase;color:var(--ghost);margin-bottom:.7rem}
+.trial-q{font-size:clamp(1.05rem,2.6vw,1.35rem);line-height:1.45;color:var(--bone);margin-bottom:.5rem}
+.trial-sub{font-style:italic;color:var(--ghost);font-size:.9rem;margin-bottom:1.6rem}
+.opt{
+  position:relative;overflow:hidden;
+  display:flex;align-items:flex-start;gap:1rem;width:100%;text-align:left;
+  background:var(--ash);border:1px solid var(--fog);color:var(--bone);
+  font-size:.98rem;line-height:1.55;padding:.9rem 1.2rem;margin-bottom:.55rem;
+  transition:border-color .2s,background .2s,transform .15s;opacity:0;animation:optIn .45s ease both;
+}
+@keyframes optIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+.opt:hover{border-color:var(--accent);transform:translateX(4px)}
+.opt.chosen{border-color:var(--accent);background:var(--accent-dim)}
+.opt-l{font-family:'Cinzel',serif;font-size:.56rem;font-weight:600;color:var(--ghost);flex-shrink:0;padding-top:.28rem;min-width:1rem}
+.opt.chosen .opt-l{color:var(--accent)}
+
+/* ---------- Rune collect / portal close ---------- */
+.rune-collect-wrap{text-align:center;margin-top:1.8rem}
+.rune-word{font-family:'Cinzel',serif;font-size:1.6rem;letter-spacing:.16em;color:var(--accent);
+  animation:runeReveal .8s ease both;text-shadow:0 0 22px var(--accent-dim)}
+@keyframes runeReveal{from{opacity:0;letter-spacing:.5em}to{opacity:1;letter-spacing:.16em}}
+.rune-caption{color:var(--ghost);font-style:italic;font-size:.88rem;margin-top:.6rem}
+
+/* ---------- Calculating / results ---------- */
+#screen-calc{text-align:center;gap:1.6rem}
+.spinner{width:56px;height:56px;border:1px solid var(--fog);border-top-color:var(--accent);border-radius:50%;
+  animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.calc-msg{font-style:italic;color:var(--ghost);min-height:1.6em}
+
+#screen-results{padding-top:6rem}
+.r-hero{display:flex;align-items:center;gap:1.8rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.r-symbol{flex-shrink:0;animation:reveal .7s ease both,glow 3.5s ease-in-out .7s infinite}
+@keyframes reveal{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:scale(1)}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 3px rgba(201,151,58,.3))}50%{filter:drop-shadow(0 0 16px rgba(201,151,58,.7))}}
+.r-name{font-family:'Cinzel',serif;font-size:clamp(1.7rem,5vw,2.9rem);font-style:italic;color:var(--gold);line-height:1}
+.r-tagline{font-style:italic;color:var(--ghost);margin-top:.3rem}
+.pledge-box{border:1px solid var(--fog);padding:1.6rem;margin:1.8rem 0;background:rgba(201,151,58,.03)}
+.pledge-runes{display:flex;flex-wrap:wrap;gap:.5rem .7rem;margin-bottom:1rem}
+.pledge-rune{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.12em;color:var(--accent);
+  border:1px solid var(--accent-d);padding:.3rem .6rem}
+.pledge-text{font-style:italic;color:var(--bone);line-height:1.9;font-size:1.02rem}
+.score-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--fog);border:1px solid var(--fog);margin:1.8rem 0}
+.score-cell{background:var(--ash);padding:1rem 1.2rem}
+.score-val{font-family:'Cinzel',serif;font-size:1.5rem;color:var(--accent)}
+.r-desc{color:var(--bone);text-align:justify;hyphens:auto;line-height:1.85;margin-bottom:.4rem}
+.law-bars{margin-top:1.2rem}
+.law-row{display:flex;align-items:center;gap:1rem;margin-bottom:.85rem}
+.law-name{font-size:.8rem;color:var(--ghost);width:150px;flex-shrink:0}
+.bar-track{flex:1;height:1px;background:var(--fog);position:relative}
+.bar-fill{position:absolute;left:0;top:-1.5px;bottom:-1.5px;background:linear-gradient(90deg,var(--gold-d),var(--gold));width:0%;transition:width 1.2s ease}
+.bar-score{font-size:.7rem;color:var(--ghost);width:2.6rem;text-align:right}
+.growth{border-left:2px solid var(--gold-d);padding:1.1rem 1.5rem;background:rgba(201,151,58,.04);margin:1.8rem 0 2.2rem}
+.growth-text{font-style:italic;color:var(--ghost);font-size:.94rem;line-height:1.75}
+.result-actions{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:1rem}
+
+@media(max-width:560px){
+  .score-strip{grid-template-columns:1fr 1fr}
+  .law-name{width:106px;font-size:.72rem}
+  .hud-dots{order:3;flex-basis:100%}
+}
+
+/* ---------- Resume banner ---------- */
+.resume-banner{border:1px solid var(--accent-d);background:var(--accent-dim);padding:1rem 1.4rem;margin-bottom:1.6rem;text-align:left}
+.resume-banner .eyebrow{margin-bottom:.5rem;color:var(--accent)}
+.resume-banner p.desc{color:var(--ghost);font-size:.92rem;margin-bottom:1rem}
+.btn-sm{padding:.7rem 1.6rem;font-size:.64rem}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration:0.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:0.01ms !important;
+    scroll-behavior:auto !important;
+  }
+  .ember{display:none}
 }
 </style>
 </head>
 <body>
-
+<div id="field"></div>
+<div class="vignette"></div>
+<div class="scanlines"></div>
+<div id="iris"></div>
 <div id="progress-bar"><div id="progress-fill"></div></div>
 
-<!-- COVER -->
-<section id="cover" class="screen active">
-  <div class="cover-wrap">
-    <p class="eyebrow" style="margin-bottom:2rem;">A Psychological Self-Assessment</p>
+<div id="hud">
+  <div class="hud-act mono" id="hud-act"></div>
+  <div class="hud-dots" id="hud-dots"></div>
+  <div class="hud-meter">
+    <span class="eyebrow" style="font-size:.55rem">Orientation</span>
+    <div class="hud-meter-track"><div class="hud-meter-fill" id="hud-meter-fill" style="width:0%"></div></div>
+  </div>
+  <button class="hud-mute" id="hud-mute" title="Mute">🔊</button>
+</div>
+
+<div id="root">
+
+<section class="screen active title-glow" id="screen-cover">
+  <div class="wrap">
+    <p class="eyebrow" style="margin-bottom:1.8rem">A Psychological Assessment, Then a Journey</p>
     <span class="display title-main">Pain Orientation</span>
-    <span class="display title-em">Test</span>
-    <p style="font-style:italic;color:var(--ghost);margin-top:0.6rem;margin-bottom:1.5rem;font-size:1.1rem;">
-      Understand Your Pain Orientation.
-    </p>
-    <div class="stat-row">
-      <div style="text-align:center;"><span class="stat-num">8</span><span class="eyebrow" style="display:block;margin-top:0.3rem;">Questions</span></div>
-      <div style="text-align:center;"><span class="stat-num">8</span><span class="eyebrow" style="display:block;margin-top:0.3rem;">Laws of Pain</span></div>
-      <div style="text-align:center;"><span class="stat-num">5</span><span class="eyebrow" style="display:block;margin-top:0.3rem;">Archetypes</span></div>
-    </div>
-    <p class="intro">
+    <span class="title-sub">Test</span>
+    <p class="title-tag">The Eight Laws of Pain</p>
+    <p class="title-desc">
       Pain is not the exception to a well-constructed life. It is a structural feature of any life
-      lived with genuine engagement. This assessment maps your dominant orientation across the Eight
-      Laws of Pain and identifies which of five archetypes most accurately describes how you navigate
-      suffering. There are no correct responses. There are only honest ones.
+      lived with genuine engagement. Answer eight questions honestly. There are no correct responses,
+      only honest ones. Then walk the eight portals built from the laws themselves, and watch your own
+      answers reflected back inside the doors built to hold them.
     </p>
-    <button class="btn" onclick="startTest()">Begin the Assessment</button>
-    <div class="preview" id="preview"></div>
+    <button class="btn" id="btn-begin-test">Begin the Assessment</button>
+    <div class="law-preview" id="law-preview"></div>
   </div>
 </section>
 
-<!-- QUESTION -->
-<section id="question" class="screen">
+<section class="screen" id="screen-question">
   <div class="q-wrap">
     <p class="q-law" id="q-law"></p>
     <div class="q-meta">
-      <span class="eyebrow" id="q-counter"></span>
+      <span class="eyebrow mono" id="q-counter"></span>
       <div class="dots" id="q-dots"></div>
     </div>
-    <h2 class="q-text" id="q-text"></h2>
-    <p class="q-sub" id="q-sub"></p>
-    <div class="options" id="q-options"></div>
+    <h2 class="trial-q" id="q-text"></h2>
+    <p class="trial-sub" id="q-sub"></p>
+    <div id="q-options"></div>
     <div class="q-nav">
-      <button class="btn-ghost" id="btn-back" onclick="prevQ()">← Back</button>
-      <button class="btn-next" id="btn-next" onclick="nextQ()">Continue →</button>
+      <button class="btn-ghost" id="btn-back">← Back</button>
+      <button class="btn-next" id="btn-next">Continue →</button>
     </div>
   </div>
 </section>
 
-<!-- CALCULATING -->
-<section id="calculating" class="screen">
+<section class="screen" id="screen-calc">
   <div class="spinner"></div>
-  <p class="eyebrow">Mapping your orientation</p>
-  <p class="calc-status" id="calc-msg"></p>
+  <p class="eyebrow" id="calc-eyebrow">Compiling your orientation</p>
+  <p class="calc-msg" id="calc-msg"></p>
 </section>
 
-<!-- RESULTS -->
-<section id="results" class="screen">
-  <div class="r-wrap">
-    <p class="eyebrow" style="margin-bottom:1.2rem;">Your Pain Orientation</p>
-    <div class="r-hero">
-      <div class="r-symbol" id="r-symbol"></div>
-      <div>
-        <h2 class="r-name" id="r-name"></h2>
-        <p class="r-tagline" id="r-tagline"></p>
-      </div>
-    </div>
-    <div class="score-strip">
-      <div class="score-cell"><p class="eyebrow">Total Score</p><p class="score-val" id="r-total"></p></div>
-      <div class="score-cell"><p class="eyebrow">Orientation</p><p class="score-val sm" id="r-orient"></p></div>
-      <div class="score-cell"><p class="eyebrow">Score Range</p><p class="score-val" style="font-size:1.1rem;" id="r-range"></p></div>
-    </div>
-    <p class="r-desc" id="r-desc"></p>
-    <hr class="rule">
-    <p class="eyebrow" style="margin-bottom:1.4rem;">Score by Law of Pain</p>
-    <div id="law-bars"></div>
-    <hr class="rule">
-    <p class="eyebrow" style="margin-bottom:1.2rem;">Pain Archetype Spectrum</p>
-    <div id="spectrum"></div>
-    <div class="growth">
-      <p class="eyebrow growth-label">Growth Practice</p>
-      <p class="growth-text" id="r-growth"></p>
-    </div>
-    <button class="btn" onclick="resetTest()">Retake the Assessment</button>
+<section class="screen title-glow" id="screen-journey-title">
+  <div class="wrap">
+    <p class="eyebrow" style="margin-bottom:1.8rem">Your Pattern Is Mapped</p>
+    <span class="display title-main" style="font-size:clamp(1.9rem,6vw,3.4rem)">Now, the Portals</span>
+    <p class="title-tag">Eight doors, each built from a law your answers already confirmed.</p>
+    <p class="title-desc">
+      You have just told the truth about yourself in eight sentences chosen from a list. What follows
+      will tell you why. Walk through each law in turn, across three acts, and watch your own answer
+      reflected back to you inside the portal built to hold it.
+    </p>
+    <button class="btn" id="btn-begin-journey">Begin the Descent</button>
   </div>
 </section>
+
+<section class="screen" id="screen-actintro">
+  <div class="wrap">
+    <div class="act-roman" id="act-roman"></div>
+    <div class="act-name" id="act-name"></div>
+    <p class="act-tag" id="act-tag"></p>
+    <div class="act-laws" id="act-laws"></div>
+    <button class="btn" id="btn-enter-act"></button>
+  </div>
+</section>
+
+<section class="screen" id="screen-portal">
+  <div class="wrap">
+    <div class="portal-frame">
+      <div class="portal-ring r3"></div>
+      <div class="portal-ring r2"></div>
+      <div class="portal-ring"></div>
+      <div class="portal-core" id="portal-core"></div>
+    </div>
+    <div class="portal-num mono" id="portal-num"></div>
+    <h2 class="portal-title" id="portal-title"></h2>
+    <p class="portal-sub" id="portal-sub"></p>
+    <div id="portal-body"></div>
+  </div>
+</section>
+
+<section class="screen" id="screen-results">
+  <div class="wrap wrap-wide" id="results-body"></div>
+</section>
+
+</div>
 
 <script>
-// ── DATA ──────────────────────────────────────────────────────
+(function(){
+"use strict";
 
-const LAWS = [
-  "The Law of Malevolence","The Law of Vulnerability","The Law of Unsatisfactoriness",
-  "The Law of Decay","The Law of Impulse","The Law of Irreversibility",
-  "The Law of Misperception","The Law of Mortality"
-];
+/* ============================================================
+   SOUND — tiny WebAudio chime engine, no external assets
+   ============================================================ */
+var audioCtx = null;
+var muted = false;
+function getCtx(){
+  if(!audioCtx){
+    try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ audioCtx = null; }
+  }
+  return audioCtx;
+}
+function chime(freqs, dur){
+  if(muted) return;
+  var ctx = getCtx();
+  if(!ctx) return;
+  var now = ctx.currentTime;
+  freqs.forEach(function(f, i){
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(f, now);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.06, now + 0.02 + i*0.03);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur + i*0.03);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(now + i*0.03);
+    osc.stop(now + dur + i*0.03 + 0.05);
+  });
+}
+var SFX = {
+  select: function(){ chime([392], 0.25); },
+  advance: function(){ chime([330, 440], 0.5); },
+  rune: function(){ chime([523.25, 659.25, 783.99], 1.1); },
+  act: function(){ chime([196, 246.94, 293.66], 1.4); },
+  finale: function(){ chime([261.63, 329.63, 392, 523.25], 2); }
+};
 
-const QUESTIONS = [
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
+var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+/* ============================================================
+   VOICE — narrates the typewriter text in a deep, low voice
+   ============================================================ */
+var VOICE = null;
+function pickVoice(){
+  if(!window.speechSynthesis) return;
+  var voices = speechSynthesis.getVoices();
+  if(!voices || !voices.length) return;
+  var preferredNames = ['Daniel','Google UK English Male','Microsoft David','Microsoft David Desktop','Alex','Fred','Google US English Male','Oliver','Arthur'];
+  var found = null;
+  for(var i=0;i<preferredNames.length && !found;i++){
+    for(var j=0;j<voices.length;j++){
+      if(voices[j].name.indexOf(preferredNames[i]) !== -1){ found = voices[j]; break; }
+    }
+  }
+  if(!found){
+    for(var k=0;k<voices.length && !found;k++){
+      if(/male/i.test(voices[k].name) && /^en/i.test(voices[k].lang)) found = voices[k];
+    }
+  }
+  if(!found){
+    for(var m=0;m<voices.length && !found;m++){
+      if(/^en/i.test(voices[m].lang)) found = voices[m];
+    }
+  }
+  VOICE = found || voices[0];
+}
+if(window.speechSynthesis){
+  pickVoice();
+  speechSynthesis.onvoiceschanged = pickVoice;
+}
+function stopSpeech(){
+  if(window.speechSynthesis){ try{ speechSynthesis.cancel(); }catch(e){} }
+}
+function speakLines(lines){
+  if(!window.speechSynthesis || muted) return;
+  try{
+    speechSynthesis.cancel();
+    var core = document.getElementById('portal-core');
+    lines.forEach(function(text){
+      var u = new SpeechSynthesisUtterance(text);
+      if(VOICE) u.voice = VOICE;
+      u.pitch = 0.55;
+      u.rate = 0.92;
+      u.volume = 1;
+      u.onstart = function(){ if(core) core.classList.add('narrating'); };
+      u.onend = function(){ if(core) core.classList.remove('narrating'); };
+      speechSynthesis.speak(u);
+    });
+  }catch(e){}
+}
+
+/* ============================================================
+   PERSISTENCE — resume a half-finished assessment or journey
+   ============================================================ */
+var STORAGE_KEY = 'eight-laws-pain-v1';
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      phase: currentPhase,
+      qIdx: qIdx, answers: answers,
+      portalIndex: portalIndex, runes: runes
+    }));
+  }catch(e){}
+}
+function loadState(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){ return null; }
+}
+function clearState(){
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+}
+
+/* ============================================================
+   CLIPBOARD — copy the final pledge/result as plain text
+   ============================================================ */
+function fallbackCopy(text, done){
+  try{
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    var ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    done(ok);
+  }catch(e){ done(false); }
+}
+function copyToClipboard(text, btnEl){
+  var original = btnEl.textContent;
+  function done(ok){
+    btnEl.textContent = ok ? 'Copied ✓' : 'Copy Failed';
+    setTimeout(function(){ btnEl.textContent = original; }, 1800);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){ done(true); }).catch(function(){ fallbackCopy(text, done); });
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+
+/* ============================================================
+   EMBER FIELD — ambient particles
+   ============================================================ */
+function emberField(accent){
+  var field = document.getElementById('field');
+  field.style.setProperty('--accent', accent);
+  field.innerHTML = '';
+  if(REDUCED_MOTION) return;
+  var n = window.innerWidth < 640 ? 20 : 38;
+  for(var i=0;i<n;i++){
+    var d = document.createElement('div');
+    d.className = 'ember';
+    var size = 1 + Math.random()*2.4;
+    d.style.width = size+'px';
+    d.style.height = size+'px';
+    d.style.left = Math.random()*100+'%';
+    d.style.bottom = '-10px';
+    d.style.setProperty('--drift', (Math.random()*60-30)+'px');
+    var dur = 10 + Math.random()*14;
+    d.style.animationDuration = dur+'s';
+    d.style.animationDelay = (Math.random()*dur)+'s';
+    field.appendChild(d);
+  }
+}
+
+/* ============================================================
+   TYPEWRITER — reveals text progressively, click-to-skip
+   ============================================================ */
+function runTypewriter(container, lines, speed, onDone){
+  speakLines(lines);
+  if(REDUCED_MOTION){
+    var full = '';
+    lines.forEach(function(l){ full += '<p class="tw-line">'+escapeHtml(l)+'</p>'; });
+    container.innerHTML = full;
+    if(onDone) onDone();
+    return;
+  }
+  var lineIdx = 0, charIdx = 0, done = false;
+  var timer = null;
+  container.innerHTML = '<div class="skip-hint">tap to skip</div>';
+
+  function render(){
+    var html = '';
+    for(var i=0;i<lineIdx;i++){ html += '<p class="tw-line">'+escapeHtml(lines[i])+'</p>'; }
+    if(lineIdx < lines.length){
+      html += '<p class="tw-line">'+escapeHtml(lines[lineIdx].slice(0,charIdx))+'<span class="tw-cursor"></span></p>';
+    }
+    container.innerHTML = html + (done ? '' : '<div class="skip-hint">tap to skip</div>');
+  }
+
+  function tick(){
+    if(done) return;
+    if(lineIdx >= lines.length){ finish(false); return; }
+    var current = lines[lineIdx];
+    if(charIdx < current.length){
+      charIdx++;
+      render();
+      timer = setTimeout(tick, speed);
+    } else {
+      lineIdx++; charIdx = 0;
+      render();
+      timer = setTimeout(tick, speed);
+    }
+  }
+
+  function finish(skippedByUser){
+    if(done) return;
+    done = true;
+    clearTimeout(timer);
+    var html = '';
+    lines.forEach(function(l){ html += '<p class="tw-line">'+escapeHtml(l)+'</p>'; });
+    container.innerHTML = html;
+    if(skippedByUser) stopSpeech();
+    if(onDone) onDone();
+  }
+
+  container.onclick = function(){ finish(true); };
+  render();
+  timer = setTimeout(tick, speed);
+}
+
+/* ============================================================
+   DATA — the eight laws, in three-act order.
+   Each law's `q` is used twice: once as a quiz question (Pain
+   Orientation Test phase), once as the reflection shown back to
+   the reader inside that law's portal (journey phase).
+   ============================================================ */
+var LAWS = [
   {
-    law:"The Law of Malevolence",
-    text:"When life delivers deliberate-seeming cruelty — illness arriving at the worst moment, loss appearing without invitation — what is your most honest first response?",
-    sub:"Consider your instinctive reaction, not the response you wish you had.",
-    options:[
-      {l:"A",text:"I feel betrayed. The universe owes me better than this.",score:1},
-      {l:"B",text:"I withdraw quickly. Non-engagement is the surest form of protection.",score:2},
-      {l:"C",text:"I grow angry and push through regardless. Rage is, at minimum, motion.",score:3},
-      {l:"D",text:"I search for meaning within it, even when meaning does not readily appear.",score:4},
-      {l:"E",text:"I hold it without requiring resolution. Cruelty is real and I remain present.",score:5}
-    ]
+    id:"malevolence", numeral:"I", act:1,
+    name:"The Law of Malevolence",
+    tagline:"There is a currency of harm, and you have already spent some of it.",
+    accent:"#b4432e",
+    glyph:"mask",
+    rune:"ADMIT",
+    runeLine:"To admit the capacity for harm is not confession for punishment. It is the precondition for responsibility.",
+    teaching:[
+      "The first portal does not ask what has been done to you. It asks what lives in you, undone, unused, or already spent.",
+      "Every psyche carries the same currency: the capacity to wound, to dominate, to look away while someone else pays the cost. You did not choose to be built this way. You are, however, responsible for what you do with it.",
+      "This is not an accusation. It is an inventory. What you can name, you can no longer be ambushed by."
+    ],
+    q:{
+      text:"When life delivers deliberate-seeming cruelty, illness arriving at the worst moment, loss appearing without invitation, what is your most honest first response?",
+      sub:"Consider your instinctive reaction, not the response you wish you had.",
+      options:[
+        {l:"A",text:"I feel betrayed. The universe owes me better than this.",score:1},
+        {l:"B",text:"I withdraw quickly. Non-engagement is the surest form of protection.",score:2},
+        {l:"C",text:"I grow angry and push through regardless. Rage is, at minimum, motion.",score:3},
+        {l:"D",text:"I search for meaning within it, even when meaning does not readily appear.",score:4},
+        {l:"E",text:"I hold it without requiring resolution. Cruelty is real and I remain present.",score:5}
+      ]
+    }
   },
   {
-    law:"The Law of Vulnerability",
-    text:"Someone you trust witnesses a moment of genuine weakness in you: tears, fear, or undisguised need. What occurs within you in that instant?",
-    sub:"Not what you say aloud, but what moves through you before words form.",
-    options:[
-      {l:"A",text:"Shame so acute that I immediately begin constructing reasons the moment did not happen.",score:1},
-      {l:"B",text:"I redirect with humour or a subject-change, and later punish myself privately.",score:2},
-      {l:"C",text:"Discomfort, followed by acceptance. Being seen is a cost I occasionally pay.",score:3},
-      {l:"D",text:"Mild exposure, quickly metabolised. Authentic presence is preferable to performed strength.",score:4},
-      {l:"E",text:"Relief. Shared vulnerability is the closest approximation of safety I have found.",score:5}
-    ]
+    id:"vulnerability", numeral:"II", act:1,
+    name:"The Law of Vulnerability",
+    tagline:"The crack is not the damage. It is the design.",
+    accent:"#6a4d9c",
+    glyph:"crack",
+    rune:"EXPOSE",
+    runeLine:"What you can name, you can no longer be ambushed by. But what you refuse to show, you cannot ever mend. Kintsugi does not hide the break. It gilds it.",
+    teaching:[
+      "Somewhere behind this door is the place you have been most careful to guard: not because it is shameful, but because it is tender.",
+      "Armor feels like protection. It has a price all the same: the things unsaid, untried, unbecome, because being guarded felt safer than being seen.",
+      "The gold in kintsugi is never hidden. It is the break, repaired, made the most beautiful part of the vessel. Your confidence is on the other side of what you have been hiding."
+    ],
+    q:{
+      text:"Someone you trust witnesses a moment of genuine weakness in you: tears, fear, or undisguised need. What occurs within you in that instant?",
+      sub:"Not what you say aloud, but what moves through you before words form.",
+      options:[
+        {l:"A",text:"Shame so acute that I immediately begin constructing reasons the moment did not happen.",score:1},
+        {l:"B",text:"I redirect with humour or a subject-change, and later punish myself privately.",score:2},
+        {l:"C",text:"Discomfort, followed by acceptance. Being seen is a cost I occasionally pay.",score:3},
+        {l:"D",text:"Mild exposure, quickly metabolised. Authentic presence is preferable to performed strength.",score:4},
+        {l:"E",text:"Relief. Shared vulnerability is the closest approximation of safety I have found.",score:5}
+      ]
+    }
   },
   {
-    law:"The Law of Unsatisfactoriness",
-    text:"You attain something you pursued with considerable effort. Within weeks, the satisfaction has drained away entirely. How do you account for this?",
-    sub:"The goal was reached. The feeling did not persist.",
-    options:[
-      {l:"A",text:"I chose the wrong objective. The next one will finally prove sufficient.",score:1},
-      {l:"B",text:"I feel deceived by the process. I continue working but suspect it is without purpose.",score:2},
-      {l:"C",text:"I have begun to recognise the pattern, yet I continue pursuing the next thing regardless.",score:3},
-      {l:"D",text:"I accept that satisfaction is transient. I pursue for the intrinsic value of the doing.",score:4},
-      {l:"E",text:"The emptiness is instructive. It redirects attention toward what cannot be acquired.",score:5}
-    ]
+    id:"unsatisfactoriness", numeral:"III", act:1,
+    name:"The Law of Unsatisfactoriness",
+    tagline:"Nothing ever feels quite like enough. Not the win, not the rest, not the reassurance.",
+    accent:"#8f8465",
+    glyph:"ripple",
+    rune:"ENOUGH",
+    runeLine:"The ache for more is not a personal failure. It is the baseline hum of a restless mind, and presence is the one place that hum cannot reach.",
+    teaching:[
+      "Every craving satisfied opens a new one. Every arrival reveals a further destination. This is not a modern complaint; it is the oldest observation about attention there is.",
+      "The mind is built to want, and wanting does not stop simply because it gets what it asked for.",
+      "Presence does not end the craving. It only stops asking the craving to be the answer. That reversal, presence first, peace second, is the whole of this portal's teaching."
+    ],
+    q:{
+      text:"You attain something you pursued with considerable effort. Within weeks, the satisfaction has drained away entirely. How do you account for this?",
+      sub:"The goal was reached. The feeling did not persist.",
+      options:[
+        {l:"A",text:"I chose the wrong objective. The next one will finally prove sufficient.",score:1},
+        {l:"B",text:"I feel deceived by the process. I continue working but suspect it is without purpose.",score:2},
+        {l:"C",text:"I have begun to recognise the pattern, yet I continue pursuing the next thing regardless.",score:3},
+        {l:"D",text:"I accept that satisfaction is transient. I pursue for the intrinsic value of the doing.",score:4},
+        {l:"E",text:"The emptiness is instructive. It redirects attention toward what cannot be acquired.",score:5}
+      ]
+    }
   },
   {
-    law:"The Law of Decay",
-    text:"You observe something you love in gradual decline: a relationship, a body, a season of life that is diminishing. What is your response?",
-    sub:"The erosion is slow and visible. You can see it as it happens.",
-    options:[
-      {l:"A",text:"I deny it for as long as denial remains viable, and renegotiate with reality later.",score:1},
-      {l:"B",text:"I accelerate. I either repair it quickly or conclude it before grief becomes unavoidable.",score:2},
-      {l:"C",text:"I remain, conflicted, attempting to arrest something that cannot be arrested.",score:3},
-      {l:"D",text:"I tend to what remains with greater care precisely because I know the time is finite.",score:4},
-      {l:"E",text:"Decay is intrinsic to what I love. That recognition makes the loving more deliberate.",score:5}
-    ]
+    id:"decay", numeral:"IV", act:2,
+    name:"The Law of Decay",
+    tagline:"What you love is already leaving. Slowly enough to argue with. Not slowly enough to stop.",
+    accent:"#9c6a2e",
+    glyph:"hourglass",
+    rune:"TEND",
+    runeLine:"Two disciplines meet decay honestly: maranasati, which rehearses the ending until it loses its power to ambush you, and the deliberate strengthening of the body, which answers entropy not with denial but with resistance.",
+    teaching:[
+      "Nothing you love holds its shape. The body erodes a little each year. Bonds loosen. Empires that once seemed permanent are already, quietly, becoming rubble.",
+      "There are only two honest replies to this. The first is maranasati, meeting the fact of ending directly and often, breath by breath, until familiarity dulls its ambush. The second is strength: the deliberate, physical practice of building capacity against entropy, not as denial of decay but as a form of care for what is still here.",
+      "Denial argues with the erosion. Tending it, through meditation on impermanence and through the discipline of the body, meets it honestly, and loves what remains more precisely because the clock is visible."
+    ],
+    q:{
+      text:"You observe something you love in gradual decline: a relationship, a body, a season of life that is diminishing. What is your response?",
+      sub:"The erosion is slow and visible. You can see it as it happens.",
+      options:[
+        {l:"A",text:"I deny it for as long as denial remains viable, and renegotiate with reality later.",score:1},
+        {l:"B",text:"I accelerate. I either repair it quickly or conclude it before grief becomes unavoidable.",score:2},
+        {l:"C",text:"I remain, conflicted, attempting to arrest something that cannot be arrested.",score:3},
+        {l:"D",text:"I tend to what remains with greater care precisely because I know the time is finite.",score:4},
+        {l:"E",text:"Decay is intrinsic to what I love. That recognition makes the loving more deliberate.",score:5}
+      ]
+    }
   },
   {
-    law:"The Law of Impulse",
-    text:"Pain generates an impulse toward motion: toward food, distraction, intoxication, departure, or disappearance. When that pull arrives, what governs your response?",
-    sub:"This concerns the moment before action, not the response you would prefer to have.",
-    options:[
-      {l:"A",text:"The impulse prevails. Discomfort is a problem I address without delay.",score:1},
-      {l:"B",text:"I substitute one impulse for a more acceptable one. The flight continues by other means.",score:2},
-      {l:"C",text:"I register the impulse and sometimes pause. At other times I do not pause.",score:3},
-      {l:"D",text:"I can tolerate the discomfort, though it requires effort. A gap between impulse and action exists.",score:4},
-      {l:"E",text:"The impulse is information. I observe it arise and decide deliberately whether to act.",score:5}
-    ]
+    id:"impulse", numeral:"V", act:2,
+    name:"The Law of Impulse",
+    tagline:"Something in you moved before you chose. It always will.",
+    accent:"#a13a2e",
+    glyph:"pulse",
+    rune:"RIDE",
+    runeLine:"Three integrations meet the current: keep the memory of what it has done, detach from the reward it advertises, and radically accept whatever bill follows.",
+    teaching:[
+      "Long before an argument could be made to you, something in you had already moved: a current older than thought, older than the self that claims to be steering.",
+      "It cannot be defeated. It can only be known: its memory kept rather than erased, its promised reward tested against what it has actually delivered, its cost accepted in full, without denial and without punishing yourself in place of repair.",
+      "The current does not decide where the boat goes. It only decides how fast the boat moves once someone stops rowing."
+    ],
+    q:{
+      text:"Pain generates an impulse toward motion: toward food, distraction, intoxication, departure, or disappearance. When that pull arrives, what governs your response?",
+      sub:"This concerns the moment before action, not the response you would prefer to have.",
+      options:[
+        {l:"A",text:"The impulse prevails. Discomfort is a problem I address without delay.",score:1},
+        {l:"B",text:"I substitute one impulse for a more acceptable one. The flight continues by other means.",score:2},
+        {l:"C",text:"I register the impulse and sometimes pause. At other times I do not pause.",score:3},
+        {l:"D",text:"I can tolerate the discomfort, though it requires effort. A gap between impulse and action exists.",score:4},
+        {l:"E",text:"The impulse is information. I observe it arise and decide deliberately whether to act.",score:5}
+      ]
+    }
   },
   {
-    law:"The Law of Irreversibility",
-    text:"Something cannot be undone. A particular door has closed permanently. At what cost do you carry this fact, and through what medium does that cost express itself?",
-    sub:"Bring to mind a specific door that has already shut behind you.",
-    options:[
-      {l:"A",text:"I rehearse the alternative timeline with considerable persistence. The door should still be open.",score:1},
-      {l:"B",text:"I occupy myself so thoroughly that the closed door remains at the periphery of awareness.",score:2},
-      {l:"C",text:"I grieve it properly, though I return to rehearsal more frequently than I would wish.",score:3},
-      {l:"D",text:"I acknowledge the loss, honour it with appropriate grief, and allow it to become history.",score:4},
-      {l:"E",text:"The closed door brings clarity about the next one. Irreversibility is a form of orientation.",score:5}
-    ]
+    id:"irreversibility", numeral:"VI", act:2,
+    name:"The Law of Irreversibility",
+    tagline:"The sand does not return to the top of the glass.",
+    accent:"#7a6a45",
+    glyph:"gate",
+    rune:"DISCERN",
+    runeLine:"Discernment is not caution, and it is not delay for its own sake. It is looking directly at a threshold before crossing it, and acting anyway, with open eyes, when acting is right.",
+    teaching:[
+      "Some things, once done, belong to the past absolutely. The word spoken cannot be unspoken. The struck match cannot be unstruck.",
+      "Most suffering born of this law is not the suffering of the act itself. It is the suffering of having acted without seeing clearly first, and discovering only afterward what the act has closed off forever.",
+      "There is no undoing what has already been done. There is only the sharpening of what comes next."
+    ],
+    q:{
+      text:"Something cannot be undone. A particular door has closed permanently. At what cost do you carry this fact, and through what medium does that cost express itself?",
+      sub:"Bring to mind a specific door that has already shut behind you.",
+      options:[
+        {l:"A",text:"I rehearse the alternative timeline with considerable persistence. The door should still be open.",score:1},
+        {l:"B",text:"I occupy myself so thoroughly that the closed door remains at the periphery of awareness.",score:2},
+        {l:"C",text:"I grieve it properly, though I return to rehearsal more frequently than I would wish.",score:3},
+        {l:"D",text:"I acknowledge the loss, honour it with appropriate grief, and allow it to become history.",score:4},
+        {l:"E",text:"The closed door brings clarity about the next one. Irreversibility is a form of orientation.",score:5}
+      ]
+    }
   },
   {
-    law:"The Law of Misperception",
-    text:"You discover that a pain you have been carrying was constructed, at least in part, upon a narrative of your own making. What do you do with that discovery?",
-    sub:"The suffering was genuine. The story that sustained it was partially invented.",
-    options:[
-      {l:"A",text:"I defend the narrative. If I revise it, the validity of everything I felt becomes uncertain.",score:1},
-      {l:"B",text:"I experience embarrassment and quietly set the entire episode aside without examination.",score:2},
-      {l:"C",text:"I accept the revision with some relief and some residual resistance to what it implies.",score:3},
-      {l:"D",text:"I welcome it. A more accurate understanding, even a painful one, is worth possessing.",score:4},
-      {l:"E",text:"My interpretive frameworks are always provisional. I anticipate revision and receive it as growth.",score:5}
-    ]
+    id:"misperception", numeral:"VII", act:3,
+    name:"The Law of Misperception",
+    tagline:"We do not suffer only because reality is painful. We suffer because reality passes through a biased mind.",
+    accent:"#2f4a72",
+    glyph:"eye",
+    rune:"SEE",
+    runeLine:"Reality, perception, interpretation, and meaning are four separate steps, not one event. The distance between reality and meaning is where suffering is made.",
+    teaching:[
+      "Between what happens and how it hurts stands an interpreter, and the interpreter is rarely neutral. The mind edits reality before you have any say in the edit.",
+      "This is not concerned with becoming positive. It is concerned with becoming accurate: pausing between the event and the story you have already started telling about it.",
+      "Wisdom is not seeing everything. Wisdom is seeing your own distortions before they become your destiny."
+    ],
+    q:{
+      text:"You discover that a pain you have been carrying was constructed, at least in part, upon a narrative of your own making. What do you do with that discovery?",
+      sub:"The suffering was genuine. The story that sustained it was partially invented.",
+      options:[
+        {l:"A",text:"I defend the narrative. If I revise it, the validity of everything I felt becomes uncertain.",score:1},
+        {l:"B",text:"I experience embarrassment and quietly set the entire episode aside without examination.",score:2},
+        {l:"C",text:"I accept the revision with some relief and some residual resistance to what it implies.",score:3},
+        {l:"D",text:"I welcome it. A more accurate understanding, even a painful one, is worth possessing.",score:4},
+        {l:"E",text:"My interpretive frameworks are always provisional. I anticipate revision and receive it as growth.",score:5}
+      ]
+    }
   },
   {
-    law:"The Law of Mortality",
-    text:"You are going to die. So is everyone you love. When this fact is genuinely present to you — not as abstraction but as felt reality — what does it produce in you?",
-    sub:"Not your considered philosophy of death, but what occurs in the body when the fact is real.",
-    options:[
-      {l:"A",text:"Panic, avoidance, an immediate and urgent need to redirect attention elsewhere.",score:1},
-      {l:"B",text:"A persistent low register of dread that I manage by not confronting it directly.",score:2},
-      {l:"C",text:"Grief at certain moments, peace at others. I remain in the process of working this through.",score:3},
-      {l:"D",text:"Clarity about what matters. Death is the condition that makes genuine priorities possible.",score:4},
-      {l:"E",text:"Groundedness. Mortality is not the problem to be solved. It is the context within which I live.",score:5}
-    ]
+    id:"mortality", numeral:"VIII", act:3,
+    name:"The Law of Mortality",
+    tagline:"Death is the only subject the mind returns to without ever closing the file.",
+    accent:"#3d4b52",
+    glyph:"circle",
+    rune:"GROUND",
+    runeLine:"Amor fati, memento mori, and maranasati are three doors into the same room: not resolution, but a steadier way of holding what will not resolve.",
+    teaching:[
+      "You are going to die. So is everyone you love. This workbook does not attempt to close that file. It only offers three ways of holding the question so it stops running your life from the dark.",
+      "Amor fati: want your fate exactly as it is, ending included. Memento mori: remember it often and plainly until it stops feeling like an intrusion. Maranasati: sit with it directly, breath by breath, until familiarity becomes a form of strength.",
+      "The circle was always going to close. What you practice is how you meet that."
+    ],
+    q:{
+      text:"You are going to die. So is everyone you love. When this fact is genuinely present to you, not as abstraction but as felt reality, what does it produce in you?",
+      sub:"Not your considered philosophy of death, but what occurs in the body when the fact is real.",
+      options:[
+        {l:"A",text:"Panic, avoidance, an immediate and urgent need to redirect attention elsewhere.",score:1},
+        {l:"B",text:"A persistent low register of dread that I manage by not confronting it directly.",score:2},
+        {l:"C",text:"Grief at certain moments, peace at others. I remain in the process of working this through.",score:3},
+        {l:"D",text:"Clarity about what matters. Death is the condition that makes genuine priorities possible.",score:4},
+        {l:"E",text:"Groundedness. Mortality is not the problem to be solved. It is the context within which I live.",score:5}
+      ]
+    }
   }
 ];
 
-const ARCHETYPES = [
+var ACTS = [
+  { n:1, roman:"I", name:"The Descent", tag:"Before you can be reoriented, you must first admit what pain actually is." },
+  { n:2, roman:"II", name:"The Trials", tag:"Time will erode you, urges will pull at you, and some doors close forever. Meet them with open eyes." },
+  { n:3, roman:"III", name:"The Revelation", tag:"See clearly. Face the end. Then rise, reoriented." }
+];
+
+var ARCHETYPES = [
   {
     id:"avoider", name:"The Avoider", range:[8,14], orient:"Avoidance",
     tagline:"If I move with sufficient speed, pain will not find me.",
@@ -378,216 +851,553 @@ const ARCHETYPES = [
   }
 ];
 
-// ── SVG SYMBOLS ───────────────────────────────────────────────
-
-function svg(id, size) {
-  const g="#c9973a", gd="#7a5a1a", b="#f0ead6", a="#1a1608", f="#352d14", gh="#9a8f72", bk="#080705";
-  const c=size/2, r=size*0.46;
-  const bg=`<circle cx="${c}" cy="${c}" r="${r}" fill="${a}" stroke="${gd}" stroke-width="0.8"/>`;
-  const shapes = {
-    avoider:`${bg}
-      <line x1="${c-size*.30}" y1="${c-size*.10}" x2="${c+size*.22}" y2="${c-size*.10}" stroke="${g}" stroke-width="1.4" stroke-linecap="round"/>
-      <line x1="${c-size*.36}" y1="${c}" x2="${c+size*.28}" y2="${c}" stroke="${g}" stroke-width="1.8" stroke-linecap="round"/>
-      <line x1="${c-size*.30}" y1="${c+size*.10}" x2="${c+size*.22}" y2="${c+size*.10}" stroke="${g}" stroke-width="1.4" stroke-linecap="round"/>
-      <polygon points="${c+size*.34},${c} ${c+size*.22},${c-size*.08} ${c+size*.22},${c+size*.08}" fill="${g}"/>
-      <path d="M${c-size*.04} ${c+size*.22} A${size*.23} ${size*.23} 0 1 1 ${c-size*.04} ${c-size*.22}" fill="none" stroke="${gh}" stroke-width="1.3" stroke-linecap="round"/>`,
-    resister:`${bg}
-      <path d="M${c} ${c-size*.30} L${c-size*.22} ${c-size*.14} L${c-size*.22} ${c+size*.08} Q${c-size*.22} ${c+size*.30} ${c} ${c+size*.32} Q${c+size*.22} ${c+size*.30} ${c+size*.22} ${c+size*.08} L${c+size*.22} ${c-size*.14} Z" fill="#1e1408" stroke="${g}" stroke-width="1.6"/>
-      <line x1="${c}" y1="${c-size*.22}" x2="${c}" y2="${c+size*.24}" stroke="${g}" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="${c-size*.17}" y1="${c+size*.01}" x2="${c+size*.17}" y2="${c+size*.01}" stroke="${g}" stroke-width="1.5" stroke-linecap="round"/>`,
-    negotiator:`${bg}
-      <line x1="${c}" y1="${c-size*.30}" x2="${c}" y2="${c+size*.32}" stroke="${g}" stroke-width="1.4" stroke-linecap="round"/>
-      <line x1="${c-size*.28}" y1="${c-size*.05}" x2="${c+size*.28}" y2="${c-size*.05}" stroke="${g}" stroke-width="1.4" stroke-linecap="round"/>
-      <line x1="${c-size*.28}" y1="${c-size*.05}" x2="${c-size*.28}" y2="${c+size*.12}" stroke="${g}" stroke-width="1.1"/>
-      <path d="M${c-size*.38} ${c+size*.12} A${size*.10} ${size*.10} 0 0 0 ${c-size*.18} ${c+size*.12} Z" fill="${a}" stroke="${g}" stroke-width="1.1"/>
-      <line x1="${c+size*.28}" y1="${c-size*.05}" x2="${c+size*.28}" y2="${c+size*.18}" stroke="${g}" stroke-width="1.1"/>
-      <path d="M${c+size*.18} ${c+size*.18} A${size*.10} ${size*.10} 0 0 0 ${c+size*.38} ${c+size*.18} Z" fill="${a}" stroke="${g}" stroke-width="1.1"/>
-      <polygon points="${c},${c+size*.30} ${c-size*.07},${c+size*.38} ${c+size*.07},${c+size*.38}" fill="${g}"/>`,
-    witness:`${bg}
-      <path d="M${c-size*.34} ${c} Q${c} ${c-size*.22} ${c+size*.34} ${c} Q${c} ${c+size*.22} ${c-size*.34} ${c} Z" fill="#14100a" stroke="${b}" stroke-width="1.4"/>
-      <circle cx="${c}" cy="${c}" r="${size*.13}" fill="#1e1408" stroke="${g}" stroke-width="1.2"/>
-      <circle cx="${c}" cy="${c}" r="${size*.07}" fill="${bk}"/>
-      <circle cx="${c}" cy="${c}" r="${size*.10}" fill="none" stroke="${g}" stroke-width="0.5" opacity="0.8"/>
-      <circle cx="${c+size*.05}" cy="${c-size*.05}" r="${size*.025}" fill="white" opacity="0.9"/>
-      <line x1="${c-size*.10}" y1="${c-size*.18}" x2="${c-size*.12}" y2="${c-size*.25}" stroke="${gh}" stroke-width="0.8" stroke-linecap="round"/>
-      <line x1="${c}" y1="${c-size*.21}" x2="${c}" y2="${c-size*.28}" stroke="${gh}" stroke-width="0.8" stroke-linecap="round"/>
-      <line x1="${c+size*.10}" y1="${c-size*.18}" x2="${c+size*.12}" y2="${c-size*.25}" stroke="${gh}" stroke-width="0.8" stroke-linecap="round"/>`,
-    integrator:(()=>{
-      let p="",s="";
-      for(let i=0;i<8;i++){const a2=(i*45*Math.PI)/180;p+=`<circle cx="${(c+size*.22*Math.cos(a2)).toFixed(1)}" cy="${(c+size*.22*Math.sin(a2)).toFixed(1)}" r="${size*.09}" fill="${a}" stroke="${g}" stroke-width="0.9"/>`;}
-      for(let i=0;i<16;i++){const a2=((i*22.5-90)*Math.PI)/180,r2=i%2===0?size*.16:size*.08;s+=`${(c+r2*Math.cos(a2)).toFixed(1)},${(c+r2*Math.sin(a2)).toFixed(1)} `;}
-      return `${bg}<circle cx="${c}" cy="${c}" r="${size*.43}" fill="none" stroke="${gd}" stroke-width="0.5"/><circle cx="${c}" cy="${c}" r="${size*.32}" fill="none" stroke="${gd}" stroke-width="0.4"/>${p}<polygon points="${s}" fill="${g}" stroke="${bk}" stroke-width="0.4"/><circle cx="${c}" cy="${c}" r="${size*.04}" fill="${b}"/>`;
-    })()
-  };
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${shapes[id]||""}</svg>`;
+function getArchetype(total){
+  for(var i=0;i<ARCHETYPES.length;i++){
+    var a = ARCHETYPES[i];
+    if(total >= a.range[0] && total <= a.range[1]) return a;
+  }
+  return ARCHETYPES[2];
 }
 
-// ── COVER PREVIEW ─────────────────────────────────────────────
-(function(){
-  const wrap=document.getElementById("preview");
-  ARCHETYPES.forEach(a=>{
-    const d=document.createElement("div");
-    d.className="preview-item";
-    d.innerHTML=svg(a.id,56)+`<div class="preview-label">${a.name.replace("The ","")}</div>`;
-    wrap.appendChild(d);
-  });
-})();
+/* ============================================================
+   ICONS — small inline SVG glyphs, one per portal + per archetype
+   ============================================================ */
+function portalGlyphSvg(type, color, size){
+  size = size || 46;
+  var paths = {
+    mask: '<circle cx="23" cy="23" r="16" fill="none" stroke="'+color+'" stroke-width="1.4"/><path d="M23 7 L23 39" stroke="'+color+'" stroke-width="1.2"/><circle cx="17" cy="20" r="2" fill="'+color+'"/><circle cx="29" cy="26" r="2" fill="none" stroke="'+color+'" stroke-width="1.2"/>',
+    crack: '<circle cx="23" cy="23" r="16" fill="none" stroke="'+color+'" stroke-width="1.4"/><path d="M23 8 L19 20 L26 24 L18 38" fill="none" stroke="'+color+'" stroke-width="1.3"/>',
+    ripple: '<circle cx="23" cy="23" r="16" fill="none" stroke="'+color+'" stroke-width="1" opacity=".5"/><circle cx="23" cy="23" r="10" fill="none" stroke="'+color+'" stroke-width="1.2" opacity=".8"/><circle cx="23" cy="23" r="3" fill="'+color+'"/>',
+    hourglass: '<path d="M12 8 H34 L23 23 L34 38 H12 L23 23 Z" fill="none" stroke="'+color+'" stroke-width="1.3"/><path d="M16 12 H30" stroke="'+color+'" stroke-width="1"/><path d="M16 34 H30" stroke="'+color+'" stroke-width="1"/>',
+    pulse: '<path d="M6 23 H16 L20 12 L26 34 L30 23 H40" fill="none" stroke="'+color+'" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>',
+    gate: '<rect x="10" y="10" width="26" height="28" fill="none" stroke="'+color+'" stroke-width="1.3"/><path d="M23 10 V38" stroke="'+color+'" stroke-width="1"/><circle cx="19" cy="24" r="1.6" fill="'+color+'"/>',
+    eye: '<path d="M6 23 Q23 9 40 23 Q23 37 6 23 Z" fill="none" stroke="'+color+'" stroke-width="1.3"/><circle cx="23" cy="23" r="6" fill="none" stroke="'+color+'" stroke-width="1.2"/><circle cx="23" cy="23" r="2.2" fill="'+color+'"/>',
+    circle: '<circle cx="23" cy="23" r="16" fill="none" stroke="'+color+'" stroke-width="1.4"/><circle cx="23" cy="23" r="1.6" fill="'+color+'"/>'
+  };
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 46 46">'+(paths[type]||'')+'</svg>';
+}
 
-// ── STATE ─────────────────────────────────────────────────────
-let qIdx=0, answers=new Array(8).fill(null);
+function archetypeSvg(id, size){
+  var g="#c9973a", gd="#7a5a1a", b="#f0ead6", a="#1a1608", gh="#9a8f72", bk="#080705";
+  var c = size/2, r = size*0.46;
+  var bg = '<circle cx="'+c+'" cy="'+c+'" r="'+r+'" fill="'+a+'" stroke="'+gd+'" stroke-width="0.8"/>';
+  var body = '';
+  if(id==="avoider"){
+    body = bg +
+      '<line x1="'+(c-size*.30)+'" y1="'+(c-size*.10)+'" x2="'+(c+size*.22)+'" y2="'+(c-size*.10)+'" stroke="'+g+'" stroke-width="1.4" stroke-linecap="round"/>'+
+      '<line x1="'+(c-size*.36)+'" y1="'+c+'" x2="'+(c+size*.28)+'" y2="'+c+'" stroke="'+g+'" stroke-width="1.8" stroke-linecap="round"/>'+
+      '<line x1="'+(c-size*.30)+'" y1="'+(c+size*.10)+'" x2="'+(c+size*.22)+'" y2="'+(c+size*.10)+'" stroke="'+g+'" stroke-width="1.4" stroke-linecap="round"/>'+
+      '<polygon points="'+(c+size*.34)+','+c+' '+(c+size*.22)+','+(c-size*.08)+' '+(c+size*.22)+','+(c+size*.08)+'" fill="'+g+'"/>'+
+      '<path d="M'+(c-size*.04)+' '+(c+size*.22)+' A'+(size*.23)+' '+(size*.23)+' 0 1 1 '+(c-size*.04)+' '+(c-size*.22)+'" fill="none" stroke="'+gh+'" stroke-width="1.3" stroke-linecap="round"/>';
+  } else if(id==="resister"){
+    body = bg +
+      '<path d="M'+c+' '+(c-size*.30)+' L'+(c-size*.22)+' '+(c-size*.14)+' L'+(c-size*.22)+' '+(c+size*.08)+' Q'+(c-size*.22)+' '+(c+size*.30)+' '+c+' '+(c+size*.32)+' Q'+(c+size*.22)+' '+(c+size*.30)+' '+(c+size*.22)+' '+(c+size*.08)+' L'+(c+size*.22)+' '+(c-size*.14)+' Z" fill="#1e1408" stroke="'+g+'" stroke-width="1.6"/>'+
+      '<line x1="'+c+'" y1="'+(c-size*.22)+'" x2="'+c+'" y2="'+(c+size*.24)+'" stroke="'+g+'" stroke-width="1.5" stroke-linecap="round"/>'+
+      '<line x1="'+(c-size*.17)+'" y1="'+(c+size*.01)+'" x2="'+(c+size*.17)+'" y2="'+(c+size*.01)+'" stroke="'+g+'" stroke-width="1.5" stroke-linecap="round"/>';
+  } else if(id==="negotiator"){
+    body = bg +
+      '<line x1="'+c+'" y1="'+(c-size*.30)+'" x2="'+c+'" y2="'+(c+size*.32)+'" stroke="'+g+'" stroke-width="1.4" stroke-linecap="round"/>'+
+      '<line x1="'+(c-size*.28)+'" y1="'+(c-size*.05)+'" x2="'+(c+size*.28)+'" y2="'+(c-size*.05)+'" stroke="'+g+'" stroke-width="1.4" stroke-linecap="round"/>'+
+      '<polygon points="'+c+','+(c+size*.30)+' '+(c-size*.07)+','+(c+size*.38)+' '+(c+size*.07)+','+(c+size*.38)+'" fill="'+g+'"/>';
+  } else if(id==="witness"){
+    body = bg +
+      '<path d="M'+(c-size*.34)+' '+c+' Q'+c+' '+(c-size*.22)+' '+(c+size*.34)+' '+c+' Q'+c+' '+(c+size*.22)+' '+(c-size*.34)+' '+c+' Z" fill="#14100a" stroke="'+b+'" stroke-width="1.4"/>'+
+      '<circle cx="'+c+'" cy="'+c+'" r="'+(size*.13)+'" fill="#1e1408" stroke="'+g+'" stroke-width="1.2"/>'+
+      '<circle cx="'+c+'" cy="'+c+'" r="'+(size*.07)+'" fill="'+bk+'"/>';
+  } else {
+    var dots = '', sPts = [];
+    for(var i=0;i<8;i++){ var a2=(i*45*Math.PI)/180; dots += '<circle cx="'+(c+size*.22*Math.cos(a2)).toFixed(1)+'" cy="'+(c+size*.22*Math.sin(a2)).toFixed(1)+'" r="'+(size*.09)+'" fill="'+a+'" stroke="'+g+'" stroke-width="0.9"/>'; }
+    for(var j=0;j<16;j++){ var a3=((j*22.5-90)*Math.PI)/180, r2 = j%2===0?size*.16:size*.08; sPts.push((c+r2*Math.cos(a3)).toFixed(1)+','+(c+r2*Math.sin(a3)).toFixed(1)); }
+    body = bg + '<circle cx="'+c+'" cy="'+c+'" r="'+(size*.43)+'" fill="none" stroke="'+gd+'" stroke-width="0.5"/>' + dots +
+      '<polygon points="'+sPts.join(' ')+'" fill="'+g+'" stroke="'+bk+'" stroke-width="0.4"/>'+
+      '<circle cx="'+c+'" cy="'+c+'" r="'+(size*.04)+'" fill="'+b+'"/>';
+  }
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'">'+body+'</svg>';
+}
 
-// ── SCREENS ───────────────────────────────────────────────────
-function show(id){
-  document.querySelectorAll(".screen").forEach(s=>{
-    s.classList.remove("active");
-    s.style.animation="none";
-  });
-  const el=document.getElementById(id);
-  el.style.animation="none";
-  el.offsetHeight;
-  el.style.animation="";
-  el.classList.add("active");
+/* ============================================================
+   STATE
+   ============================================================ */
+var qIdx = 0;
+var answers = new Array(8).fill(null);
+var portalIndex = 0;
+var runes = [];
+var currentPhase = 'quiz';
+
+function applyScreen(id){
+  var els = document.querySelectorAll('.screen');
+  for(var i=0;i<els.length;i++){ els[i].classList.remove('active'); }
+  document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
 }
+function showScreen(id, instant){
+  if(REDUCED_MOTION || instant){ applyScreen(id); return; }
+  var iris = document.getElementById('iris');
+  iris.classList.remove('opening');
+  iris.classList.add('closing');
+  setTimeout(function(){
+    applyScreen(id);
+    iris.classList.remove('closing');
+    void iris.offsetWidth;
+    iris.classList.add('opening');
+  }, 280);
+}
 
-// ── START ─────────────────────────────────────────────────────
+/* ============================================================
+   COVER
+   ============================================================ */
+(function initCover(){
+  var preview = document.getElementById('law-preview');
+  LAWS.forEach(function(l){
+    var span = document.createElement('span');
+    span.className = 'law-chip';
+    span.textContent = l.numeral + ' · ' + l.name.replace('The Law of ','');
+    preview.appendChild(span);
+  });
+})();
+document.getElementById('btn-begin-test').addEventListener('click', startTest);
+
+/* ============================================================
+   QUIZ (Pain Orientation Test phase)
+   ============================================================ */
 function startTest(){
-  qIdx=0; answers=new Array(8).fill(null);
-  document.getElementById("progress-bar").style.display="block";
+  qIdx = 0; answers = new Array(8).fill(null);
+  currentPhase = 'quiz';
+  document.getElementById('progress-bar').classList.add('show');
   updateProgress();
-  show("question");
-  renderQ();
+  showScreen('screen-question');
+  renderQuestion();
+  saveState();
 }
 
-function resetTest(){
-  document.getElementById("progress-bar").style.display="none";
-  document.getElementById("progress-fill").style.width="0%";
-  show("cover");
-}
+function renderQuestion(){
+  var law = LAWS[qIdx];
+  document.getElementById('q-law').textContent = law.name.toUpperCase();
+  document.getElementById('q-counter').textContent = (qIdx+1) + ' of ' + LAWS.length;
+  document.getElementById('q-text').textContent = law.q.text;
+  document.getElementById('q-sub').textContent = law.q.sub;
 
-// ── RENDER QUESTION ───────────────────────────────────────────
-function renderQ(){
-  const q=QUESTIONS[qIdx];
-  document.getElementById("q-law").textContent=q.law.toUpperCase();
-  document.getElementById("q-counter").textContent=`${qIdx+1} of ${QUESTIONS.length}`;
-  document.getElementById("q-text").textContent=q.text;
-  document.getElementById("q-sub").textContent=q.sub;
-
-  const dots=document.getElementById("q-dots");
-  dots.innerHTML="";
-  QUESTIONS.forEach((_,i)=>{
-    const d=document.createElement("div");
-    d.className="dot"+(i<qIdx?" answered":i===qIdx?" current":"");
-    dots.appendChild(d);
+  var dotsEl = document.getElementById('q-dots');
+  dotsEl.innerHTML = '';
+  LAWS.forEach(function(l, i){
+    var d = document.createElement('div');
+    d.className = 'dot' + (i < qIdx ? ' answered' : i === qIdx ? ' current' : '');
+    dotsEl.appendChild(d);
   });
 
-  const opts=document.getElementById("q-options");
-  opts.innerHTML="";
-  q.options.forEach(o=>{
-    const btn=document.createElement("button");
-    btn.className="option"+(answers[qIdx]===o.score?" selected":"");
-    btn.innerHTML=`<span class="opt-l">${o.l}</span><span>${o.text}</span>`;
-    btn.onclick=()=>selectOpt(o.score,btn);
-    opts.appendChild(btn);
+  var optsEl = document.getElementById('q-options');
+  optsEl.innerHTML = '';
+  law.q.options.forEach(function(o){
+    var b = document.createElement('button');
+    b.className = 'opt' + (answers[qIdx]===o.score ? ' chosen' : '');
+    b.style.opacity = '1';
+    b.style.animation = 'none';
+    b.innerHTML = '<span class="opt-l">'+o.l+'</span><span>'+escapeHtml(o.text)+'</span>';
+    b.addEventListener('click', function(){ selectAnswer(o.score); });
+    optsEl.appendChild(b);
   });
 
-  document.getElementById("btn-back").disabled=qIdx===0;
+  document.getElementById('btn-back').disabled = qIdx===0;
   refreshNext();
 }
 
-function selectOpt(score,btn){
-  answers[qIdx]=score;
-  document.querySelectorAll(".option").forEach(b=>b.classList.remove("selected"));
-  btn.classList.add("selected");
-  refreshNext();
+function selectAnswer(score){
+  answers[qIdx] = score;
+  SFX.select();
+  renderQuestion();
   updateProgress();
+  saveState();
 }
 
 function refreshNext(){
-  const btn=document.getElementById("btn-next");
-  const ready=answers[qIdx]!==null;
-  btn.classList.toggle("ready",ready);
-  btn.textContent=ready&&qIdx===QUESTIONS.length-1?"See My Results →":"Continue →";
+  var btn = document.getElementById('btn-next');
+  var ready = answers[qIdx] !== null;
+  btn.classList.toggle('ready', ready);
+  btn.textContent = (ready && qIdx===LAWS.length-1) ? 'See What the Portals Reveal →' : 'Continue →';
 }
 
 function updateProgress(){
-  const pct=Math.round((answers.filter(a=>a!==null).length/8)*100);
-  document.getElementById("progress-fill").style.width=pct+"%";
+  var answeredCount = answers.filter(function(a){ return a!==null; }).length;
+  var pct = Math.round((answeredCount/8)*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
 }
 
-// ── NAV ───────────────────────────────────────────────────────
-function nextQ(){
-  if(answers[qIdx]===null)return;
-  if(qIdx<QUESTIONS.length-1){ qIdx++; show("question"); renderQ(); }
-  else finish();
+document.getElementById('btn-next').addEventListener('click', function(){
+  if(answers[qIdx]===null) return;
+  if(qIdx < LAWS.length-1){ qIdx++; renderQuestion(); saveState(); }
+  else finishTest();
+});
+document.getElementById('btn-back').addEventListener('click', function(){
+  if(qIdx>0){ qIdx--; renderQuestion(); saveState(); }
+});
+
+/* ============================================================
+   CALCULATING (shared between quiz-end and journey-end)
+   ============================================================ */
+function runCalc(eyebrow, msgs, duration, callback){
+  document.getElementById('calc-eyebrow').textContent = eyebrow;
+  showScreen('screen-calc');
+  var msgEl = document.getElementById('calc-msg');
+  var i = 0;
+  msgEl.textContent = msgs[0];
+  var step = duration / msgs.length;
+  var iv = setInterval(function(){
+    i = Math.min(msgs.length-1, i+1);
+    msgEl.textContent = msgs[i];
+  }, step);
+  setTimeout(function(){
+    clearInterval(iv);
+    callback();
+  }, duration);
 }
 
-function prevQ(){
-  if(qIdx>0){ qIdx--; show("question"); renderQ(); }
+function finishTest(){
+  document.getElementById('progress-fill').style.width = '100%';
+  runCalc('Compiling your orientation', [
+    "Reading your instinctive responses…",
+    "Mapping them against the eight laws…",
+    "Preparing the portals that will confirm them…"
+  ], 3000, showJourneyTitle);
 }
 
-// ── FINISH ────────────────────────────────────────────────────
-function finish(){
-  document.getElementById("progress-fill").style.width="100%";
-  show("calculating");
-  const msgs=["Weighing your responses across all eight laws…","Identifying dominant patterns of orientation…","Locating your archetype within the spectrum…"];
-  let mi=0;
-  const el=document.getElementById("calc-msg");
-  function next(){
-    if(mi>=msgs.length)return;
-    el.classList.remove("show");
-    setTimeout(()=>{ el.textContent=msgs[mi++]; el.classList.add("show"); if(mi<msgs.length)setTimeout(next,1100); },350);
+/* ============================================================
+   JOURNEY TITLE (transition from test to portals)
+   ============================================================ */
+function showJourneyTitle(){
+  document.getElementById('progress-bar').classList.remove('show');
+  showScreen('screen-journey-title');
+}
+document.getElementById('btn-begin-journey').addEventListener('click', function(){
+  portalIndex = 0; runes = [];
+  currentPhase = 'journey';
+  document.documentElement.style.setProperty('--accent', '#c9973a');
+  emberField('#c9973a');
+  showActIntro(ACTS[0]);
+  saveState();
+});
+
+/* ============================================================
+   HUD (journey phase)
+   ============================================================ */
+function updateHUD(){
+  var hud = document.getElementById('hud');
+  hud.classList.add('show');
+  var law = LAWS[Math.min(portalIndex,7)];
+  var act = ACTS[law.act-1];
+  document.getElementById('hud-act').textContent = 'ACT ' + act.roman + ' · ' + act.name;
+
+  var dotsEl = document.getElementById('hud-dots');
+  dotsEl.innerHTML = '';
+  LAWS.forEach(function(l, i){
+    var d = document.createElement('div');
+    var doneNow = i < runes.length;
+    var isCurrent = i === portalIndex;
+    d.className = 'hud-dot' + (doneNow ? ' done' : '') + (isCurrent ? ' current' : '');
+    d.title = l.name;
+    d.textContent = doneNow ? '✓' : l.numeral;
+    dotsEl.appendChild(d);
+  });
+
+  var pct = Math.min(100, Math.round((runes.length/8)*100));
+  document.getElementById('hud-meter-fill').style.width = pct + '%';
+}
+
+document.getElementById('hud-mute').addEventListener('click', function(){
+  muted = !muted;
+  if(muted) stopSpeech();
+  this.textContent = muted ? '🔇' : '🔊';
+  this.title = muted ? 'Unmute' : 'Mute';
+});
+
+/* ============================================================
+   RIPPLE + PORTAL TILT — click feedback and pointer parallax
+   ============================================================ */
+document.addEventListener('click', function(e){
+  if(REDUCED_MOTION) return;
+  var target = e.target.closest && e.target.closest('.btn, .opt, .hud-mute');
+  if(!target) return;
+  var rect = target.getBoundingClientRect();
+  var size = Math.max(rect.width, rect.height);
+  var span = document.createElement('span');
+  span.className = 'ripple';
+  span.style.width = span.style.height = size+'px';
+  span.style.left = (e.clientX - rect.left - size/2)+'px';
+  span.style.top = (e.clientY - rect.top - size/2)+'px';
+  target.appendChild(span);
+  setTimeout(function(){ if(span.parentNode) span.parentNode.removeChild(span); }, 650);
+});
+
+document.addEventListener('pointermove', function(e){
+  if(REDUCED_MOTION) return;
+  var frame = document.querySelector('#screen-portal.active .portal-frame');
+  if(!frame) return;
+  var rect = frame.getBoundingClientRect();
+  var dx = (e.clientX - (rect.left + rect.width/2)) / rect.width;
+  var dy = (e.clientY - (rect.top + rect.height/2)) / rect.height;
+  var rotY = Math.max(-1, Math.min(1, dx)) * 12;
+  var rotX = Math.max(-1, Math.min(1, dy)) * -12;
+  frame.style.transform = 'perspective(600px) rotateX('+rotX.toFixed(2)+'deg) rotateY('+rotY.toFixed(2)+'deg)';
+});
+function resetPortalTilt(){
+  var frame = document.querySelector('#screen-portal.active .portal-frame');
+  if(frame) frame.style.transform = '';
+}
+document.addEventListener('pointerup', resetPortalTilt);
+document.addEventListener('pointerleave', resetPortalTilt);
+
+/* ============================================================
+   ACT INTRO
+   ============================================================ */
+function showActIntro(act){
+  SFX.act();
+  document.getElementById('act-roman').textContent = act.roman;
+  document.getElementById('act-name').textContent = act.name;
+  document.getElementById('act-tag').textContent = '"' + act.tag + '"';
+  var lawsInAct = LAWS.filter(function(l){ return l.act === act.n; });
+  var lawsEl = document.getElementById('act-laws');
+  lawsEl.innerHTML = '';
+  lawsInAct.forEach(function(l){
+    var item = document.createElement('div');
+    item.className = 'act-law-item';
+    item.innerHTML = '<div class="act-law-num">LAW '+l.numeral+'</div><div class="act-law-name">'+escapeHtml(l.name.replace('The Law of ',''))+'</div>';
+    lawsEl.appendChild(item);
+  });
+  var btn = document.getElementById('btn-enter-act');
+  btn.textContent = 'Enter Act ' + act.roman;
+  btn.onclick = function(){
+    showScreen('screen-portal');
+    portalScene(LAWS[portalIndex], portalIndex);
+  };
+  showScreen('screen-actintro');
+  updateHUD();
+}
+
+/* ============================================================
+   PORTAL
+   ============================================================ */
+function portalScene(law, idx){
+  document.documentElement.style.setProperty('--accent', law.accent);
+  emberField(law.accent);
+  document.getElementById('portal-core').innerHTML = portalGlyphSvg(law.glyph, law.accent, 44);
+  document.getElementById('portal-num').textContent = 'PORTAL ' + law.numeral + ' OF VIII';
+  document.getElementById('portal-title').textContent = law.name;
+  document.getElementById('portal-sub').textContent = '"' + law.tagline + '"';
+  var body = document.getElementById('portal-body');
+  body.innerHTML = '<div class="typewriter-box" id="tw-box"></div>';
+  var twBox = document.getElementById('tw-box');
+  runTypewriter(twBox, law.teaching, 14, function(){
+    setTimeout(function(){ showYourStand(law, idx); }, 350);
+  });
+  updateHUD();
+}
+
+function showYourStand(law, idx){
+  var body = document.getElementById('portal-body');
+  var score = answers[idx];
+  var chosenOpt = law.q.options.filter(function(o){ return o.score === score; })[0];
+  body.innerHTML =
+    '<div class="trial-box">'+
+      '<p class="trial-label">Where You Stood</p>'+
+      '<div class="opt chosen" style="opacity:1;animation:none;cursor:default">'+
+        '<span class="opt-l">'+chosenOpt.l+'</span><span>'+escapeHtml(chosenOpt.text)+'</span>'+
+      '</div>'+
+      '<p class="rune-caption" style="margin-top:1rem">That is what you answered before you ever saw this law’s name: a score of '+score+' of 5.</p>'+
+      '<div style="text-align:center;margin-top:1.8rem">'+
+        '<button class="btn" id="btn-claim-rune">Claim the Rune →</button>'+
+      '</div>'+
+    '</div>';
+  document.getElementById('btn-claim-rune').addEventListener('click', function(){ showRune(law, idx); });
+}
+
+function showRune(law, idx){
+  SFX.rune();
+  runes.push(law.rune);
+  var body = document.getElementById('portal-body');
+  body.innerHTML =
+    '<div class="rune-collect-wrap">'+
+      '<hr class="rule">'+
+      '<div class="rune-word">'+law.rune+'</div>'+
+      '<p class="rune-caption">'+escapeHtml(law.runeLine)+'</p>'+
+      '<div class="rune-callout">'+
+        '<p class="eyebrow">Rune Claimed</p>'+
+        '<p>You carry this word forward. It will complete your pledge at the final threshold.</p>'+
+      '</div>'+
+      '<button class="btn" id="btn-portal-continue">'+(idx===7 ? 'Face the Final Threshold →' : 'Pass Through the Portal →')+'</button>'+
+    '</div>';
+  document.getElementById('btn-portal-continue').addEventListener('click', function(){ nextPortal(idx); });
+  updateHUD();
+  saveState();
+}
+
+function nextPortal(idx){
+  var nextIdx = idx + 1;
+  if(nextIdx >= LAWS.length){
+    runCalc('Sealing your reorientation', [
+      "Weighing your responses across all eight laws…",
+      "Binding your eight collected runes into a pledge…",
+      "Locating your archetype within the spectrum…"
+    ], 3000, showResults);
+    return;
   }
-  next();
-  setTimeout(()=>{ buildResults(); show("results"); },3500);
+  var nextLaw = LAWS[nextIdx];
+  portalIndex = nextIdx;
+  saveState();
+  if(nextLaw.act !== LAWS[idx].act){
+    showActIntro(ACTS[nextLaw.act-1]);
+  } else {
+    showScreen('screen-portal');
+    portalScene(nextLaw, nextIdx);
+  }
 }
 
-// ── SCORING ───────────────────────────────────────────────────
-function getArchetype(total){
-  return ARCHETYPES.find(a=>total>=a.range[0]&&total<=a.range[1])||ARCHETYPES[2];
-}
+/* ============================================================
+   RESULTS
+   ============================================================ */
+var PLEDGE_LINES = {
+  ADMIT:"admit what moves in me",
+  EXPOSE:"expose what I have hidden",
+  ENOUGH:"call enough what already is",
+  TEND:"tend what decays",
+  RIDE:"ride what impulse brings",
+  DISCERN:"discern before I cross",
+  SEE:"see before I suffer",
+  GROUND:"stand grounded in what ends"
+};
 
-function buildResults(){
-  const total=answers.reduce((s,a)=>s+(a||0),0);
-  const arch=getArchetype(total);
-
-  document.getElementById("r-symbol").innerHTML=svg(arch.id,100);
-  document.getElementById("r-name").textContent=arch.name;
-  document.getElementById("r-tagline").textContent=`"${arch.tagline}"`;
-  document.getElementById("r-total").textContent=`${total} / 40`;
-  document.getElementById("r-orient").textContent=arch.orient;
-  document.getElementById("r-range").textContent=`${arch.range[0]} to ${arch.range[1]}`;
-  document.getElementById("r-desc").textContent=arch.desc;
-  document.getElementById("r-growth").textContent=arch.growth;
-
-  // Law bars
-  const bars=document.getElementById("law-bars");
-  bars.innerHTML="";
-  answers.forEach((score,i)=>{
-    const row=document.createElement("div");
-    row.className="law-row";
-    row.innerHTML=`<div class="law-name">${LAWS[i].replace("The Law of ","")}</div><div class="bar-track"><div class="bar-fill" data-pct="${(score/5)*100}%" style="width:0%"></div></div><div class="bar-score">${score} / 5</div>`;
-    bars.appendChild(row);
+function buildSummaryText(total, arch, pledgeSentence){
+  var lines = [];
+  lines.push('EIGHT LAWS OF PAIN: MY REORIENTATION');
+  lines.push('');
+  lines.push('Archetype: ' + arch.name + ' (' + arch.orient + ')');
+  lines.push('Total Score: ' + total + ' / 40');
+  lines.push('');
+  lines.push('My Pledge:');
+  lines.push(pledgeSentence);
+  lines.push('');
+  lines.push('Score by Law:');
+  LAWS.forEach(function(law, i){
+    lines.push('  ' + law.name.replace('The Law of ','') + ': ' + answers[i] + '/5');
   });
-
-  // Spectrum
-  const spec=document.getElementById("spectrum");
-  spec.innerHTML="";
-  const pts=ARCHETYPES.map(a=>{ const m=(a.range[0]+a.range[1])/2; return {a,pct:Math.max(0,Math.round((1-Math.abs(total-m)/32)*100))}; });
-  const mx=Math.max(...pts.map(p=>p.pct));
-  pts.forEach(({a,pct})=>{
-    const row=document.createElement("div");
-    row.className="spec-row";
-    const isPri=a.id===arch.id;
-    row.innerHTML=`<div class="spec-name${isPri?" primary":""}">${a.name}</div><div class="bar-track"><div class="bar-fill" data-pct="${(pct/mx)*100}%" style="width:0%;background:${isPri?"linear-gradient(90deg,#7a5a1a,#c9973a)":"linear-gradient(90deg,#352d14,#9a8f72)"}"></div></div><div class="spec-pct">${pct}%</div>`;
-    spec.appendChild(row);
-  });
-
-  // Animate bars
-  requestAnimationFrame(()=>setTimeout(()=>{
-    document.querySelectorAll(".bar-fill").forEach(el=>{ el.style.width=el.dataset.pct; });
-  },400));
+  return lines.join('\n');
 }
+
+function showResults(){
+  SFX.finale();
+  clearState();
+  var total = answers.reduce(function(s,a){ return s+a; }, 0);
+  var arch = getArchetype(total);
+
+  var pledgeParts = runes.map(function(r){ return PLEDGE_LINES[r]; });
+  var pledgeSentence = 'I will ' + pledgeParts.join(', ').replace(/, ([^,]*)$/, ', and $1') + '.';
+
+  var pledgeRunesHtml = runes.map(function(r){ return '<span class="pledge-rune mono">'+r+'</span>'; }).join('');
+
+  var lawBarsHtml = LAWS.map(function(law, i){
+    return '<div class="law-row">'+
+      '<div class="law-name">'+escapeHtml(law.name.replace('The Law of ',''))+'</div>'+
+      '<div class="bar-track"><div class="bar-fill" data-pct="'+((answers[i]/5)*100)+'%" style="width:0%"></div></div>'+
+      '<div class="bar-score">'+answers[i]+' / 5</div>'+
+    '</div>';
+  }).join('');
+
+  var html =
+    '<p class="eyebrow" style="margin-bottom:1.2rem">The Final Threshold: You Have Been Reoriented</p>'+
+    '<div class="r-hero">'+
+      '<div class="r-symbol">'+archetypeSvg(arch.id, 96)+'</div>'+
+      '<div><h2 class="r-name">'+arch.name+'</h2><p class="r-tagline">"'+arch.tagline+'"</p></div>'+
+    '</div>'+
+    '<div class="pledge-box">'+
+      '<p class="eyebrow" style="margin-bottom:.8rem">Your Reorientation Pledge</p>'+
+      '<div class="pledge-runes">'+pledgeRunesHtml+'</div>'+
+      '<p class="pledge-text">'+escapeHtml(pledgeSentence)+'</p>'+
+    '</div>'+
+    '<div class="score-strip">'+
+      '<div class="score-cell"><p class="eyebrow">Total Score</p><p class="score-val">'+total+' / 40</p></div>'+
+      '<div class="score-cell"><p class="eyebrow">Orientation</p><p class="score-val" style="font-size:1.1rem">'+arch.orient+'</p></div>'+
+      '<div class="score-cell"><p class="eyebrow">Score Range</p><p class="score-val" style="font-size:1.1rem">'+arch.range[0]+'–'+arch.range[1]+'</p></div>'+
+    '</div>'+
+    '<p class="r-desc">'+escapeHtml(arch.desc)+'</p>'+
+    '<hr class="rule">'+
+    '<p class="eyebrow" style="margin-bottom:1.2rem">Score by Law of Pain</p>'+
+    '<div class="law-bars">'+lawBarsHtml+'</div>'+
+    '<div class="growth">'+
+      '<p class="eyebrow" style="color:var(--gold);margin-bottom:.5rem">Growth Practice</p>'+
+      '<p class="growth-text">'+escapeHtml(arch.growth)+'</p>'+
+    '</div>'+
+    '<div class="result-actions"><button class="btn" id="btn-copy-pledge">Copy My Reorientation</button><button class="btn" id="btn-restart">Take the Assessment Again</button></div>';
+
+  document.getElementById('results-body').innerHTML = html;
+  document.getElementById('btn-restart').addEventListener('click', restart);
+  document.getElementById('btn-copy-pledge').addEventListener('click', function(){
+    copyToClipboard(buildSummaryText(total, arch, pledgeSentence), this);
+  });
+  showScreen('screen-results');
+  updateHUD();
+
+  requestAnimationFrame(function(){
+    setTimeout(function(){
+      document.querySelectorAll('.bar-fill').forEach(function(el){ el.style.width = el.dataset.pct; });
+    }, 300);
+  });
+}
+
+function restart(){
+  qIdx = 0; answers = new Array(8).fill(null); runes = []; portalIndex = 0;
+  currentPhase = 'quiz';
+  clearState();
+  stopSpeech();
+  document.getElementById('progress-bar').classList.remove('show');
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('hud').classList.remove('show');
+  document.documentElement.style.setProperty('--accent', '#c9973a');
+  showScreen('screen-cover');
+}
+
+/* ============================================================
+   RESUME — offer to continue a saved assessment or journey
+   ============================================================ */
+function resumeFrom(saved){
+  answers = saved.answers || new Array(8).fill(null);
+  runes = saved.runes || [];
+  portalIndex = saved.portalIndex || 0;
+  qIdx = saved.qIdx || 0;
+  if(saved.phase === 'journey'){
+    currentPhase = 'journey';
+    var law = LAWS[Math.min(portalIndex, 7)];
+    document.documentElement.style.setProperty('--accent', law.accent);
+    emberField(law.accent);
+    showScreen('screen-portal');
+    portalScene(law, portalIndex);
+  } else {
+    currentPhase = 'quiz';
+    document.getElementById('progress-bar').classList.add('show');
+    updateProgress();
+    showScreen('screen-question');
+    renderQuestion();
+  }
+}
+
+(function initResume(){
+  var saved = loadState();
+  if(!saved) return;
+  var wrap = document.querySelector('#screen-cover .wrap');
+  var beginBtn = document.getElementById('btn-begin-test');
+  var banner = document.createElement('div');
+  banner.className = 'resume-banner';
+  var label = saved.phase === 'journey' ? 'Resume Your Journey' : 'Resume the Assessment';
+  var desc = saved.phase === 'journey'
+    ? 'You left off inside the portals, with ' + (saved.runes ? saved.runes.length : 0) + ' of 8 runes claimed.'
+    : 'You left off on question ' + ((saved.qIdx||0)+1) + ' of 8.';
+  banner.innerHTML = '<p class="eyebrow">Progress Found</p><p class="desc">'+desc+'</p>';
+  var btn = document.createElement('button');
+  btn.className = 'btn btn-sm';
+  btn.textContent = label;
+  btn.addEventListener('click', function(){ resumeFrom(saved); });
+  banner.appendChild(btn);
+  wrap.insertBefore(banner, beginBtn);
+})();
+
+})();
 </script>
 </body>
 </html>
