@@ -343,7 +343,7 @@ a.btn{text-decoration:none;display:inline-block}
     <div class="act-name" id="act-name"></div>
     <p class="act-tag" id="act-tag"></p>
     <div class="act-laws" id="act-laws"></div>
-    <button class="btn" id="btn-enter-act"></button>
+    <p class="skip-hint">tap to continue</p>
   </div>
 </section>
 
@@ -1018,7 +1018,10 @@ document.getElementById('btn-begin-journey').addEventListener('click', function(
   currentPhase = 'journey';
   document.documentElement.style.setProperty('--accent', '#c9973a');
   emberField('#c9973a');
-  showActIntro(ACTS[0]);
+  showActIntro(ACTS[0], function(){
+    showScreen('screen-portal');
+    portalScene(LAWS[portalIndex], portalIndex);
+  });
   saveState();
 });
 
@@ -1087,7 +1090,7 @@ document.addEventListener('pointerleave', resetPortalTilt);
 /* ============================================================
    ACT INTRO
    ============================================================ */
-function showActIntro(act){
+function showActIntro(act, onDone){
   SFX.act();
   document.getElementById('act-roman').textContent = act.roman;
   document.getElementById('act-name').textContent = act.name;
@@ -1101,14 +1104,17 @@ function showActIntro(act){
     item.innerHTML = '<div class="act-law-num">LAW '+l.numeral+'</div><div class="act-law-name">'+escapeHtml(l.name.replace('The Law of ',''))+'</div>';
     lawsEl.appendChild(item);
   });
-  var btn = document.getElementById('btn-enter-act');
-  btn.textContent = 'Enter Act ' + act.roman;
-  btn.onclick = function(){
-    showScreen('screen-portal');
-    portalScene(LAWS[portalIndex], portalIndex);
-  };
   showScreen('screen-actintro');
   updateHUD();
+  var advanced = false;
+  function advance(){
+    if(advanced) return;
+    advanced = true;
+    document.getElementById('screen-actintro').onclick = null;
+    onDone();
+  }
+  document.getElementById('screen-actintro').onclick = advance;
+  setTimeout(advance, REDUCED_MOTION ? 900 : 2000);
 }
 
 /* ============================================================
@@ -1182,7 +1188,10 @@ function nextPortal(idx){
   portalIndex = nextIdx;
   saveState();
   if(nextLaw.act !== LAWS[idx].act){
-    showActIntro(ACTS[nextLaw.act-1]);
+    showActIntro(ACTS[nextLaw.act-1], function(){
+      showScreen('screen-portal');
+      portalScene(nextLaw, nextIdx);
+    });
   } else {
     showScreen('screen-portal');
     portalScene(nextLaw, nextIdx);
@@ -1266,7 +1275,7 @@ function showResults(){
     '</div>'+
     '<div class="premium-box">'+
       '<p class="eyebrow">Premium: Act IV</p>'+
-      '<p class="premium-text">Your result continues into a fourth act. "'+escapeHtml(arch.name)+'" has a full Campbellian myth written for it, plus a practical breakdown of how this orientation operates in relationships, status, office politics, wealth, and groups.</p>'+
+      '<p class="premium-text">Your result continues into a fourth act. "'+escapeHtml(arch.name)+'" has a full Campbellian myth written for it, plus a practical breakdown of how this orientation operates in wealth, health, and happiness.</p>'+
       '<a class="btn btn-gold" href="myth/index.html?arch='+arch.id+'">Unlock Act IV: The Myth</a>'+
     '</div>'+
     '<div class="result-actions"><button class="btn" id="btn-copy-pledge">Copy My Reorientation</button><button class="btn" id="btn-restart">Take the Assessment Again</button></div>';

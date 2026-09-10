@@ -327,7 +327,7 @@ a.btn, a.btn-ghost{text-decoration:none;display:inline-block}
     <div class="saga-icon-sm" id="mud-icon"></div>
     <p class="eyebrow" style="text-align:center;margin-bottom:.4rem" id="mud-eyebrow">The Archetypes in the Mud</p>
     <h2 class="portal-title" id="mud-name" style="margin-bottom:.3rem"></h2>
-    <p class="portal-sub" style="margin-bottom:2.6rem">How this orientation operates under real, ordinary conditions: relationships, status, office politics, wealth, and the group.</p>
+    <p class="portal-sub" style="margin-bottom:2.6rem">How this orientation operates under real, ordinary conditions: wealth, health, and happiness.</p>
     <div id="mud-body"></div>
     <div class="result-actions" style="margin-top:1rem">
       <button class="btn" id="btn-mud-back">Back to the Hub</button>
@@ -965,116 +965,76 @@ document.getElementById('btn-hub-back').addEventListener('click', function(){ sh
 document.getElementById('btn-mud-back').addEventListener('click', function(){ showScreen('screen-hub'); });
 document.getElementById('btn-mud-from-close').addEventListener('click', function(){ showMud(currentArch); });
 
-var DOMAIN_LABELS = [["relationships", "Intimate Relationships"], ["status", "Status"], ["officePolitics", "Office Politics"], ["wealthCreation", "Wealth Creation"], ["groupDynamics", "Group Dynamics"]];
+var DOMAIN_LABELS = [["wealth", "Wealth"], ["health", "Health"], ["happiness", "Happiness"]];
 var MUD = {
   "avoider": {
-    "relationships": [
-      "In intimacy, your instinct is to leave the room, literally or emotionally, the moment a conversation gets heavy. You soften conflict by postponing it, which reads to a partner as ease in good times and absence in hard ones. The relationship gets your competence. It does not always get your presence.",
-      "Name the urge to exit before you act on it, and stay one minute longer than feels comfortable. You are not being asked to enjoy the discomfort. Only to discover it does not do what you have been assuming it will do."
-    ],
-    "status": [
-      "You treat invisibility as a strategy. Achievements get undersold, promotions that invite scrutiny get quietly declined, credit gets redirected before anyone can examine it too closely. It works. It also caps you well below your actual capacity.",
-      "Let one accomplishment stand this week without qualifying it, deflecting it, or handing the credit elsewhere. Being seen is not the danger you have filed it under."
-    ],
-    "officePolitics": [
-      "Difficult colleagues get routed around rather than confronted. Grievances go unspoken and get absorbed instead, quietly, as extra work or extra patience. You are liked. You are not always consulted, because you have trained the room not to expect friction from you.",
-      "Raise the one issue you have been quietly managing around, once, briefly, without dressing it up. Practice the sentence before you need it."
-    ],
-    "wealthCreation": [
+    "wealth": [
       "Money conversations get the same treatment as any other conflict: deferred. Rates go underpriced to avoid the risk of rejection, statements go unopened, raises go unrequested. The avoidance is not about the money. It is about what the conversation might expose.",
       "Open the number you have been avoiding, today, for five minutes only. You do not have to solve it. You only have to look at it while remaining in the room."
     ],
-    "groupDynamics": [
-      "In any group you become the accommodating one, deferring to consensus even when you privately see the flaw in it. You disappear into agreement because disagreement risks being the reason the group turns its attention to you.",
-      "Voice the disagreement you already have, once per meeting, briefly. A room that has never heard your objection cannot weigh it."
+    "health": [
+      "Checkups get postponed, symptoms get explained away, the appointment stays on the list without ever getting booked. Avoidance here is not laziness. It is the same instinct that avoids any hard conversation, applied to your own body.",
+      "Book the one appointment you have been postponing, today, before the day gets away from you."
+    ],
+    "happiness": [
+      "You chase good feelings through motion: the next plan, the next distraction, the next thing to look forward to. Sitting still inside a genuinely good moment, with nowhere else to be, is harder for you than it looks.",
+      "Let one good moment today be enough on its own, without immediately reaching for what comes next."
     ]
   },
   "resister": {
-    "relationships": [
-      "Conflict becomes something to win or outlast rather than something to sit inside of with another person. You are fiercely loyal and reliably present in a crisis. What is scarcer is the version of you that arrives without armor on an ordinary Tuesday.",
-      "Let your partner's account of the last disagreement stand exactly as they told it, once, without correcting a single detail."
-    ],
-    "status": [
-      "Status gets earned through visible durability: being the one who does not break, who does not need anything, who carries more than their share without comment. Rest and help both get quietly refused, even when offered plainly, because needing something reads to you as losing ground.",
-      "Accept one offer of help this week without deflecting, minimizing, or repaying it immediately."
-    ],
-    "officePolitics": [
-      "You meet obstacles and rivals head-on, which is often exactly the right instinct and occasionally the wrong one. Disagreements escalate into contests you did not mean to start, and persistence alone becomes something colleagues route around rather than negotiate with.",
-      "Choose one disagreement this week to deliberately not fight. Watch what actually happens when you don't hold the line."
-    ],
-    "wealthCreation": [
+    "wealth": [
       "Earning becomes one more arena to dominate: long hours, high leverage, a reluctance to admit a loss or ask for financial help even when the position is genuinely difficult. Pride gets defended past the point it is still serving you.",
       "Name one financial position you are currently holding out of pride rather than necessity, and say it out loud to someone."
     ],
-    "groupDynamics": [
-      "You become the group's anchor under pressure, the one who takes charge when things go sideways. The same force of presence that stabilizes a crisis can crowd out quieter voices in ordinary moments, so the group defers to you rather than genuinely agreeing with you.",
-      "Ask one direct question in your next group conversation, then hold silence until someone else answers first."
+    "health": [
+      "You treat your body like an opponent to be overridden: push through the injury, skip the rest day, read fatigue as weakness rather than information. It works until the body stops negotiating and simply forces the issue.",
+      "Take one full rest day this week without earning it first through extra effort beforehand."
+    ],
+    "happiness": [
+      "Even contentment gets treated as something to defend, guarded and maintained through vigilance rather than simply felt. Letting a good feeling sit undefended, unexamined, can feel oddly exposed.",
+      "Let one good feeling today go completely unguarded. Do not analyze it, protect it, or brace for it to end."
     ]
   },
   "negotiator": {
-    "relationships": [
-      "You work hard to interpret, reframe, and repair, and it makes you a genuinely empathetic partner. The risk is that the skill tips into managing the other person's feelings for them, offering the story before you have simply stated your own.",
-      "State a feeling once, flatly, with no explanation attached. Let it stand on its own for a moment before you reach for context."
-    ],
-    "status": [
-      "You earn standing by being reasonable, the one who sees every side of a question. Useful, and also a performance that can quietly avoid ever landing on an unpopular position of your own.",
-      "Hold one clear, unhedged opinion in public this week, and resist the urge to immediately soften it with a caveat."
-    ],
-    "officePolitics": [
-      "Office diplomacy is your natural terrain: you read the room, broker the compromise, find the workable middle. Taken too far, the same instinct becomes constant appeasement, where your own interests are the first thing traded away to keep the peace.",
-      "Enter your next negotiation by stating your own terms first, before you have heard anyone else's."
-    ],
-    "wealthCreation": [
-      "You negotiate well for other people and worse for yourself: rates get discounted early, differences get split before they need to be, pricing gets over-explained instead of simply stated. Money talk becomes something to smooth over rather than something to hold ground on.",
+    "wealth": [
+      "You negotiate well for other people and worse for yourself: rates get discounted early, differences get split before they need to be, pricing gets over-explained instead of simply stated.",
       "Quote your full price once this week, then let the silence after it sit without filling it."
     ],
-    "groupDynamics": [
-      "You are the natural mediator, translating between factions, softening the edges of every disagreement. The risk is becoming so identified with the middle ground that the group never actually learns what you, specifically, think.",
-      "Take a visible side in the next group disagreement you are part of, even a minor one."
+    "health": [
+      "Health becomes one more thing to optimize and reframe: another adjustment, another plan, another angle, before you have simply done the obvious, boring thing your body actually needs.",
+      "Do the plain, unglamorous health task on your list today without improving, adjusting, or researching it first."
+    ],
+    "happiness": [
+      "You interpret happiness more readily than you feel it, turning a good moment into a lesson or a story before it has finished happening.",
+      "Let one happy moment today go completely uninterpreted. Do not explain it, even to yourself."
     ]
   },
   "witness": {
-    "relationships": [
-      "You bring real calm to relational storms; you rarely escalate, rarely react. The same steadiness can register to a partner as distance, being observed in a hard moment rather than joined inside it.",
-      "Let one emotion show on your face this week before you have decided what to do with it."
-    ],
-    "status": [
-      "You are genuinely comfortable outside the status game, which looks like freedom from the outside. It can also function as a way to avoid ever being evaluated, ranked, or found wanting by simply declining to enter the arena.",
-      "Let yourself want one visible thing out loud, without immediately qualifying or downplaying the want."
-    ],
-    "officePolitics": [
-      "You see office dynamics with unusual clarity and rarely get swept into them. The cost is that the clarity often stays private observation rather than voiced intervention, leaving real dysfunction to run unchecked in front of you.",
-      "Say the thing you have privately noticed, once, directly to the person who actually needs to hear it."
-    ],
-    "wealthCreation": [
+    "wealth": [
       "Your relationship to money carries notable equanimity, neither grasping nor anxious. Equanimity can tip into passivity, though, watching opportunities pass by observation rather than engagement.",
       "Take one concrete action this week toward a financial goal you have so far only been watching."
     ],
-    "groupDynamics": [
-      "You are the group's steady presence, rarely swept up in its currents. Steadiness without participation, though, can leave you peripheral to decisions that affect you directly.",
-      "Put yourself, not just your observation, into the group's next real decision."
+    "health": [
+      "You notice what your body is telling you with real clarity, often before anyone else would. The noticing can stop short of action, though, treating clear awareness as though it were already the response.",
+      "Act on one signal your body has already given you, instead of simply continuing to observe it."
+    ],
+    "happiness": [
+      "You can register joy with unusual clarity, but sometimes from a slight remove, watching a good moment rather than fully standing inside it.",
+      "Let one good moment move you today, not just register. Notice where it lands in your body, not only in your mind."
     ]
   },
   "integrator": {
-    "relationships": [
-      "You bring hard-won presence to intimacy and are rarely destabilized by a partner's full emotional range. The risk is quietly expecting others to have arrived where you have, and running short of patience with those still resisting or avoiding what you have already integrated.",
-      "Meet someone today at their own orientation to pain, not yours."
-    ],
-    "status": [
-      "You are largely free of status anxiety, which can look effortless from the outside. Effortlessness can isolate people who are still fighting battles you consider resolved, if you never name that you once fought them too.",
-      "Tell someone, plainly, that a status fight you have now let go of was once completely real for you."
-    ],
-    "officePolitics": [
-      "You move through office dynamics without needing to win them, and colleagues lean on that clarity more than they say. The risk is a quiet superiority: being consulted from a distance rather than genuinely on the team.",
-      "Ask for help this week with something you could, in fact, handle alone."
-    ],
-    "wealthCreation": [
+    "wealth": [
       "Your relationship to wealth is settled, free of both grasping and false modesty. That settledness can under-communicate ambition to people who need to see it stated plainly before they will trust it.",
       "State one financial ambition out loud this week, without the usual softening caveats."
     ],
-    "groupDynamics": [
-      "You often become the group's quiet center of gravity, the one people seek out in a crisis. The risk is being cast as the only stable one present, a role that isolates exactly as much as it honors.",
-      "Let someone else hold the center of the group this time, and stay in the room while they do."
+    "health": [
+      "You have made a genuine peace with the body's arc: its limits, its aging, what it can no longer do. The risk is that this acceptance is read by others, and sometimes by you, as resignation, a reason not to ask for care you would still benefit from.",
+      "Ask for one piece of care or attention this week that you would normally just decide to do without."
+    ],
+    "happiness": [
+      "You are capable of a genuine, settled happiness that does not depend on circumstances improving further. The risk is that your calm reads to others as having nothing left to want, which can quietly isolate you from people still in the middle of wanting things.",
+      "Name one thing you still want, plainly, to someone, even though you are not desperate for it."
     ]
   }
 };
