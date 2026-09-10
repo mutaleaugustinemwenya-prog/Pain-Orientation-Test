@@ -46,6 +46,11 @@ button{font-family:inherit;background:none;border:none;color:inherit;cursor:poin
 
 #root{position:relative;z-index:5;min-height:100vh}
 
+/* ---------- Progress bar (quiz phase) ---------- */
+#progress-bar{position:fixed;top:0;left:0;right:0;height:2px;background:var(--fog);z-index:999;display:none}
+#progress-bar.show{display:block}
+#progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-d),var(--accent));width:0%;transition:width .5s ease}
+
 /* ---------- Layout shells ---------- */
 .screen{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;
   padding:5rem 1.5rem 3rem;position:relative;animation:screenIn .6s ease both;}
@@ -53,6 +58,7 @@ button{font-family:inherit;background:none;border:none;color:inherit;cursor:poin
 @keyframes screenIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .wrap{max-width:680px;width:100%;position:relative;z-index:2}
 .wrap-wide{max-width:760px}
+.q-wrap{max-width:660px;width:100%;position:relative;z-index:2}
 
 hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 
@@ -64,20 +70,22 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 }
 .btn:hover{background:var(--accent-dim);box-shadow:0 0 30px var(--accent-dim);transform:translateY(-1px)}
 .btn:disabled{opacity:.25;pointer-events:none}
+.btn-ghost{
+  color:var(--ghost);font-family:'Cinzel',serif;font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;
+  padding:.6rem 0;transition:color .2s;
+}
+.btn-ghost:hover{color:var(--bone)}
+.btn-ghost:disabled{opacity:.2;pointer-events:none}
+.btn-next{
+  background:transparent;border:1px solid var(--accent-d);color:var(--bone);
+  font-family:'Cinzel',serif;font-size:.65rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+  padding:.85rem 2.2rem;transition:all .25s;opacity:.2;pointer-events:none;
+}
+.btn-next.ready{opacity:1;pointer-events:all;border-color:var(--accent)}
+.btn-next.ready:hover{background:var(--accent-dim)}
 
-/* ---------- Boot ---------- */
-#boot{align-items:flex-start;justify-content:center}
-.boot-box{max-width:640px;width:100%}
-.boot-line{font-size:.86rem;color:var(--ghost);margin-bottom:.4rem;white-space:pre-wrap}
-.boot-line .ok{color:var(--accent)}
-.boot-cursor{display:inline-block;width:8px;height:1em;background:var(--accent);vertical-align:-2px;
-  animation:blink 1s step-end infinite}
-@keyframes blink{50%{opacity:0}}
-.boot-bar-track{height:3px;background:var(--fog);width:100%;margin:1.6rem 0;position:relative;overflow:hidden}
-.boot-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent-d),var(--accent));width:0%;transition:width .25s linear}
-
-/* ---------- Title ---------- */
-#title{text-align:center}
+/* ---------- Title / Cover ---------- */
+#screen-cover, #screen-journey-title{text-align:center}
 .title-glow::before{content:'';position:fixed;inset:0;pointer-events:none;
   background:radial-gradient(ellipse 60% 45% at 50% 35%, rgba(201,151,58,.10) 0%, transparent 72%);
 }
@@ -89,7 +97,17 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 .law-chip{border:1px solid var(--fog);padding:.4rem .8rem;font-size:.62rem;font-family:'Cinzel',serif;
   letter-spacing:.14em;text-transform:uppercase;color:var(--ghost)}
 
-/* ---------- HUD ---------- */
+/* ---------- Question (quiz phase) ---------- */
+#screen-question{justify-content:flex-start;padding-top:5rem}
+.q-law{font-family:'Cinzel',serif;font-size:.6rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--accent-d);margin-bottom:.5rem}
+.q-meta{display:flex;align-items:center;gap:.9rem;margin-bottom:2rem}
+.dots{display:flex;gap:5px}
+.dot{width:7px;height:7px;border-radius:50%;border:1px solid var(--fog);transition:all .3s}
+.dot.answered{background:var(--ghost);border-color:var(--ghost)}
+.dot.current{background:var(--accent);border-color:var(--accent)}
+.q-nav{display:flex;justify-content:space-between;align-items:center;margin-top:.6rem}
+
+/* ---------- HUD (journey phase) ---------- */
 #hud{position:fixed;top:0;left:0;right:0;z-index:50;display:none;
   background:linear-gradient(to bottom, rgba(5,4,3,.92), rgba(5,4,3,0));
   padding:.9rem 1.2rem .6rem;align-items:center;gap:1rem;flex-wrap:wrap;
@@ -110,7 +128,7 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 .hud-mute:hover{color:var(--bone);border-color:var(--ghost)}
 
 /* ---------- Act intro ---------- */
-#act-intro{text-align:center}
+#screen-actintro{text-align:center}
 .act-roman{font-family:'Cinzel',serif;font-size:5.5rem;color:var(--accent-d);opacity:.5;line-height:1;margin-bottom:.4rem}
 .act-name{font-family:'Cinzel',serif;font-size:clamp(1.6rem,5vw,2.6rem);letter-spacing:.08em;color:var(--bone);margin-bottom:1rem}
 .act-tag{color:var(--ghost);font-style:italic;margin-bottom:2.4rem;font-size:1.05rem}
@@ -120,7 +138,7 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 .act-law-name{font-family:'Cinzel',serif;font-size:.82rem;color:var(--bone);margin-top:.3rem;letter-spacing:.04em}
 
 /* ---------- Portal scene ---------- */
-#portal{padding-top:7rem;align-items:center}
+#screen-portal{padding-top:7rem;align-items:center}
 .portal-frame{position:relative;width:150px;height:150px;margin:0 auto 1.6rem;display:flex;align-items:center;justify-content:center}
 .portal-ring{position:absolute;inset:0;border-radius:50%;border:1px solid var(--accent-d);opacity:.55}
 .portal-ring.r2{inset:12px;animation:spinSlow 22s linear infinite}
@@ -139,6 +157,7 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 .typewriter-box{min-height:5.4rem;margin-bottom:1.6rem;cursor:pointer}
 .tw-line{font-size:1.04rem;line-height:1.85;color:var(--bone);text-align:justify;hyphens:auto;margin-bottom:.9rem}
 .tw-cursor{display:inline-block;width:9px;height:1em;background:var(--accent);vertical-align:-3px;animation:blink .9s step-end infinite}
+@keyframes blink{50%{opacity:0}}
 .skip-hint{text-align:center;color:var(--ghost);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
   opacity:.55;margin-bottom:1.4rem}
 .skip-hint:hover{opacity:.9}
@@ -147,7 +166,7 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 .rune-callout .eyebrow{color:var(--accent);margin-bottom:.5rem}
 .rune-callout p{font-style:italic;color:var(--ghost);font-size:.94rem;line-height:1.75}
 
-/* ---------- Trial (question) ---------- */
+/* ---------- Trial / Where-you-stood / options (shared) ---------- */
 .trial-box{margin-top:.6rem;animation:fadeUp .5s ease both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .trial-label{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.28em;text-transform:uppercase;color:var(--ghost);margin-bottom:.7rem}
@@ -173,13 +192,13 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 .rune-caption{color:var(--ghost);font-style:italic;font-size:.88rem;margin-top:.6rem}
 
 /* ---------- Calculating / results ---------- */
-#calc{text-align:center;gap:1.6rem}
+#screen-calc{text-align:center;gap:1.6rem}
 .spinner{width:56px;height:56px;border:1px solid var(--fog);border-top-color:var(--accent);border-radius:50%;
   animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .calc-msg{font-style:italic;color:var(--ghost);min-height:1.6em}
 
-#results{padding-top:6rem}
+#screen-results{padding-top:6rem}
 .r-hero{display:flex;align-items:center;gap:1.8rem;flex-wrap:wrap;margin-bottom:1.2rem}
 .r-symbol{flex-shrink:0;animation:reveal .7s ease both,glow 3.5s ease-in-out .7s infinite}
 @keyframes reveal{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:scale(1)}}
@@ -216,6 +235,7 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 <div id="field"></div>
 <div class="vignette"></div>
 <div class="scanlines"></div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
 
 <div id="hud">
   <div class="hud-act mono" id="hud-act"></div>
@@ -229,29 +249,57 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 
 <div id="root">
 
-<section class="screen active" id="screen-boot">
-  <div class="boot-box mono">
-    <div id="boot-lines"></div>
-    <div class="boot-bar-track"><div class="boot-bar-fill" id="boot-bar-fill"></div></div>
-    <div id="boot-enter"></div>
+<section class="screen active title-glow" id="screen-cover">
+  <div class="wrap">
+    <p class="eyebrow" style="margin-bottom:1.8rem">A Psychological Assessment, Then a Journey</p>
+    <span class="display title-main">Pain Orientation</span>
+    <span class="title-sub">Test</span>
+    <p class="title-tag">The Eight Laws of Pain</p>
+    <p class="title-desc">
+      Pain is not the exception to a well-constructed life. It is a structural feature of any life
+      lived with genuine engagement. Answer eight questions honestly — there are no correct responses,
+      only honest ones. Then walk the eight portals built from the laws themselves, and watch your own
+      answers reflected back inside the doors built to hold them.
+    </p>
+    <button class="btn" id="btn-begin-test">Begin the Assessment</button>
+    <div class="law-preview" id="law-preview"></div>
   </div>
 </section>
 
-<section class="screen title-glow" id="screen-title">
+<section class="screen" id="screen-question">
+  <div class="q-wrap">
+    <p class="q-law" id="q-law"></p>
+    <div class="q-meta">
+      <span class="eyebrow mono" id="q-counter"></span>
+      <div class="dots" id="q-dots"></div>
+    </div>
+    <h2 class="trial-q" id="q-text"></h2>
+    <p class="trial-sub" id="q-sub"></p>
+    <div id="q-options"></div>
+    <div class="q-nav">
+      <button class="btn-ghost" id="btn-back">← Back</button>
+      <button class="btn-next" id="btn-next">Continue →</button>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="screen-calc">
+  <div class="spinner"></div>
+  <p class="eyebrow" id="calc-eyebrow">Compiling your orientation</p>
+  <p class="calc-msg" id="calc-msg"></p>
+</section>
+
+<section class="screen title-glow" id="screen-journey-title">
   <div class="wrap">
-    <p class="eyebrow" style="margin-bottom:1.8rem">An Interactive Reorientation, in Three Acts</p>
-    <span class="display title-main">Eight Laws</span>
-    <span class="title-sub">of Pain</span>
-    <p class="title-tag">The Reorientation Protocol</p>
+    <p class="eyebrow" style="margin-bottom:1.8rem">Your Pattern Is Mapped</p>
+    <span class="display title-main" style="font-size:clamp(1.9rem,6vw,3.4rem)">Now, the Portals</span>
+    <p class="title-tag">Eight doors, each built from a law your answers already confirmed.</p>
     <p class="title-desc">
-      Pain is not the exception to a well-built life. It is a structural feature of any life lived with
-      genuine engagement. Ahead of you stand eight portals, each built from a law that governs how
-      suffering moves through a human being. You will not escape any of them. You will only learn to
-      pass through with your eyes open. At the end, the same instrument used by <em>The Pain Orientation
-      Test</em> will name where you currently stand.
+      You have just told the truth about yourself in eight sentences chosen from a list. What follows
+      will tell you why. Walk through each law in turn, across three acts, and watch your own answer
+      reflected back to you inside the portal built to hold it.
     </p>
-    <button class="btn" id="btn-begin">Begin the Descent</button>
-    <div class="law-preview" id="law-preview"></div>
+    <button class="btn" id="btn-begin-journey">Begin the Descent</button>
   </div>
 </section>
 
@@ -278,12 +326,6 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
     <p class="portal-sub" id="portal-sub"></p>
     <div id="portal-body"></div>
   </div>
-</section>
-
-<section class="screen" id="screen-calc">
-  <div class="spinner"></div>
-  <p class="eyebrow">Compiling your orientation</p>
-  <p class="calc-msg" id="calc-msg"></p>
 </section>
 
 <section class="screen" id="screen-results">
@@ -326,8 +368,8 @@ function chime(freqs, dur){
   });
 }
 var SFX = {
-  boot: function(){ chime([220], 0.4); },
   select: function(){ chime([392], 0.25); },
+  advance: function(){ chime([330, 440], 0.5); },
   rune: function(){ chime([523.25, 659.25, 783.99], 1.1); },
   act: function(){ chime([196, 246.94, 293.66], 1.4); },
   finale: function(){ chime([261.63, 329.63, 392, 523.25], 2); }
@@ -370,7 +412,6 @@ function runTypewriter(container, lines, speed, onDone){
   var lineIdx = 0, charIdx = 0, done = false;
   var timer = null;
   container.innerHTML = '<div class="skip-hint">tap to reveal</div>';
-  var hint = container.querySelector('.skip-hint');
 
   function render(){
     var html = '';
@@ -412,8 +453,10 @@ function runTypewriter(container, lines, speed, onDone){
 }
 
 /* ============================================================
-   DATA — the eight laws, in three-act order
-   (questions & scoring mirror The Pain Orientation Test)
+   DATA — the eight laws, in three-act order.
+   Each law's `q` is used twice: once as a quiz question (Pain
+   Orientation Test phase), once as the reflection shown back to
+   the reader inside that law's portal (journey phase).
    ============================================================ */
 var LAWS = [
   {
@@ -724,8 +767,9 @@ function archetypeSvg(id, size){
 /* ============================================================
    STATE
    ============================================================ */
+var qIdx = 0;
+var answers = new Array(8).fill(null);
 var portalIndex = 0;
-var answers = [];
 var runes = [];
 
 function showScreen(id){
@@ -736,7 +780,135 @@ function showScreen(id){
 }
 
 /* ============================================================
-   HUD
+   COVER
+   ============================================================ */
+(function initCover(){
+  var preview = document.getElementById('law-preview');
+  LAWS.forEach(function(l){
+    var span = document.createElement('span');
+    span.className = 'law-chip';
+    span.textContent = l.numeral + ' · ' + l.name.replace('The Law of ','');
+    preview.appendChild(span);
+  });
+})();
+document.getElementById('btn-begin-test').addEventListener('click', startTest);
+
+/* ============================================================
+   QUIZ (Pain Orientation Test phase)
+   ============================================================ */
+function startTest(){
+  qIdx = 0; answers = new Array(8).fill(null);
+  document.getElementById('progress-bar').classList.add('show');
+  updateProgress();
+  showScreen('screen-question');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  var law = LAWS[qIdx];
+  document.getElementById('q-law').textContent = law.name.toUpperCase();
+  document.getElementById('q-counter').textContent = (qIdx+1) + ' of ' + LAWS.length;
+  document.getElementById('q-text').textContent = law.q.text;
+  document.getElementById('q-sub').textContent = law.q.sub;
+
+  var dotsEl = document.getElementById('q-dots');
+  dotsEl.innerHTML = '';
+  LAWS.forEach(function(l, i){
+    var d = document.createElement('div');
+    d.className = 'dot' + (i < qIdx ? ' answered' : i === qIdx ? ' current' : '');
+    dotsEl.appendChild(d);
+  });
+
+  var optsEl = document.getElementById('q-options');
+  optsEl.innerHTML = '';
+  law.q.options.forEach(function(o){
+    var b = document.createElement('button');
+    b.className = 'opt' + (answers[qIdx]===o.score ? ' chosen' : '');
+    b.style.opacity = '1';
+    b.style.animation = 'none';
+    b.innerHTML = '<span class="opt-l">'+o.l+'</span><span>'+escapeHtml(o.text)+'</span>';
+    b.addEventListener('click', function(){ selectAnswer(o.score); });
+    optsEl.appendChild(b);
+  });
+
+  document.getElementById('btn-back').disabled = qIdx===0;
+  refreshNext();
+}
+
+function selectAnswer(score){
+  answers[qIdx] = score;
+  SFX.select();
+  renderQuestion();
+  updateProgress();
+}
+
+function refreshNext(){
+  var btn = document.getElementById('btn-next');
+  var ready = answers[qIdx] !== null;
+  btn.classList.toggle('ready', ready);
+  btn.textContent = (ready && qIdx===LAWS.length-1) ? 'See What the Portals Reveal →' : 'Continue →';
+}
+
+function updateProgress(){
+  var answeredCount = answers.filter(function(a){ return a!==null; }).length;
+  var pct = Math.round((answeredCount/8)*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+}
+
+document.getElementById('btn-next').addEventListener('click', function(){
+  if(answers[qIdx]===null) return;
+  if(qIdx < LAWS.length-1){ qIdx++; renderQuestion(); }
+  else finishTest();
+});
+document.getElementById('btn-back').addEventListener('click', function(){
+  if(qIdx>0){ qIdx--; renderQuestion(); }
+});
+
+/* ============================================================
+   CALCULATING (shared between quiz-end and journey-end)
+   ============================================================ */
+function runCalc(eyebrow, msgs, duration, callback){
+  document.getElementById('calc-eyebrow').textContent = eyebrow;
+  showScreen('screen-calc');
+  var msgEl = document.getElementById('calc-msg');
+  var i = 0;
+  msgEl.textContent = msgs[0];
+  var step = duration / msgs.length;
+  var iv = setInterval(function(){
+    i = Math.min(msgs.length-1, i+1);
+    msgEl.textContent = msgs[i];
+  }, step);
+  setTimeout(function(){
+    clearInterval(iv);
+    callback();
+  }, duration);
+}
+
+function finishTest(){
+  document.getElementById('progress-fill').style.width = '100%';
+  runCalc('Compiling your orientation', [
+    "Reading your instinctive responses…",
+    "Mapping them against the eight laws…",
+    "Preparing the portals that will confirm them…"
+  ], 3000, showJourneyTitle);
+}
+
+/* ============================================================
+   JOURNEY TITLE (transition from test to portals)
+   ============================================================ */
+function showJourneyTitle(){
+  document.getElementById('progress-bar').classList.remove('show');
+  showScreen('screen-journey-title');
+}
+document.getElementById('btn-begin-journey').addEventListener('click', function(){
+  portalIndex = 0; runes = [];
+  document.documentElement.style.setProperty('--accent', '#c9973a');
+  emberField('#c9973a');
+  showActIntro(ACTS[0]);
+});
+
+/* ============================================================
+   HUD (journey phase)
    ============================================================ */
 function updateHUD(){
   var hud = document.getElementById('hud');
@@ -749,7 +921,7 @@ function updateHUD(){
   dotsEl.innerHTML = '';
   LAWS.forEach(function(l, i){
     var d = document.createElement('div');
-    var doneNow = i < answers.length;
+    var doneNow = i < runes.length;
     var isCurrent = i === portalIndex;
     d.className = 'hud-dot' + (doneNow ? ' done' : '') + (isCurrent ? ' current' : '');
     d.title = l.name;
@@ -757,7 +929,7 @@ function updateHUD(){
     dotsEl.appendChild(d);
   });
 
-  var pct = Math.min(100, Math.round((answers.length/8)*100));
+  var pct = Math.min(100, Math.round((runes.length/8)*100));
   document.getElementById('hud-meter-fill').style.width = pct + '%';
 }
 
@@ -765,76 +937,6 @@ document.getElementById('hud-mute').addEventListener('click', function(){
   muted = !muted;
   this.textContent = muted ? '🔇' : '🔊';
   this.title = muted ? 'Unmute' : 'Mute';
-});
-
-/* ============================================================
-   BOOT
-   ============================================================ */
-function startBoot(){
-  var bootLines = [
-    "PAIN OS v8.0.1 — initializing reorientation protocol...",
-    "loading law modules ................ [8/8] OK",
-    "loading pain orientation index ...... OK",
-    "calibrating discernment threshold ... OK",
-    "the eight portals are ready."
-  ];
-  SFX.boot();
-  var linesEl = document.getElementById('boot-lines');
-  var barFill = document.getElementById('boot-bar-fill');
-  var shown = 0;
-  var pct = 0;
-
-  var pctTimer = setInterval(function(){
-    pct = Math.min(100, pct + 4);
-    barFill.style.width = pct + '%';
-    if(pct >= 100) clearInterval(pctTimer);
-  }, 60);
-
-  var lineTimer = setInterval(function(){
-    if(shown >= bootLines.length){
-      clearInterval(lineTimer);
-      var enterWrap = document.getElementById('boot-enter');
-      var btn = document.createElement('button');
-      btn.className = 'btn';
-      btn.style.marginTop = '1.4rem';
-      btn.textContent = 'Enter';
-      btn.addEventListener('click', showTitle);
-      enterWrap.appendChild(btn);
-      return;
-    }
-    var div = document.createElement('div');
-    div.className = 'boot-line';
-    div.textContent = bootLines[shown];
-    if(shown === bootLines.length-1){
-      var ok = document.createElement('span');
-      ok.className = 'ok';
-      ok.textContent = ' ✓';
-      div.appendChild(ok);
-    }
-    linesEl.appendChild(div);
-    shown++;
-  }, 420);
-}
-
-/* ============================================================
-   TITLE
-   ============================================================ */
-function showTitle(){
-  var preview = document.getElementById('law-preview');
-  preview.innerHTML = '';
-  LAWS.forEach(function(l){
-    var span = document.createElement('span');
-    span.className = 'law-chip';
-    span.textContent = l.numeral + ' · ' + l.name.replace('The Law of ','');
-    preview.appendChild(span);
-  });
-  showScreen('screen-title');
-}
-document.getElementById('btn-begin').addEventListener('click', function(){
-  portalIndex = 0; answers = []; runes = [];
-  document.documentElement.style.setProperty('--accent', '#c9973a');
-  emberField('#c9973a');
-  showActIntro(ACTS[0]);
 });
 
 /* ============================================================
@@ -878,47 +980,31 @@ function portalScene(law, idx){
   body.innerHTML = '<div class="typewriter-box" id="tw-box"></div>';
   var twBox = document.getElementById('tw-box');
   runTypewriter(twBox, law.teaching, 14, function(){
-    setTimeout(function(){ showTrial(law, idx); }, 350);
+    setTimeout(function(){ showYourStand(law, idx); }, 350);
   });
   updateHUD();
 }
 
-function showTrial(law, idx){
+function showYourStand(law, idx){
   var body = document.getElementById('portal-body');
+  var score = answers[idx];
+  var chosenOpt = law.q.options.filter(function(o){ return o.score === score; })[0];
   body.innerHTML =
     '<div class="trial-box">'+
-      '<p class="trial-label">The Trial</p>'+
-      '<p class="trial-q">'+escapeHtml(law.q.text)+'</p>'+
-      '<p class="trial-sub">'+escapeHtml(law.q.sub)+'</p>'+
-      '<div id="trial-options"></div>'+
+      '<p class="trial-label">Where You Stood</p>'+
+      '<div class="opt chosen" style="opacity:1;animation:none;cursor:default">'+
+        '<span class="opt-l">'+chosenOpt.l+'</span><span>'+escapeHtml(chosenOpt.text)+'</span>'+
+      '</div>'+
+      '<p class="rune-caption" style="margin-top:1rem">That is what you answered before you ever saw this law’s name — a score of '+score+' of 5.</p>'+
+      '<div style="text-align:center;margin-top:1.8rem">'+
+        '<button class="btn" id="btn-claim-rune">Claim the Rune →</button>'+
+      '</div>'+
     '</div>';
-  setTimeout(function(){
-    var optWrap = document.getElementById('trial-options');
-    if(!optWrap) return;
-    law.q.options.forEach(function(o, i){
-      var b = document.createElement('button');
-      b.className = 'opt';
-      b.style.animationDelay = (i*0.08)+'s';
-      b.innerHTML = '<span class="opt-l">'+o.l+'</span><span>'+escapeHtml(o.text)+'</span>';
-      b.addEventListener('click', function(){ selectOption(law, idx, o, b, optWrap); });
-      optWrap.appendChild(b);
-    });
-  }, 250);
+  document.getElementById('btn-claim-rune').addEventListener('click', function(){ showRune(law, idx); });
 }
 
-function selectOption(law, idx, opt, btnEl, optWrap){
-  if(optWrap.dataset.chosen) return;
-  optWrap.dataset.chosen = '1';
-  var children = optWrap.querySelectorAll('.opt');
-  children.forEach(function(b){ b.disabled = true; });
-  btnEl.classList.add('chosen');
-  SFX.select();
-  setTimeout(function(){ showRune(law, idx, opt.score); }, 650);
-}
-
-function showRune(law, idx, score){
+function showRune(law, idx){
   SFX.rune();
-  answers.push(score);
   runes.push(law.rune);
   var body = document.getElementById('portal-body');
   body.innerHTML =
@@ -938,7 +1024,14 @@ function showRune(law, idx, score){
 
 function nextPortal(idx){
   var nextIdx = idx + 1;
-  if(nextIdx >= LAWS.length){ showCalc(); return; }
+  if(nextIdx >= LAWS.length){
+    runCalc('Sealing your reorientation', [
+      "Weighing your responses across all eight laws…",
+      "Binding your eight collected runes into a pledge…",
+      "Locating your archetype within the spectrum…"
+    ], 3000, showResults);
+    return;
+  }
   var nextLaw = LAWS[nextIdx];
   portalIndex = nextIdx;
   if(nextLaw.act !== LAWS[idx].act){
@@ -947,29 +1040,6 @@ function nextPortal(idx){
     showScreen('screen-portal');
     portalScene(nextLaw, nextIdx);
   }
-}
-
-/* ============================================================
-   CALCULATING
-   ============================================================ */
-function showCalc(){
-  showScreen('screen-calc');
-  var msgs = [
-    "Weighing your responses across all eight laws…",
-    "Binding your eight collected runes into a pledge…",
-    "Locating your archetype within the spectrum…"
-  ];
-  var msgEl = document.getElementById('calc-msg');
-  var i = 0;
-  msgEl.textContent = msgs[0];
-  var iv = setInterval(function(){
-    i = Math.min(msgs.length-1, i+1);
-    msgEl.textContent = msgs[i];
-  }, 1100);
-  setTimeout(function(){
-    clearInterval(iv);
-    showResults();
-  }, 3400);
 }
 
 /* ============================================================
@@ -1028,7 +1098,7 @@ function showResults(){
       '<p class="eyebrow" style="color:var(--gold);margin-bottom:.5rem">Growth Practice</p>'+
       '<p class="growth-text">'+escapeHtml(arch.growth)+'</p>'+
     '</div>'+
-    '<div class="result-actions"><button class="btn" id="btn-restart">Walk the Portals Again</button></div>';
+    '<div class="result-actions"><button class="btn" id="btn-restart">Take the Assessment Again</button></div>';
 
   document.getElementById('results-body').innerHTML = html;
   document.getElementById('btn-restart').addEventListener('click', restart);
@@ -1043,17 +1113,13 @@ function showResults(){
 }
 
 function restart(){
-  document.getElementById('boot-lines').innerHTML = '';
-  document.getElementById('boot-enter').innerHTML = '';
-  document.getElementById('boot-bar-fill').style.width = '0%';
+  qIdx = 0; answers = new Array(8).fill(null); runes = []; portalIndex = 0;
+  document.getElementById('progress-bar').classList.remove('show');
+  document.getElementById('progress-fill').style.width = '0%';
   document.getElementById('hud').classList.remove('show');
-  showTitle();
+  document.documentElement.style.setProperty('--accent', '#c9973a');
+  showScreen('screen-cover');
 }
-
-/* ============================================================
-   BOOT
-   ============================================================ */
-startBoot();
 
 })();
 </script>
