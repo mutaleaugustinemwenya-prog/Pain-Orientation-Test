@@ -240,6 +240,16 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 .growth-text{font-style:italic;color:var(--ghost);font-size:.94rem;line-height:1.75}
 .result-actions{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:1rem}
 
+/* ---------- Act IV: The Myth ---------- */
+#screen-saga-intro, #screen-saga-close{text-align:center;padding-top:6rem}
+#screen-saga-movement{padding-top:6rem;align-items:center}
+.saga-icon{margin:0 auto 1.4rem;animation:reveal .7s ease both,glow 3.5s ease-in-out .7s infinite}
+.saga-icon-sm{width:64px;height:64px;margin:0 auto 1rem;opacity:.9}
+.saga-title{font-family:'Cinzel',serif;font-style:italic;font-size:clamp(1.7rem,5vw,2.6rem);color:var(--accent);margin-bottom:1rem}
+.saga-desc{color:var(--ghost);text-align:justify;hyphens:auto;margin-bottom:2.2rem;font-size:1rem;max-width:560px;margin-left:auto;margin-right:auto}
+.saga-epigraph{font-family:'EB Garamond',serif;font-style:italic;font-size:1.3rem;line-height:1.85;color:var(--bone);
+  max-width:540px;margin:1.6rem auto 2.4rem;text-align:center}
+
 @media(max-width:560px){
   .score-strip{grid-template-columns:1fr 1fr}
   .law-name{width:106px;font-size:.72rem}
@@ -364,6 +374,37 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 
 <section class="screen" id="screen-results">
   <div class="wrap wrap-wide" id="results-body"></div>
+</section>
+
+<section class="screen" id="screen-saga-intro">
+  <div class="wrap" style="text-align:center">
+    <div class="saga-icon" id="saga-icon"></div>
+    <p class="eyebrow" style="margin-bottom:1rem">Act IV: The Myth</p>
+    <h2 class="saga-title" id="saga-title"></h2>
+    <p class="saga-desc" id="saga-desc"></p>
+    <button class="btn" id="btn-begin-saga">Enter the Myth</button>
+  </div>
+</section>
+
+<section class="screen" id="screen-saga-movement">
+  <div class="wrap">
+    <div class="saga-icon-sm" id="saga-icon-sm"></div>
+    <p class="portal-num mono" id="saga-movement-num"></p>
+    <h2 class="portal-title" id="saga-movement-name"></h2>
+    <div id="saga-movement-body"></div>
+  </div>
+</section>
+
+<section class="screen" id="screen-saga-close">
+  <div class="wrap" style="text-align:center">
+    <div class="saga-icon" id="saga-close-icon"></div>
+    <p class="eyebrow" style="margin-bottom:1rem">The Myth Is Told</p>
+    <p class="saga-epigraph" id="saga-epigraph"></p>
+    <div class="result-actions">
+      <button class="btn" id="btn-copy-saga">Copy My Myth</button>
+      <button class="btn" id="btn-saga-restart">Begin Again</button>
+    </div>
+  </div>
 </section>
 
 </div>
@@ -860,6 +901,199 @@ function getArchetype(total){
 }
 
 /* ============================================================
+   SAGAS — Act IV: The Myth. A Campbellian monomyth, one per
+   archetype, all sharing the same eight movements so the parallel
+   structure itself carries meaning. Unlocked after the results
+   screen, narrated by the same voice and typewriter as the portals.
+   ============================================================ */
+var SAGAS = {
+  avoider: {
+    title:"The Myth of the Outrunner",
+    accent:"#7d8a99",
+    intro:"Before the eight laws had names, before any test was taken, there was already a shape this life was taking. Yours is the shape of the Outrunner: quick, capable, and pursued by something that has never once caught up. What follows is not a lesson. It is the myth your answers have already been telling.",
+    epigraph:"The Outrunner still moves quickly through the world. But the road behind is only ever a road now, and when the old fog visits, it is finally allowed to sit down first.",
+    movements:[
+      { numeral:"I", name:"The World Before the Wound", lines:[
+        "In the time before the Hound, the Outrunner was known simply for quickness. Quick hands at the loom, quick feet at every game, a mind that finished sentences before they were spoken. The village did not call this fear. It called it a gift, and for a long while it was.",
+        "No one in that village had yet learned that the fastest child in every race is sometimes the child most practiced at leaving."
+      ]},
+      { numeral:"II", name:"The Herald", lines:[
+        "Then came the loss that quickness could not outpace, arriving at the worst possible hour, uninvited, indifferent to how fast anyone could run. The Outrunner discovered, for the first time, that some things do not chase from behind. Some things are already standing where you are going.",
+        "That night, the Outrunner ran anyway. Not toward anything. Simply away, down a road that did not care where it led, so long as it kept moving."
+      ]},
+      { numeral:"III", name:"The Turning Away", lines:[
+        "The running worked, or seemed to. Each mile put a little more silence between the Outrunner and the ache, and silence felt enough like healing to be mistaken for it. So a whole life was built on the technique: motion as medicine, distance as safety, arrival always postponed.",
+        "Somewhere behind, patient and untiring, something began to follow. Not close. Never closer than exactly the Outrunner's own pace. But never further away, either."
+      ]},
+      { numeral:"IV", name:"The Guide", lines:[
+        "At every crossroads the road offered, the same woman was already sitting. She never called out, never gave chase of her own, only watched the Outrunner arrive, breathless, and choose another direction. On the hundredth crossing, she finally spoke.",
+        "“You have never once looked at what follows you,” she said. “Turn around. Count its teeth. I do not think you will find as many as you believe.”"
+      ]},
+      { numeral:"V", name:"The Threshold", lines:[
+        "The Outrunner did not turn that day, nor the next. But exhaustion is its own kind of threshold, and eventually there is no more road left to spend it on. One evening, with nowhere further to run, the Outrunner simply stopped, in a clearing the maps did not name, and waited."
+      ]},
+      { numeral:"VI", name:"The Tests", lines:[
+        "The thing that followed did not arrive as one shape but many. Every grief the Outrunner had outpaced returned in turn, wearing the faces of what had actually been lost. Old companions appeared too, the ones left behind at each departure, asking only to be seen, not chased down.",
+        "Twice the legs remembered their old trade and nearly carried the Outrunner off again. Twice, the Outrunner stayed."
+      ]},
+      { numeral:"VII", name:"The Abyss", lines:[
+        "At last the pursuer arrived close enough to touch, and the Outrunner, for the first time in this whole long story, looked directly at it.",
+        "It was fog. Grey, formless, and already thinning in the honesty of that gaze, because it had never been a hound with teeth at all. It was only the shape uncertainty takes when it is never once examined. Seen plainly, it could not hold its shape, and it did not."
+      ]},
+      { numeral:"VIII", name:"The Return With The Elixir", lines:[
+        "The Outrunner returned to the village still quick, still capable of the old speed when speed was genuinely called for. But a new instrument had been carried back from the clearing: the ability to stand still for sixty honest seconds inside a feeling, and discover survival on the other side of it.",
+        "In time, the Outrunner became someone who could sit, unhurried, at a crossroads, for whoever arrived there next, breathless, mid flight, certain that something with teeth was closing in behind."
+      ]}
+    ]
+  },
+  resister: {
+    title:"The Myth of the Unbroken Wall",
+    accent:"#7a2e28",
+    intro:"Yours is the shape of the one who does not yield: the hand that holds the gate, the will that does not tire before the enemy does. What follows is the myth of what that strength was built to fight, and what it eventually had to learn to lay down.",
+    epigraph:"The Resister still stands at the gate when a gate is worth standing at. The shield still gets taken down when it should. But it hangs on its hook far more often now, and the wall is better for the rest.",
+    movements:[
+      { numeral:"I", name:"The World Before the Wound", lines:[
+        "The Resister was, from the earliest age anyone remembered, the strong one. The one who held the door against the wind, held the temper that others lost, held the line in every game until the game itself gave up first. Strength was not something the Resister had. It was who the Resister was.",
+        "No one thought to ask what such a child would do the day strength was not the right tool for the wound in front of them."
+      ]},
+      { numeral:"II", name:"The Herald", lines:[
+        "That day arrived as most such days do, without ceremony, and without any weakness the Resister could point to as the true cause. Something was simply lost, cleanly and completely, in a way no effort could reverse. The Resister met this the only way the Resister knew how. By gripping harder."
+      ]},
+      { numeral:"III", name:"The Turning Away", lines:[
+        "A wall was raised, stone by stone, out of exactly that grip. Suffering became a siege to be endured rather than a fact to be accommodated, a weakness to be eliminated rather than a guest to be let in. The Resister manned the wall day and night, and for a long while, the wall held.",
+        "But walls are built to face an enemy. And the thing pressing against this one, patient, rhythmic, tireless, was never an enemy at all."
+      ]},
+      { numeral:"IV", name:"The Guide", lines:[
+        "At the postern gate, half hidden, a soldier waited who had fought this exact siege once and lost it, and lived. She had laid her shield down at that same gate long ago, not in surrender, but in recognition.",
+        "“The tide does not hate your wall,” she told the Resister. “It has never once hated anything. It only moves. Fight a tide long enough and you will find yourself exhausted by weather.”"
+      ]},
+      { numeral:"V", name:"The Threshold", lines:[
+        "Against every instinct the Resister had ever trusted, the gate was opened, and for the first time, the Resister walked down off the ramparts, past the stone, onto the open shore where the tide could be met directly instead of resisted from behind a wall."
+      ]},
+      { numeral:"VI", name:"The Tests", lines:[
+        "The shore offered no easy footing. Old allies, other walls, other sieges, called the Resister back to the ramparts more than once, insisting that only the fight had ever kept anyone safe. Some of what the tide took, the Resister discovered, had needed to be taken. Some of what the wall had protected had never needed protecting at all."
+      ]},
+      { numeral:"VII", name:"The Abyss", lines:[
+        "The ordeal was not a battle. It was the moment the last effort finally gave out, the shield slipping from a hand too tired to keep gripping it, and the Resister, for one unguarded breath, expected to be destroyed.",
+        "The tide came in. It also, in its own time, went back out. It had never once been trying to end the Resister. It had only ever been trying to move, the way water moves, indifferent and enormous and entirely without malice."
+      ]},
+      { numeral:"VIII", name:"The Return With The Elixir", lines:[
+        "The Resister returned to the wall, because some walls remain worth holding, and picked the shield back up, because some fights remain worth having. But a hook now hangs by the door, and the shield rests there more often than the old Resister would ever have believed possible.",
+        "What was carried back was not surrender. It was discernment, the hard won knowledge of which walls guard something real, and which were only ever built from the fear of resting."
+      ]}
+    ]
+  },
+  negotiator: {
+    title:"The Myth of the Silent Market",
+    accent:"#b8863f",
+    intro:"Yours is the shape of the one who finds the third option, the fair trade, the treaty no one else could see. What follows is the myth of the one thing that would not sit down at the table, and what the Negotiator learned from its silence.",
+    epigraph:"The Negotiator still finds the fair trade before anyone else notices it was there. But there is a chair kept at that table now, always empty, for whatever will never sit down to bargain.",
+    movements:[
+      { numeral:"I", name:"The World Before the Wound", lines:[
+        "Even as a child, the Negotiator could find the deal buried inside any quarrel: the trade that let both sides walk away whole. Praised early for a wisdom that seemed to arrive before its time, the Negotiator became, without ever choosing it exactly, the family's diplomat, the village's broker of difficult peace."
+      ]},
+      { numeral:"II", name:"The Herald", lines:[
+        "Then came a loss with no fair terms attached to it at all: no cause to negotiate with, no lesson waiting patiently to be extracted, no reasonable accounting that balanced what was taken against what remained. For the first time, the Negotiator's great gift found nothing to work with."
+      ]},
+      { numeral:"III", name:"The Turning Away", lines:[
+        "Rather than sit inside that unbalanced ledger, the Negotiator did what came naturally: built a story around the loss, negotiated a meaning for it long before any meaning had actually arrived, wrapped the raw fact in interpretation until it was smooth enough to be carried.",
+        "The story helped, for a while, the way any well made thing helps. But underneath it, unread and unaddressed, the original silence remained exactly as loud as it had always been."
+      ]},
+      { numeral:"IV", name:"The Guide", lines:[
+        "At the market's outer edge, past the last stall, a trader sat who had once wagered everything trying to strike the one unlosable bargain, and lost it entirely. He kept no goods now. Only a warning.",
+        "“Not everything that arrives at your gate is a customer,” he said. “Some things are only ever weather. You cannot broker with weather. You can only stand in it.”"
+      ]},
+      { numeral:"V", name:"The Threshold", lines:[
+        "Beyond the market's edge lay ground the Negotiator had always avoided: open, unmarked, with nothing to buy, sell, or reframe. No treaty had ever been signed there, because nothing there had ever agreed to negotiate."
+      ]},
+      { numeral:"VI", name:"The Tests", lines:[
+        "Again and again the Negotiator returned with a fresh offer, a cleverer frame, a more generous trade, and again and again, nothing answered. Allies along the way showed the difference between the meaning making that genuinely serves a wound and the meaning making that only postpones one."
+      ]},
+      { numeral:"VII", name:"The Abyss", lines:[
+        "At last the Negotiator arrived at that open ground with no offer prepared at all, empty handed, storyless, entirely without leverage. The Wordless Thing did not attack. It did not answer. It simply remained, vast and unbothered, and the Negotiator discovered, to great surprise, survival on the far side of contact with something that would never, under any terms, make sense."
+      ]},
+      { numeral:"VIII", name:"The Return With The Elixir", lines:[
+        "The Negotiator returned to the market and went on trading, brokering, finding the third option faster than anyone else at the table, because that gift had never been the problem. But one room in the house is kept empty now, unfurnished and unstoried, reserved for whatever arrives next that refuses translation.",
+        "What was carried home was not defeat. It was tolerance, the capacity to let something remain permanently, usefully unresolved."
+      ]}
+    ]
+  },
+  witness: {
+    title:"The Myth of the Watchtower",
+    accent:"#4b3d73",
+    intro:"Yours is the shape of the one who sees clearly from a height others cannot reach. What follows is the myth of the tower that kept you safe, and the long stairs down that safety eventually asked of you.",
+    epigraph:"The Witness still keeps the tower, and keeps it well. But the stairs are worn smooth now on both sides, going up and coming down in equal measure.",
+    movements:[
+      { numeral:"I", name:"The World Before the Wound", lines:[
+        "The Witness was the calm one, even young: the child who did not cry when the others did, praised for a steadiness that seemed older than its years. Before long the village had given the Witness the watch itself, a room at the top of the tower, a clear view of every storm before it arrived."
+      ]},
+      { numeral:"II", name:"The Herald", lines:[
+        "A grief arrived, eventually, close enough that watching it from a height was no longer simply skill. It was distance the Witness had not chosen and could not, from that room, undo. Someone below needed presence. The tower could only offer an excellent view."
+      ]},
+      { numeral:"III", name:"The Turning Away", lines:[
+        "Rather than descend, the Witness climbed higher, refining an already considerable gift for observation until it could explain almost anything from a very safe remove. Clarity became a kind of armor, worn so well that its wearer sometimes forgot it was also a wall."
+      ]},
+      { numeral:"IV", name:"The Guide", lines:[
+        "At the base of the tower, not the top, waited someone who had once been exactly what the Witness was now: a watcher who had, for a single person and a single storm, finally climbed all the way down, and had never fully climbed back up to who they were before.",
+        "“I did not teach myself to see better,” they told the Witness. “Seeing was never the difficulty. I taught myself the particular ache of coming down anyway.”"
+      ]},
+      { numeral:"V", name:"The Threshold", lines:[
+        "The stairs the Witness had avoided for so long turned out to be ordinary stairs, worn stone, nothing more. Each step downward surrendered a little of the clean overview the tower had always offered, in exchange for the messier, nearer truth of standing at ground level."
+      ]},
+      { numeral:"VI", name:"The Tests", lines:[
+        "Down among the weather, the Witness's practiced composure met its first real test. Storms felt entirely different without a roof and a great distance between the watcher and the rain. Allies at ground level did not want commentary. They wanted company, in the specific and inconvenient sense of someone standing beside them, getting wet."
+      ]},
+      { numeral:"VII", name:"The Abyss", lines:[
+        "The ordeal was not a storm faced from below. It was being moved by one, caught, soaked, unable to maintain the clean observing distance that had always been the Witness's particular gift and particular defense.",
+        "And the Witness discovered, astonished, that being moved did not undo the capacity to see clearly. It completed it. The two had never actually been opposites. Only the tower had made them seem that way."
+      ]},
+      { numeral:"VIII", name:"The Return With The Elixir", lines:[
+        "The Witness climbed back up eventually, because the tower still had its uses, and the watch still mattered. But a door was cut into it now, one that opened, and the Witness came down among the storms far more often than before, not instead of watching, but alongside it.",
+        "The elixir carried home was simple to name and hard earned: the practice of allowing oneself to be moved, and not only to observe."
+      ]}
+    ]
+  },
+  integrator: {
+    title:"The Myth of the Keeper of the Threshold",
+    accent:"#c9973a",
+    intro:"Yours is not a myth still being written toward its ending. It has already turned, quietly, into the myth of what comes after. What follows is the story of the one who tends the fire at the gate others are only now approaching.",
+    epigraph:"There is no more road for the Keeper of the Threshold. There is only the fire, and whoever arrives next, cold, from all the same old roads.",
+    movements:[
+      { numeral:"I", name:"The World Before the Wound", lines:[
+        "The Keeper remembers, faintly now, every earlier shape this life once took. There was a season of running, fast and afraid. A season of walls, held long past their use. A season of bargains struck with things that could not bargain. A season in a tower, seeing everything, touching almost nothing.",
+        "Integration did not erase these earlier selves. It only stopped needing to choose only one of them at a time."
+      ]},
+      { numeral:"II", name:"The Herald", lines:[
+        "There was no single herald in the end, no one great grief that changed everything. There were many, arriving across years, each one summoning the same old responses, each one, slowly, met a little more directly than the last. The call, it turned out, was never a single knock. It was a habit of answering the door."
+      ]},
+      { numeral:"III", name:"The Old Wound, Remembered", lines:[
+        "The Keeper does not pretend the turning away never happened. It happened often: the running, the gripping, the bargaining, the watching from a great and careful height. Every earlier refusal is remembered honestly, without shame folded into the memory, because shame was never what finally moved the Keeper through.",
+        "What moved the Keeper through was simpler and slower: returning, again, after every turning away, until returning became the more familiar motion of the two."
+      ]},
+      { numeral:"IV", name:"The Guide", lines:[
+        "Long ago, someone else tended a fire at this exact gate for the Keeper, on the worst night of a life that has since had many nights. That person is gone now, or moved on, and left no instructions. The Keeper simply noticed, one day, that the fire still needed tending, and that there was no one else left standing close enough to do it."
+      ]},
+      { numeral:"V", name:"The Threshold", lines:[
+        "The Keeper no longer crosses a threshold. The Keeper sits at one, at the exact crossroads where the woman once waited for the Outrunner, at the exact postern gate where the soldier once waited for the Resister, at the exact market's edge, the exact base of the exact tower.",
+        "These were never four different places. They were one gate, differently named by whoever was approaching it, and differently lit."
+      ]},
+      { numeral:"VI", name:"The Tests", lines:[
+        "The tests here are quiet ones, easy to miss. Contempt, for those still fighting fights the Keeper has already finished. Pride, in having finished them. The temptation to hand out answers instead of presence, because answers are faster, and the Keeper, by now, has so many of them ready.",
+        "The discipline is the same each time: set the answer down, and simply sit with whoever has arrived, cold, at the gate."
+      ]},
+      { numeral:"VII", name:"The Abyss", lines:[
+        "The true ordeal is not behind the Keeper. It is a standing temptation, present even now, to let the fire go quietly dark. Rest has been earned. No one would call it failure. The Keeper could simply walk away from the gate and no myth would hold that against them.",
+        "And so, choosing it again, freely, without compulsion, without anyone watching to notice the choice, the Keeper adds another log to the fire. Not from duty. From something closer to love."
+      ]},
+      { numeral:"VIII", name:"The Return With The Elixir", lines:[
+        "There is no road left for the Keeper to return down. The Keeper is already home, has been for some time, and the elixir was never a thing to carry back from anywhere. It is the fire itself, held out, unhurried, to whoever arrives next, cold, breathless, certain that something with teeth is closing in behind them.",
+        "The Keeper says very little to such arrivals. Usually only this. Sit, and get warm, and tell me what is chasing you. I think, together, we can count its teeth."
+      ]}
+    ]
+  }
+};
+
+/* ============================================================
    ICONS — small inline SVG glyphs, one per portal + per archetype
    ============================================================ */
 function portalGlyphSvg(type, color, size){
@@ -1324,13 +1558,14 @@ function showResults(){
       '<p class="eyebrow" style="color:var(--gold);margin-bottom:.5rem">Growth Practice</p>'+
       '<p class="growth-text">'+escapeHtml(arch.growth)+'</p>'+
     '</div>'+
-    '<div class="result-actions"><button class="btn" id="btn-copy-pledge">Copy My Reorientation</button><button class="btn" id="btn-restart">Take the Assessment Again</button></div>';
+    '<div class="result-actions"><button class="btn" id="btn-enter-saga">Enter Your Myth</button><button class="btn" id="btn-copy-pledge">Copy My Reorientation</button><button class="btn" id="btn-restart">Take the Assessment Again</button></div>';
 
   document.getElementById('results-body').innerHTML = html;
   document.getElementById('btn-restart').addEventListener('click', restart);
   document.getElementById('btn-copy-pledge').addEventListener('click', function(){
     copyToClipboard(buildSummaryText(total, arch, pledgeSentence), this);
   });
+  document.getElementById('btn-enter-saga').addEventListener('click', function(){ startSaga(arch.id); });
   showScreen('screen-results');
   updateHUD();
 
@@ -1344,6 +1579,7 @@ function showResults(){
 function restart(){
   qIdx = 0; answers = new Array(8).fill(null); runes = []; portalIndex = 0;
   currentPhase = 'quiz';
+  currentSagaId = null; sagaMovementIdx = 0;
   clearState();
   stopSpeech();
   document.getElementById('progress-bar').classList.remove('show');
@@ -1352,6 +1588,79 @@ function restart(){
   document.documentElement.style.setProperty('--accent', '#c9973a');
   showScreen('screen-cover');
 }
+
+/* ============================================================
+   ACT IV: THE MYTH — a Campbellian saga keyed to the archetype
+   ============================================================ */
+var currentSagaId = null;
+var sagaMovementIdx = 0;
+
+function startSaga(archId){
+  currentSagaId = archId;
+  sagaMovementIdx = 0;
+  var saga = SAGAS[archId];
+  document.documentElement.style.setProperty('--accent', saga.accent);
+  emberField(saga.accent);
+  document.getElementById('saga-icon').innerHTML = archetypeSvg(archId, 100);
+  document.getElementById('saga-title').textContent = saga.title;
+  document.getElementById('saga-desc').textContent = saga.intro;
+  showScreen('screen-saga-intro');
+}
+document.getElementById('btn-begin-saga').addEventListener('click', function(){
+  showScreen('screen-saga-movement');
+  sagaMovementScene(0);
+});
+
+function sagaMovementScene(idx){
+  var saga = SAGAS[currentSagaId];
+  var mv = saga.movements[idx];
+  document.documentElement.style.setProperty('--accent', saga.accent);
+  emberField(saga.accent);
+  document.getElementById('saga-icon-sm').innerHTML = archetypeSvg(currentSagaId, 58);
+  document.getElementById('saga-movement-num').textContent = 'MOVEMENT ' + mv.numeral + ' OF VIII';
+  document.getElementById('saga-movement-name').textContent = mv.name;
+  var body = document.getElementById('saga-movement-body');
+  body.innerHTML = '<div class="typewriter-box" id="saga-tw-box"></div>';
+  var twBox = document.getElementById('saga-tw-box');
+  runTypewriter(twBox, mv.lines, 14, function(){
+    setTimeout(function(){ showSagaContinue(idx); }, 350);
+  });
+}
+
+function showSagaContinue(idx){
+  var body = document.getElementById('saga-movement-body');
+  var isLast = idx === SAGAS[currentSagaId].movements.length - 1;
+  var wrap = document.createElement('div');
+  wrap.style.textAlign = 'center';
+  wrap.style.marginTop = '1.8rem';
+  var btn = document.createElement('button');
+  btn.className = 'btn';
+  btn.textContent = isLast ? 'Complete the Myth →' : 'Continue →';
+  btn.addEventListener('click', function(){
+    if(isLast){
+      showSagaClose();
+    } else {
+      sagaMovementIdx = idx + 1;
+      showScreen('screen-saga-movement');
+      sagaMovementScene(idx + 1);
+    }
+  });
+  wrap.appendChild(btn);
+  body.appendChild(wrap);
+}
+
+function showSagaClose(){
+  var saga = SAGAS[currentSagaId];
+  document.getElementById('saga-close-icon').innerHTML = archetypeSvg(currentSagaId, 100);
+  document.getElementById('saga-epigraph').textContent = saga.epigraph;
+  showScreen('screen-saga-close');
+  SFX.finale();
+}
+document.getElementById('btn-copy-saga').addEventListener('click', function(){
+  var saga = SAGAS[currentSagaId];
+  copyToClipboard(saga.title.toUpperCase() + '\n\n' + saga.epigraph, this);
+});
+document.getElementById('btn-saga-restart').addEventListener('click', restart);
 
 /* ============================================================
    RESUME — offer to continue a saved assessment or journey
