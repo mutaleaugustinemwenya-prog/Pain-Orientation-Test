@@ -558,194 +558,371 @@ var ARCHETYPES = [
 
 
 /* ============================================================
-   SAGAS — Act IV: The Reckoning. A Campbellian monomyth, one per
-   archetype, all sharing the same eight movements so the parallel
-   structure itself carries meaning. Unlocked after the results
-   screen, narrated by the same voice and typewriter as the portals.
+   SAGAS -- Act IV: The Reckoning. Eight chapters per archetype,
+   one for each Law of Pain, mirroring the free portals but going
+   a layer deeper: how this specific orientation actually lives
+   out that law. Unlocked after the results screen, narrated by
+   the same typewriter as the portals.
    ============================================================ */
 var SAGAS = {
-  avoider: {
-    title:"The Myth of the Outrunner",
-    accent:"#7d8a99",
-    intro:"Before the eight laws had names, before any test was taken, there was already a shape this life was taking. Yours is the shape of the Outrunner: quick, capable, and pursued by something that has never once caught up. What follows is not a lesson. It is the myth your answers have already been telling.",
-    epigraph:"The Outrunner still moves quickly through the world. But the road behind is only ever a road now, and when the old fog visits, it is finally allowed to sit down first.",
-    movements:[
-      { numeral:"I", name:"The World Before the Wound", lines:[
-        "In the time before the Hound, the Outrunner was known simply for quickness. Quick hands at the loom, quick feet at every game, a mind that finished sentences before they were spoken. The village did not call this fear. It called it a gift, and for a long while it was.",
-        "No one in that village had yet learned that the fastest child in every race is sometimes the child most practiced at leaving."
-      ]},
-      { numeral:"II", name:"The Herald", lines:[
-        "Then came the loss that quickness could not outpace, arriving at the worst possible hour, uninvited, indifferent to how fast anyone could run. The Outrunner discovered, for the first time, that some things do not chase from behind. Some things are already standing where you are going.",
-        "That night, the Outrunner ran anyway. Not toward anything. Simply away, down a road that did not care where it led, so long as it kept moving."
-      ]},
-      { numeral:"III", name:"The Turning Away", lines:[
-        "The running worked, or seemed to. Each mile put a little more silence between the Outrunner and the ache, and silence felt enough like healing to be mistaken for it. So a whole life was built on the technique: motion as medicine, distance as safety, arrival always postponed.",
-        "Somewhere behind, patient and untiring, something began to follow. Not close. Never closer than exactly the Outrunner's own pace. But never further away, either."
-      ]},
-      { numeral:"IV", name:"The Guide", lines:[
-        "At every crossroads the road offered, the same woman was already sitting. She never called out, never gave chase of her own, only watched the Outrunner arrive, breathless, and choose another direction. On the hundredth crossing, she finally spoke.",
-        "“You have never once looked at what follows you,” she said. “Turn around. Count its teeth. I do not think you will find as many as you believe.”"
-      ]},
-      { numeral:"V", name:"The Threshold", lines:[
-        "The Outrunner did not turn that day, nor the next. But exhaustion is its own kind of threshold, and eventually there is no more road left to spend it on. One evening, with nowhere further to run, the Outrunner simply stopped, in a clearing the maps did not name, and waited."
-      ]},
-      { numeral:"VI", name:"The Tests", lines:[
-        "The thing that followed did not arrive as one shape but many. Every grief the Outrunner had outpaced returned in turn, wearing the faces of what had actually been lost. Old companions appeared too, the ones left behind at each departure, asking only to be seen, not chased down.",
-        "Twice the legs remembered their old trade and nearly carried the Outrunner off again. Twice, the Outrunner stayed."
-      ]},
-      { numeral:"VII", name:"The Abyss", lines:[
-        "At last the pursuer arrived close enough to touch, and the Outrunner, for the first time in this whole long story, looked directly at it.",
-        "It was fog. Grey, formless, and already thinning in the honesty of that gaze, because it had never been a hound with teeth at all. It was only the shape uncertainty takes when it is never once examined. Seen plainly, it could not hold its shape, and it did not."
-      ]},
-      { numeral:"VIII", name:"The Return With The Elixir", lines:[
-        "The Outrunner returned to the village still quick, still capable of the old speed when speed was genuinely called for. But a new instrument had been carried back from the clearing: the ability to stand still for sixty honest seconds inside a feeling, and discover survival on the other side of it.",
-        "In time, the Outrunner became someone who could sit, unhurried, at a crossroads, for whoever arrived there next, breathless, mid flight, certain that something with teeth was closing in behind."
-      ]}
+  "avoider": {
+    "title": "The Reckoning of the Outrunner",
+    "accent": "#7d8a99",
+    "intro": "Before any law had a name, there was already a shape this life was taking: quick, capable, gone before the weight of a thing could fully land. What follows is not a fable of monsters and roads. It is the plain reckoning of what happens when the Eight Laws, one by one, finally catch a life that was built entirely around outrunning them.",
+    "epigraph": "The Outrunner still moves quickly through the world. But the road behind is only ever a road now, and when the old fog visits, it is finally allowed to sit down first.",
+    "movements": [
+      {
+        "numeral": "I",
+        "name": "Malevolence",
+        "lines": [
+          "The Outrunner's first answer to cruelty is speed: get past the wound before it has time to properly land, treat harm as a hazard to be outrun rather than a fact to be held. This works for a while, and then the pattern reveals its price. What is outrun is not gone. It waits at exactly the pace you set for it, one stride behind, for as long as you keep running.",
+          "The reckoning here is simple and unwelcome: the malevolence you have spent years evading is still, after all this distance, entirely unexamined."
+        ]
+      },
+      {
+        "numeral": "II",
+        "name": "Vulnerability",
+        "lines": [
+          "Exposure is the one thing speed cannot outrun, because vulnerability is not a location. It is a state, and it travels with you regardless of how far you go. So instead you have learned to make yourself difficult to see: quick, capable, gone before anyone gets close enough to notice what the quickness is covering.",
+          "The cost is a particular kind of loneliness, being surrounded by people who admire your pace and have never once seen you stop."
+        ]
+      },
+      {
+        "numeral": "III",
+        "name": "Unsatisfactoriness",
+        "lines": [
+          "You have made an uneasy peace with the fact that arrival never quite arrives, since arriving would mean stopping, and stopping is the one maneuver your orientation was never built to perform. Each finish line becomes, almost instantly, the start of the next course.",
+          "The Outrunner is rarely dissatisfied in the ordinary sense. It is something closer: perpetually mid-stride, in a race that was never actually announced as a race by anyone but you."
+        ]
+      },
+      {
+        "numeral": "IV",
+        "name": "Decay",
+        "lines": [
+          "Decay is patient in a way that speed cannot counter. It does not chase. It simply waits at the destination for everyone, including the fastest runner in the field. This is the law the Outrunner resists longest and meets last, because meeting it requires standing still.",
+          "The reckoning arrives the day the body itself asks for the rest that pride has refused to grant it, and there is, for once, nowhere left to run to."
+        ]
+      },
+      {
+        "numeral": "V",
+        "name": "Impulse",
+        "lines": [
+          "Motion is your native impulse, and it has served you well in a hundred ordinary emergencies. The difficulty is a nervous system that cannot always distinguish an emergency from an ordinary Tuesday, so the impulse to move fires whether or not there is, in fact, anything to run from.",
+          "Learning to feel the impulse without obeying it automatically is, for you, close to the entire curriculum of adulthood."
+        ]
+      },
+      {
+        "numeral": "VI",
+        "name": "Irreversibility",
+        "lines": [
+          "Some losses cannot be outrun because they have already happened, fully and finally, before you had the chance to build up speed. This is the one law the Outrunner cannot out-maneuver, and its first appearance is usually the origin of the running itself.",
+          "What you are actually outrunning, most of the time, is the memory of the one thing you could not undo."
+        ]
+      },
+      {
+        "numeral": "VII",
+        "name": "Misperception",
+        "lines": [
+          "From enough distance and at enough speed, nearly anything can be misread as a threat, since you rarely stay close enough to anything to confirm what it actually was. The pursuer you have spent a lifetime evading may be considerably smaller, and considerably less interested in you, than the shape it takes at a dead run.",
+          "Turning around costs less than it has always seemed to."
+        ]
+      },
+      {
+        "numeral": "VIII",
+        "name": "Mortality",
+        "lines": [
+          "Mortality is the law that finally answers the question the Outrunner has structured an entire life around avoiding: what happens if I simply stop. The answer, it turns out, is not catastrophe. It is stillness, arriving on schedule regardless of how the years before it were spent.",
+          "This is where the reckoning completes itself: the fastest runner in the story still, eventually, arrives."
+        ]
+      }
     ]
   },
-  resister: {
-    title:"The Myth of the Unbroken Wall",
-    accent:"#7a2e28",
-    intro:"Yours is the shape of the one who does not yield: the hand that holds the gate, the will that does not tire before the enemy does. What follows is the myth of what that strength was built to fight, and what it eventually had to learn to lay down.",
-    epigraph:"The Resister still stands at the gate when a gate is worth standing at. The shield still gets taken down when it should. But it hangs on its hook far more often now, and the wall is better for the rest.",
-    movements:[
-      { numeral:"I", name:"The World Before the Wound", lines:[
-        "The Resister was, from the earliest age anyone remembered, the strong one. The one who held the door against the wind, held the temper that others lost, held the line in every game until the game itself gave up first. Strength was not something the Resister had. It was who the Resister was.",
-        "No one thought to ask what such a child would do the day strength was not the right tool for the wound in front of them."
-      ]},
-      { numeral:"II", name:"The Herald", lines:[
-        "That day arrived as most such days do, without ceremony, and without any weakness the Resister could point to as the true cause. Something was simply lost, cleanly and completely, in a way no effort could reverse. The Resister met this the only way the Resister knew how. By gripping harder."
-      ]},
-      { numeral:"III", name:"The Turning Away", lines:[
-        "A wall was raised, stone by stone, out of exactly that grip. Suffering became a siege to be endured rather than a fact to be accommodated, a weakness to be eliminated rather than a guest to be let in. The Resister manned the wall day and night, and for a long while, the wall held.",
-        "But walls are built to face an enemy. And the thing pressing against this one, patient, rhythmic, tireless, was never an enemy at all."
-      ]},
-      { numeral:"IV", name:"The Guide", lines:[
-        "At the postern gate, half hidden, a soldier waited who had fought this exact siege once and lost it, and lived. She had laid her shield down at that same gate long ago, not in surrender, but in recognition.",
-        "“The tide does not hate your wall,” she told the Resister. “It has never once hated anything. It only moves. Fight a tide long enough and you will find yourself exhausted by weather.”"
-      ]},
-      { numeral:"V", name:"The Threshold", lines:[
-        "Against every instinct the Resister had ever trusted, the gate was opened, and for the first time, the Resister walked down off the ramparts, past the stone, onto the open shore where the tide could be met directly instead of resisted from behind a wall."
-      ]},
-      { numeral:"VI", name:"The Tests", lines:[
-        "The shore offered no easy footing. Old allies, other walls, other sieges, called the Resister back to the ramparts more than once, insisting that only the fight had ever kept anyone safe. Some of what the tide took, the Resister discovered, had needed to be taken. Some of what the wall had protected had never needed protecting at all."
-      ]},
-      { numeral:"VII", name:"The Abyss", lines:[
-        "The ordeal was not a battle. It was the moment the last effort finally gave out, the shield slipping from a hand too tired to keep gripping it, and the Resister, for one unguarded breath, expected to be destroyed.",
-        "The tide came in. It also, in its own time, went back out. It had never once been trying to end the Resister. It had only ever been trying to move, the way water moves, indifferent and enormous and entirely without malice."
-      ]},
-      { numeral:"VIII", name:"The Return With The Elixir", lines:[
-        "The Resister returned to the wall, because some walls remain worth holding, and picked the shield back up, because some fights remain worth having. But a hook now hangs by the door, and the shield rests there more often than the old Resister would ever have believed possible.",
-        "What was carried back was not surrender. It was discernment, the hard won knowledge of which walls guard something real, and which were only ever built from the fear of resting."
-      ]}
+  "resister": {
+    "title": "The Reckoning of the Unbroken Wall",
+    "accent": "#7a2e28",
+    "intro": "Yours is the shape of the one who does not yield: the hand that holds the gate, the will that does not tire before the enemy does. What follows is not a legend of battles won. It is the plain reckoning of what a life spent holding a line eventually costs the one holding it.",
+    "epigraph": "The wall still gets manned when a wall is worth manning. But the gate opens more easily now, and what comes through it no longer has to fight its way in.",
+    "movements": [
+      {
+        "numeral": "I",
+        "name": "Malevolence",
+        "lines": [
+          "Cruelty, to you, is simply another force to be met and matched, so your instinct has never been to duck it. It is to plant your feet and refuse to be moved by it, which is genuinely admirable and occasionally indistinguishable from refusing to feel it at all.",
+          "The reckoning is that some harms are not opponents. They are facts, and facts do not respond to being outmuscled."
+        ]
+      },
+      {
+        "numeral": "II",
+        "name": "Vulnerability",
+        "lines": [
+          "You have built, stone by stone, a wall around exactly the place that is softest, because showing that place has always seemed like handing an opponent the coordinates of your weakest point.",
+          "What the wall protects, it also isolates, and after enough years the isolation starts to cost more than the exposure ever would have."
+        ]
+      },
+      {
+        "numeral": "III",
+        "name": "Unsatisfactoriness",
+        "lines": [
+          "Nothing about ordinary insufficiency sits well with you, since insufficiency implies a problem, and a problem implies something to be solved through greater effort. Some dissatisfactions, though, are not solvable. They are simply the texture of being alive, and effort does not change texture.",
+          "Learning to let a thing be merely unsatisfying, without a campaign to fix it, is the hardest ground you hold."
+        ]
+      },
+      {
+        "numeral": "IV",
+        "name": "Decay",
+        "lines": [
+          "Decay does not respect stamina, and this is the single fact your orientation has the most trouble accepting: strength was never actually the right tool for every kind of ending.",
+          "The reckoning arrives when holding on stops being resilience and starts, plainly, being refusal."
+        ]
+      },
+      {
+        "numeral": "V",
+        "name": "Impulse",
+        "lines": [
+          "Your impulses run almost entirely toward force: meet the difficulty, apply more pressure, do not yield ground. This has built real capability. It has also meant that softer impulses, rest, asking, simply receiving, rarely get a hearing before they are overridden.",
+          "The unfamiliar impulse is the one worth following this time."
+        ]
+      },
+      {
+        "numeral": "VI",
+        "name": "Irreversibility",
+        "lines": [
+          "An irreversible loss is, to you, an insult that demands a response, and for a long time the response has been to keep fighting a battle that ended the moment the loss became final.",
+          "The reckoning is recognizing the difference between a fight still worth having and a fight that is, in fact, already over."
+        ]
+      },
+      {
+        "numeral": "VII",
+        "name": "Misperception",
+        "lines": [
+          "You are prone to reading the world in terms of opponents, because opponents are at least something you know how to meet. Not everything that resists you is against you, and mistaking indifference, or simple bad luck, for an adversary keeps you at war with things that were never fighting back.",
+          "The gate is sometimes just a gate, not a siege."
+        ]
+      },
+      {
+        "numeral": "VIII",
+        "name": "Mortality",
+        "lines": [
+          "Mortality is the one opponent your strength was never built to defeat, and for the Resister this is close to unbearable news, right up until it is finally accepted.",
+          "The reckoning completes itself the day you set the shield down, not in defeat, but because you have found something a wall was never meant to hold against."
+        ]
+      }
     ]
   },
-  negotiator: {
-    title:"The Myth of the Silent Market",
-    accent:"#b8863f",
-    intro:"Yours is the shape of the one who finds the third option, the fair trade, the treaty no one else could see. What follows is the myth of the one thing that would not sit down at the table, and what the Negotiator learned from its silence.",
-    epigraph:"The Negotiator still finds the fair trade before anyone else notices it was there. But there is a chair kept at that table now, always empty, for whatever will never sit down to bargain.",
-    movements:[
-      { numeral:"I", name:"The World Before the Wound", lines:[
-        "Even as a child, the Negotiator could find the deal buried inside any quarrel: the trade that let both sides walk away whole. Praised early for a wisdom that seemed to arrive before its time, the Negotiator became, without ever choosing it exactly, the family's diplomat, the village's broker of difficult peace."
-      ]},
-      { numeral:"II", name:"The Herald", lines:[
-        "Then came a loss with no fair terms attached to it at all: no cause to negotiate with, no lesson waiting patiently to be extracted, no reasonable accounting that balanced what was taken against what remained. For the first time, the Negotiator's great gift found nothing to work with."
-      ]},
-      { numeral:"III", name:"The Turning Away", lines:[
-        "Rather than sit inside that unbalanced ledger, the Negotiator did what came naturally: built a story around the loss, negotiated a meaning for it long before any meaning had actually arrived, wrapped the raw fact in interpretation until it was smooth enough to be carried.",
-        "The story helped, for a while, the way any well made thing helps. But underneath it, unread and unaddressed, the original silence remained exactly as loud as it had always been."
-      ]},
-      { numeral:"IV", name:"The Guide", lines:[
-        "At the market's outer edge, past the last stall, a trader sat who had once wagered everything trying to strike the one unlosable bargain, and lost it entirely. He kept no goods now. Only a warning.",
-        "“Not everything that arrives at your gate is a customer,” he said. “Some things are only ever weather. You cannot broker with weather. You can only stand in it.”"
-      ]},
-      { numeral:"V", name:"The Threshold", lines:[
-        "Beyond the market's edge lay ground the Negotiator had always avoided: open, unmarked, with nothing to buy, sell, or reframe. No treaty had ever been signed there, because nothing there had ever agreed to negotiate."
-      ]},
-      { numeral:"VI", name:"The Tests", lines:[
-        "Again and again the Negotiator returned with a fresh offer, a cleverer frame, a more generous trade, and again and again, nothing answered. Allies along the way showed the difference between the meaning making that genuinely serves a wound and the meaning making that only postpones one."
-      ]},
-      { numeral:"VII", name:"The Abyss", lines:[
-        "At last the Negotiator arrived at that open ground with no offer prepared at all, empty handed, storyless, entirely without leverage. The Wordless Thing did not attack. It did not answer. It simply remained, vast and unbothered, and the Negotiator discovered, to great surprise, survival on the far side of contact with something that would never, under any terms, make sense."
-      ]},
-      { numeral:"VIII", name:"The Return With The Elixir", lines:[
-        "The Negotiator returned to the market and went on trading, brokering, finding the third option faster than anyone else at the table, because that gift had never been the problem. But one room in the house is kept empty now, unfurnished and unstoried, reserved for whatever arrives next that refuses translation.",
-        "What was carried home was not defeat. It was tolerance, the capacity to let something remain permanently, usefully unresolved."
-      ]}
+  "negotiator": {
+    "title": "The Reckoning of the Silent Market",
+    "accent": "#6a4d9c",
+    "intro": "Yours is the shape of the one who finds the third option, the fair trade, the treaty no one else could see. What follows is not a fable of clever bargains. It is the plain reckoning of what happens when the Eight Laws are placed, one at a time, in front of a mind built to negotiate everything, including the things that were never actually for sale.",
+    "epigraph": "The Negotiator still finds the workable term in most things. But some things are finally allowed to simply be true, with nothing to extract from them and no deal required.",
+    "movements": [
+      {
+        "numeral": "I",
+        "name": "Malevolence",
+        "lines": [
+          "Your instinct with cruelty is to find its terms: why it happened, what it means, what can be extracted from it that makes the transaction bearable. This produces real wisdom. It also means you rarely simply let malevolence be what it is, senseless, without demanding it first explain itself.",
+          "Some cruelty has no terms to discover. It only has a fact to be borne."
+        ]
+      },
+      {
+        "numeral": "II",
+        "name": "Vulnerability",
+        "lines": [
+          "You will negotiate the conditions under which you might be seen, careful terms, a controlled reveal, nothing offered that has not first been weighed. Vulnerability, though, does not honor terms. It asks for everything, or it is not really vulnerability at all.",
+          "The reckoning is discovering what happens when you are seen on someone else's timing, without having pre-approved the deal."
+        ]
+      },
+      {
+        "numeral": "III",
+        "name": "Unsatisfactoriness",
+        "lines": [
+          "Insufficiency, to you, is a starting position in a negotiation, something to be worked until it yields a better outcome. Most of the time this instinct serves you well. Some insufficiency, though, is the final offer, not an opening one, and continuing to bargain with it only delays accepting terms that were never going to move.",
+          "Some tables have nothing left to trade."
+        ]
+      },
+      {
+        "numeral": "IV",
+        "name": "Decay",
+        "lines": [
+          "You have tried, more than once, to negotiate with decay: a healthier routine in exchange for more years, a better habit in exchange for a longer run. Decay does not actually negotiate. It simply proceeds, on its own schedule, regardless of the terms you have proposed.",
+          "The reckoning is learning to tend what decays without requiring it to make you a deal in return."
+        ]
+      },
+      {
+        "numeral": "V",
+        "name": "Impulse",
+        "lines": [
+          "Your impulses arrive already half-negotiated, filtered, reframed, weighed against their likely cost, before you have even finished feeling them. This produces admirable restraint and an unfortunate distance from your own immediate wanting.",
+          "Occasionally the impulse deserves to be followed exactly as it arrived, with no terms attached at all."
+        ]
+      },
+      {
+        "numeral": "VI",
+        "name": "Irreversibility",
+        "lines": [
+          "An irreversible loss offends your sense that everything, eventually, has terms, and you have spent real energy searching for the deal hidden inside a closed door. There is no deal. Some doors are simply shut.",
+          "The reckoning is accepting a loss that will never be reframed into something more bearable, because it was never going to be."
+        ]
+      },
+      {
+        "numeral": "VII",
+        "name": "Misperception",
+        "lines": [
+          "You are skilled at reading a room, which occasionally tips into reading motives into a room that never had any, treating silence as strategy and neutrality as a stance. Not everyone at the table is negotiating. Some of them are simply standing there.",
+          "Ask, before you assume the terms."
+        ]
+      },
+      {
+        "numeral": "VIII",
+        "name": "Mortality",
+        "lines": [
+          "Mortality is the one counterparty that will not come to the table, will not counter your offer, will not extend the deadline. For a negotiator, this is close to the most frightening fact available.",
+          "The reckoning completes itself the day you stop trying to strike a deal with your own ending, and simply let it be true."
+        ]
+      }
     ]
   },
-  witness: {
-    title:"The Myth of the Watchtower",
-    accent:"#4b3d73",
-    intro:"Yours is the shape of the one who sees clearly from a height others cannot reach. What follows is the myth of the tower that kept you safe, and the long stairs down that safety eventually asked of you.",
-    epigraph:"The Witness still keeps the tower, and keeps it well. But the stairs are worn smooth now on both sides, going up and coming down in equal measure.",
-    movements:[
-      { numeral:"I", name:"The World Before the Wound", lines:[
-        "The Witness was the calm one, even young: the child who did not cry when the others did, praised for a steadiness that seemed older than its years. Before long the village had given the Witness the watch itself, a room at the top of the tower, a clear view of every storm before it arrived."
-      ]},
-      { numeral:"II", name:"The Herald", lines:[
-        "A grief arrived, eventually, close enough that watching it from a height was no longer simply skill. It was distance the Witness had not chosen and could not, from that room, undo. Someone below needed presence. The tower could only offer an excellent view."
-      ]},
-      { numeral:"III", name:"The Turning Away", lines:[
-        "Rather than descend, the Witness climbed higher, refining an already considerable gift for observation until it could explain almost anything from a very safe remove. Clarity became a kind of armor, worn so well that its wearer sometimes forgot it was also a wall."
-      ]},
-      { numeral:"IV", name:"The Guide", lines:[
-        "At the base of the tower, not the top, waited someone who had once been exactly what the Witness was now: a watcher who had, for a single person and a single storm, finally climbed all the way down, and had never fully climbed back up to who they were before.",
-        "“I did not teach myself to see better,” they told the Witness. “Seeing was never the difficulty. I taught myself the particular ache of coming down anyway.”"
-      ]},
-      { numeral:"V", name:"The Threshold", lines:[
-        "The stairs the Witness had avoided for so long turned out to be ordinary stairs, worn stone, nothing more. Each step downward surrendered a little of the clean overview the tower had always offered, in exchange for the messier, nearer truth of standing at ground level."
-      ]},
-      { numeral:"VI", name:"The Tests", lines:[
-        "Down among the weather, the Witness's practiced composure met its first real test. Storms felt entirely different without a roof and a great distance between the watcher and the rain. Allies at ground level did not want commentary. They wanted company, in the specific and inconvenient sense of someone standing beside them, getting wet."
-      ]},
-      { numeral:"VII", name:"The Abyss", lines:[
-        "The ordeal was not a storm faced from below. It was being moved by one, caught, soaked, unable to maintain the clean observing distance that had always been the Witness's particular gift and particular defense.",
-        "And the Witness discovered, astonished, that being moved did not undo the capacity to see clearly. It completed it. The two had never actually been opposites. Only the tower had made them seem that way."
-      ]},
-      { numeral:"VIII", name:"The Return With The Elixir", lines:[
-        "The Witness climbed back up eventually, because the tower still had its uses, and the watch still mattered. But a door was cut into it now, one that opened, and the Witness came down among the storms far more often than before, not instead of watching, but alongside it.",
-        "The elixir carried home was simple to name and hard earned: the practice of allowing oneself to be moved, and not only to observe."
-      ]}
+  "witness": {
+    "title": "The Reckoning of the Watchtower",
+    "accent": "#2e6a5c",
+    "intro": "Yours is the shape of the one who sees clearly from a height others cannot reach. What follows is not a parable about towers. It is the plain reckoning of what a life spent watching, however clearly, still eventually has to come down and touch.",
+    "epigraph": "The tower is still climbed, some days, because the view is still worth having. But the ladder down gets used more often now, and what is seen from level ground counts for something too.",
+    "movements": [
+      {
+        "numeral": "I",
+        "name": "Malevolence",
+        "lines": [
+          "You see cruelty with unusual clarity, its shape, its origin, its likely course, often before anyone else in the room has registered that something harmful is even happening. Clarity, though, is not the same as involvement, and a harm perfectly understood from a height is still, from where it lands, simply a harm.",
+          "The reckoning is coming down far enough to be reached by what you can already see so clearly."
+        ]
+      },
+      {
+        "numeral": "II",
+        "name": "Vulnerability",
+        "lines": [
+          "From the tower, your own exposure is visible to you with the same precision you apply to everything else, which is exactly the problem. Vulnerability observed is not vulnerability felt, and a great deal of your inner life has been examined from exactly the safe distance that keeps it from ever quite landing.",
+          "Let something reach you before you have finished analyzing it."
+        ]
+      },
+      {
+        "numeral": "III",
+        "name": "Unsatisfactoriness",
+        "lines": [
+          "You can name the shape of your own dissatisfaction with real precision, which people mistake for having resolved it. Naming a feeling accurately and actually sitting inside it are two different postures, and you have, for a long time, preferred the first.",
+          "Some insufficiency has to be felt, not just correctly described."
+        ]
+      },
+      {
+        "numeral": "IV",
+        "name": "Decay",
+        "lines": [
+          "You watch decay the way you watch everything, clearly, calmly, from a slight remove, cataloguing its progress without necessarily letting its approach touch anything close to fear. This composure is genuine. It is also, occasionally, a way of not quite being present to what is actually ending.",
+          "Let one small decline actually cost you something, out loud."
+        ]
+      },
+      {
+        "numeral": "V",
+        "name": "Impulse",
+        "lines": [
+          "Impulse rarely gets very far with you, since your habit is to notice it, name it, and let it pass without acting, which is a genuine skill and also, sometimes, a way of never quite participating in your own wanting.",
+          "Follow one impulse today before you have finished observing it."
+        ]
+      },
+      {
+        "numeral": "VI",
+        "name": "Irreversibility",
+        "lines": [
+          "You can see an irreversible loss with total clarity, exactly what closed, exactly why it cannot reopen, and the clarity itself can function as a kind of shelter from the grief that clarity was never actually meant to replace.",
+          "Understanding a door is shut is not the same as grieving that it is."
+        ]
+      },
+      {
+        "numeral": "VII",
+        "name": "Misperception",
+        "lines": [
+          "Misperception is the law you are least likely to fall to directly, since your entire orientation is built on seeing clearly. Its subtler form still finds you: mistaking your accurate observation for the whole of the experience, when observation was only ever meant to be the entry point.",
+          "See it, and then let it in."
+        ]
+      },
+      {
+        "numeral": "VIII",
+        "name": "Mortality",
+        "lines": [
+          "You have likely made your peace with mortality earlier and more completely than most people ever will, since it is, after all, simply one more thing to be observed clearly. The reckoning here is quieter than for other archetypes: not fear to overcome, but presence to finally choose, standing in your own ending rather than watching it from the tower.",
+          "Come all the way down, just this once."
+        ]
+      }
     ]
   },
-  integrator: {
-    title:"The Myth of the Keeper of the Threshold",
-    accent:"#c9973a",
-    intro:"Yours is not a myth still being written toward its ending. It has already turned, quietly, into the myth of what comes after. What follows is the story of the one who tends the fire at the gate others are only now approaching.",
-    epigraph:"There is no more road for the Keeper of the Threshold. There is only the fire, and whoever arrives next, cold, from all the same old roads.",
-    movements:[
-      { numeral:"I", name:"The World Before the Wound", lines:[
-        "The Keeper remembers, faintly now, every earlier shape this life once took. There was a season of running, fast and afraid. A season of walls, held long past their use. A season of bargains struck with things that could not bargain. A season in a tower, seeing everything, touching almost nothing.",
-        "Integration did not erase these earlier selves. It only stopped needing to choose only one of them at a time."
-      ]},
-      { numeral:"II", name:"The Herald", lines:[
-        "There was no single herald in the end, no one great grief that changed everything. There were many, arriving across years, each one summoning the same old responses, each one, slowly, met a little more directly than the last. The call, it turned out, was never a single knock. It was a habit of answering the door."
-      ]},
-      { numeral:"III", name:"The Old Wound, Remembered", lines:[
-        "The Keeper does not pretend the turning away never happened. It happened often: the running, the gripping, the bargaining, the watching from a great and careful height. Every earlier refusal is remembered honestly, without shame folded into the memory, because shame was never what finally moved the Keeper through.",
-        "What moved the Keeper through was simpler and slower: returning, again, after every turning away, until returning became the more familiar motion of the two."
-      ]},
-      { numeral:"IV", name:"The Guide", lines:[
-        "Long ago, someone else tended a fire at this exact gate for the Keeper, on the worst night of a life that has since had many nights. That person is gone now, or moved on, and left no instructions. The Keeper simply noticed, one day, that the fire still needed tending, and that there was no one else left standing close enough to do it."
-      ]},
-      { numeral:"V", name:"The Threshold", lines:[
-        "The Keeper no longer crosses a threshold. The Keeper sits at one, at the exact crossroads where the woman once waited for the Outrunner, at the exact postern gate where the soldier once waited for the Resister, at the exact market's edge, the exact base of the exact tower.",
-        "These were never four different places. They were one gate, differently named by whoever was approaching it, and differently lit."
-      ]},
-      { numeral:"VI", name:"The Tests", lines:[
-        "The tests here are quiet ones, easy to miss. Contempt, for those still fighting fights the Keeper has already finished. Pride, in having finished them. The temptation to hand out answers instead of presence, because answers are faster, and the Keeper, by now, has so many of them ready.",
-        "The discipline is the same each time: set the answer down, and simply sit with whoever has arrived, cold, at the gate."
-      ]},
-      { numeral:"VII", name:"The Abyss", lines:[
-        "The true ordeal is not behind the Keeper. It is a standing temptation, present even now, to let the fire go quietly dark. Rest has been earned. No one would call it failure. The Keeper could simply walk away from the gate and no myth would hold that against them.",
-        "And so, choosing it again, freely, without compulsion, without anyone watching to notice the choice, the Keeper adds another log to the fire. Not from duty. From something closer to love."
-      ]},
-      { numeral:"VIII", name:"The Return With The Elixir", lines:[
-        "There is no road left for the Keeper to return down. The Keeper is already home, has been for some time, and the elixir was never a thing to carry back from anywhere. It is the fire itself, held out, unhurried, to whoever arrives next, cold, breathless, certain that something with teeth is closing in behind them.",
-        "The Keeper says very little to such arrivals. Usually only this. Sit, and get warm, and tell me what is chasing you. I think, together, we can count its teeth."
-      ]}
+  "integrator": {
+    "title": "The Reckoning of the Keeper of the Threshold",
+    "accent": "#c9973a",
+    "intro": "Yours is not a reckoning still being written toward its ending. It has already turned, quietly, into the reckoning of what comes after: what is asked of the one who tends the fire at the gate others are only now approaching.",
+    "epigraph": "The fire at the gate still burns. It no longer needs the Keeper's constant tending to stay lit, only their company, offered freely, to whoever arrives next.",
+    "movements": [
+      {
+        "numeral": "I",
+        "name": "Malevolence",
+        "lines": [
+          "You no longer flinch from the fact that harm moves through the world, including through you, and this acceptance is real, not performance. The remaining work is patience with those still learning what took you a long time to learn: that admitting the capacity for harm is not the same as being harmful.",
+          "Tend the fire. Do not demand everyone else already knows how to."
+        ]
+      },
+      {
+        "numeral": "II",
+        "name": "Vulnerability",
+        "lines": [
+          "What was once armor is now simply skin, worn without much thought, and this ease can look, to someone still guarded, like a fluency they do not yet have and may resent you for.",
+          "Show the scar without expecting applause for the showing."
+        ]
+      },
+      {
+        "numeral": "III",
+        "name": "Unsatisfactoriness",
+        "lines": [
+          "You have made a working peace with the fact that things will always be somewhat insufficient, and that this is not a flaw in the design of a life but the actual shape of one. The risk, now, is impatience with people still fighting insufficiency as though it were solvable.",
+          "Let them fight it. You already know how the fight ends."
+        ]
+      },
+      {
+        "numeral": "IV",
+        "name": "Decay",
+        "lines": [
+          "Decay no longer frightens you in the way it once did, and this equanimity is hard-won, not innate. Do not mistake your own calm for the standard everyone else should already be meeting.",
+          "Sit with someone in their fear of decay without correcting it toward your own peace."
+        ]
+      },
+      {
+        "numeral": "V",
+        "name": "Impulse",
+        "lines": [
+          "Your impulses and your values have largely converged, which is rare and took considerable time to arrive at, and it can make you a poor witness to how loud the gap still is for someone earlier in the work.",
+          "Remember the gap. You did not always live this close to it."
+        ]
+      },
+      {
+        "numeral": "VI",
+        "name": "Irreversibility",
+        "lines": [
+          "You have made your peace with what cannot be undone, genuinely, not as a performance of wisdom, and the temptation now is to offer that peace to people who are not ready to receive it yet.",
+          "Grief has its own schedule. Do not hand someone the ending before they have finished the middle."
+        ]
+      },
+      {
+        "numeral": "VII",
+        "name": "Misperception",
+        "lines": [
+          "You see clearly, most of the time, and the danger at this stage is mistaking your own clarity for a standard, a quiet, unspoken judgment of those still caught in the old distortions.",
+          "Correct gently, or not at all."
+        ]
+      },
+      {
+        "numeral": "VIII",
+        "name": "Mortality",
+        "lines": [
+          "Mortality, for you, has become a fact lived alongside rather than a terror managed, and this is the entire point of the reckoning: pain, fully inhabited rather than defeated. The last work is transmission, not instruction, presence for those still finding their way to where you already stand.",
+          "Keep the fire. Let others find it in their own time."
+        ]
+      }
     ]
   }
 };
@@ -828,7 +1005,8 @@ document.addEventListener('click', function(e){
 
 
 /* ============================================================
-   ACT IV: THE MYTH — a Campbellian saga keyed to the archetype
+   ACT IV: THE RECKONING — eight chapters keyed to the archetype,
+   one per Law of Pain
    ============================================================ */
 var currentSagaId = null;
 var sagaMovementIdx = 0;
@@ -855,7 +1033,7 @@ function sagaMovementScene(idx){
   document.documentElement.style.setProperty('--accent', saga.accent);
   emberField(saga.accent);
   document.getElementById('saga-icon-sm').innerHTML = archetypeSvg(currentSagaId, 58);
-  document.getElementById('saga-movement-num').textContent = 'MOVEMENT ' + mv.numeral + ' OF VIII';
+  document.getElementById('saga-movement-num').textContent = 'CHAPTER ' + mv.numeral + ' OF VIII';
   document.getElementById('saga-movement-name').textContent = mv.name;
   var body = document.getElementById('saga-movement-body');
   body.innerHTML = '<div class="typewriter-box" id="saga-tw-box"></div>';
