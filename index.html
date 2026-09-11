@@ -136,10 +136,9 @@ hr.rule{border:none;border-top:1px solid var(--fog);margin:1.8rem 0}
 .hud-meter-track{width:90px;height:3px;background:var(--fog)}
 .hud-meter-fill{height:100%;background:linear-gradient(90deg,var(--accent-d),var(--accent));transition:width .8s ease}
 
-/* ---------- Act intro ---------- */
+/* ---------- Grouping intro (Descent / Trials / Revelation) ---------- */
 #screen-actintro{text-align:center}
-.act-roman{font-family:'Cinzel',serif;font-size:5.5rem;color:var(--accent-d);opacity:.5;line-height:1;margin-bottom:.4rem}
-.act-name{font-family:'Cinzel',serif;font-size:clamp(1.6rem,5vw,2.6rem);letter-spacing:.08em;color:var(--bone);margin-bottom:1rem}
+.act-name{font-family:'Cinzel',serif;font-size:clamp(2rem,6vw,3.2rem);letter-spacing:.06em;color:var(--bone);margin-bottom:1rem;margin-top:1rem}
 .act-tag{color:var(--ghost);font-style:italic;margin-bottom:2.4rem;font-size:1.05rem}
 .act-laws{display:flex;justify-content:center;gap:2.2rem;margin-bottom:2.6rem;flex-wrap:wrap}
 .act-law-item{text-align:center;opacity:.85}
@@ -339,7 +338,6 @@ a.btn{text-decoration:none;display:inline-block}
 
 <section class="screen" id="screen-actintro">
   <div class="wrap">
-    <div class="act-roman" id="act-roman"></div>
     <div class="act-name" id="act-name"></div>
     <p class="act-tag" id="act-tag"></p>
     <div class="act-laws" id="act-laws"></div>
@@ -550,7 +548,7 @@ function runTypewriter(container, lines, speed, onDone){
 }
 
 /* ============================================================
-   DATA — the eight laws, in three-act order.
+   DATA — the eight laws, grouped as Descent / Trials / Revelation.
    Each law's `q` is used twice: once as a quiz question (Pain
    Orientation Test phase), once as the reflection shown back to
    the reader inside that law's portal (journey phase).
@@ -759,9 +757,9 @@ var LAWS = [
 ];
 
 var ACTS = [
-  { n:1, roman:"I", name:"The Descent", tag:"Before you can be reoriented, you must first admit what pain actually is." },
-  { n:2, roman:"II", name:"The Trials", tag:"Time will erode you, urges will pull at you, and some doors close forever. Meet them with open eyes." },
-  { n:3, roman:"III", name:"The Revelation", tag:"See clearly. Face the end. Then rise, reoriented." }
+  { n:1, name:"The Descent", tag:"Before you can be reoriented, you must first admit what pain actually is." },
+  { n:2, name:"The Trials", tag:"Time will erode you, urges will pull at you, and some doors close forever. Meet them with open eyes." },
+  { n:3, name:"The Revelation", tag:"See clearly. Face the end. Then rise, reoriented." }
 ];
 
 var ARCHETYPES = [
@@ -1033,7 +1031,7 @@ function updateHUD(){
   hud.classList.add('show');
   var law = LAWS[Math.min(portalIndex,7)];
   var act = ACTS[law.act-1];
-  document.getElementById('hud-act').textContent = 'ACT ' + act.roman + ' · ' + act.name;
+  document.getElementById('hud-act').textContent = act.name.toUpperCase();
 
   var dotsEl = document.getElementById('hud-dots');
   dotsEl.innerHTML = '';
@@ -1088,11 +1086,10 @@ document.addEventListener('pointerup', resetPortalTilt);
 document.addEventListener('pointerleave', resetPortalTilt);
 
 /* ============================================================
-   ACT INTRO
+   GROUPING INTRO — Descent / Trials / Revelation
    ============================================================ */
 function showActIntro(act, onDone){
   SFX.act();
-  document.getElementById('act-roman').textContent = act.roman;
   document.getElementById('act-name').textContent = act.name;
   document.getElementById('act-tag').textContent = '"' + act.tag + '"';
   var lawsInAct = LAWS.filter(function(l){ return l.act === act.n; });
@@ -1274,9 +1271,9 @@ function showResults(){
       '<p class="growth-text">'+escapeHtml(arch.growth)+'</p>'+
     '</div>'+
     '<div class="premium-box">'+
-      '<p class="eyebrow">Premium: Act IV</p>'+
-      '<p class="premium-text">Your result continues into a fourth act. "'+escapeHtml(arch.name)+'" has a complete reckoning written for it, plus a practical breakdown of how this orientation operates in wealth, health, and happiness.</p>'+
-      '<a class="btn btn-gold" href="myth/index.html?arch='+arch.id+'">Unlock Act IV: The Reckoning</a>'+
+      '<p class="eyebrow">Premium: The Reckoning</p>'+
+      '<p class="premium-text">Your result continues past this page. "'+escapeHtml(arch.name)+'" has a complete reckoning written for it, plus a practical breakdown of how this orientation operates in wealth, health, and happiness.</p>'+
+      '<a class="btn btn-gold" href="myth/index.html?arch='+arch.id+'">Unlock The Reckoning</a>'+
     '</div>'+
     '<div class="result-actions"><button class="btn" id="btn-copy-pledge">Copy My Reorientation</button><button class="btn" id="btn-restart">Take the Assessment Again</button></div>';
 
