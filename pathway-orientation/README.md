@@ -18,6 +18,7 @@ under this `pathway-orientation/` folder and is deployed on its own via GitHub P
 - `assets/fonts/` — Lora and Nunito Sans (SIL Open Font License), embedded in the generated PDF for consistent typography regardless of what's installed on the machine that opens it
 - `output/` — where the generated PDF is written (not committed; regenerate with `npm run generate-pdf`)
 - `docs/syllabus-mapping.docx` — draft mapping of the workbook to Zambia's Careers Guidance and Counselling curriculum component, prepared for a future CDC reader-approval submission. It is marked DRAFT: the official CDC syllabus/framework text could not be sourced when it was written, so it uses standard career-guidance competency domains as a placeholder and leaves the "official syllabus objective" column for a qualified reviewer to complete — see the document's own Section 2 before relying on it.
+- `docs/facilitators-guide.docx` — draft guide for Guidance and Counselling teachers running the workbook: session plan, a script for each session, world-of-work notes and a decision-making worksheet (covering the domains the printed workbook itself covers weakly), sensitive-situation FAQs, and safeguarding notes (never use results to place/restrict subject choices). Also DRAFT and unpiloted — see its own Section 1.
 
 ## Running the web app locally
 
