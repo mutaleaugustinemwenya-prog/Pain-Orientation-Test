@@ -1,0 +1,38 @@
+{
+  "scale": {
+    "min": 1,
+    "max": 5
+  },
+  "orientations": ["order", "form", "coordination", "discovery", "integration", "preservation", "transformation"],
+  "scoring": {
+    "method": "sum",
+    "description": "For each orientation, add up the Likert scores (1-5) of every question tagged with that orientation. This gives one raw score per orientation.",
+    "normalization": {
+      "method": "min-max",
+      "formula": "(rawSum - questionCount * scaleMin) / (questionCount * (scaleMax - scaleMin))",
+      "range": [0, 1],
+      "description": "Converts each orientation's raw sum into a 0-1 score so orientations can be compared fairly, even if they end up with different numbers of questions in future versions of the question bank."
+    }
+  },
+  "classification": {
+    "dominant": {
+      "rule": "The orientation with the highest normalized score."
+    },
+    "secondary": {
+      "rule": "The orientation with the second-highest normalized score."
+    },
+    "shadow": {
+      "rule": "The orientation with the lowest normalized score."
+    },
+    "tieBreaking": {
+      "rule": "canonicalOrder",
+      "description": "If two or more orientations are tied at a rank boundary, the one listed earlier in 'orientations' above is treated as the higher rank.",
+      "appliesTo": ["dominant", "secondary", "shadow"]
+    },
+    "minimumQuestionsPerOrientation": 3
+  },
+  "output": {
+    "includeAllScores": true,
+    "roundNormalizedTo": 2
+  }
+}

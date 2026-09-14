@@ -1,0 +1,61 @@
+{
+  "title": "Destinal Orientation Question Bank",
+  "instructions": "For each statement below, choose the number that best shows how much it sounds like you. There are no right or wrong answers — just answer honestly, based on how you usually feel and act, not how you think you should feel or act.",
+  "scale": [
+    { "value": 1, "label": "Not like me at all" },
+    { "value": 2, "label": "A little like me" },
+    { "value": 3, "label": "Somewhat like me" },
+    { "value": 4, "label": "Like me" },
+    { "value": 5, "label": "Very much like me" }
+  ],
+  "questions": [
+    { "id": "q01", "orientation": "order", "text": "I feel more comfortable when there is a clear plan or set of steps to follow." },
+    { "id": "q02", "orientation": "order", "text": "I enjoy organising my books, room or timetable so that everything has its place." },
+    { "id": "q03", "orientation": "order", "text": "I like fixing or building things with my hands, such as furniture, gadgets or models." },
+    { "id": "q04", "orientation": "order", "text": "I get uncomfortable when tasks are left unfinished or done in the wrong order." },
+    { "id": "q05", "orientation": "order", "text": "I am often the one who makes sure a group project has clear roles and a schedule." },
+    { "id": "q06", "orientation": "order", "text": "I enjoy subjects like Mathematics or Design and Technology because they follow clear rules." },
+
+    { "id": "q07", "orientation": "form", "text": "I often imagine new ideas, designs or stories in my mind." },
+    { "id": "q08", "orientation": "form", "text": "I enjoy drawing, writing, composing music or making things that express how I feel." },
+    { "id": "q09", "orientation": "form", "text": "I like finding new and original ways to do things instead of copying others." },
+    { "id": "q10", "orientation": "form", "text": "I notice beauty in small details that other people often miss." },
+    { "id": "q11", "orientation": "form", "text": "I feel most alive when I am creating something from nothing." },
+    { "id": "q12", "orientation": "form", "text": "I enjoy subjects like Art, Literature or Music because they let me express myself." },
+
+    { "id": "q13", "orientation": "coordination", "text": "I enjoy bringing different people together to work towards one goal." },
+    { "id": "q14", "orientation": "coordination", "text": "I am good at seeing how different tasks or people fit together in a group project." },
+    { "id": "q15", "orientation": "coordination", "text": "People often ask me to organise events, meetings or group activities." },
+    { "id": "q16", "orientation": "coordination", "text": "I like making sure everyone in a team knows their role and works well with others." },
+    { "id": "q17", "orientation": "coordination", "text": "I feel satisfied when many moving parts finally come together smoothly." },
+    { "id": "q18", "orientation": "coordination", "text": "I enjoy being the person who links ideas, people or plans into one clear picture." },
+
+    { "id": "q19", "orientation": "discovery", "text": "I ask a lot of 'why' and 'how' questions about the world around me." },
+    { "id": "q20", "orientation": "discovery", "text": "I enjoy trying new activities, places or subjects even if I might fail." },
+    { "id": "q21", "orientation": "discovery", "text": "I get excited when I learn something nobody around me knew before." },
+    { "id": "q22", "orientation": "discovery", "text": "I enjoy science experiments or finding out how things work." },
+    { "id": "q23", "orientation": "discovery", "text": "I would rather explore an unfamiliar topic than stick to what I already know." },
+    { "id": "q24", "orientation": "discovery", "text": "I dream of travelling, researching or discovering something new one day." },
+
+    { "id": "q25", "orientation": "integration", "text": "I enjoy explaining things to classmates until they understand." },
+    { "id": "q26", "orientation": "integration", "text": "Friends often come to me for advice or to talk about their problems." },
+    { "id": "q27", "orientation": "integration", "text": "I feel good when I help someone discover a talent or ability they didn't know they had." },
+    { "id": "q28", "orientation": "integration", "text": "I am patient with people who are struggling to learn or understand something." },
+    { "id": "q29", "orientation": "integration", "text": "I like guiding younger students or siblings in their schoolwork or life choices." },
+    { "id": "q30", "orientation": "integration", "text": "I care more about helping someone grow than about being right myself." },
+
+    { "id": "q31", "orientation": "preservation", "text": "I feel it is important to protect and take care of what already works well." },
+    { "id": "q32", "orientation": "preservation", "text": "I get uncomfortable when people break rules or traditions without good reason." },
+    { "id": "q33", "orientation": "preservation", "text": "I take my responsibilities and duties very seriously." },
+    { "id": "q34", "orientation": "preservation", "text": "I feel called to protect people, animals or the environment from harm." },
+    { "id": "q35", "orientation": "preservation", "text": "I respect discipline and order because they keep people safe." },
+    { "id": "q36", "orientation": "preservation", "text": "I would rather maintain something valuable than change it too quickly." },
+
+    { "id": "q37", "orientation": "transformation", "text": "I am not afraid to challenge the way things have always been done." },
+    { "id": "q38", "orientation": "transformation", "text": "I have turned a difficult or painful experience into something that made me stronger." },
+    { "id": "q39", "orientation": "transformation", "text": "I enjoy finding completely new solutions instead of small improvements." },
+    { "id": "q40", "orientation": "transformation", "text": "I feel restless when things stay the same for too long." },
+    { "id": "q41", "orientation": "transformation", "text": "I believe big change is sometimes necessary, even if it is uncomfortable." },
+    { "id": "q42", "orientation": "transformation", "text": "People describe me as someone who reinvents themselves after setbacks." }
+  ]
+}

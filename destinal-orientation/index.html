@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Destinal Orientation</title>
+<meta name="description" content="Find your dominant, secondary and shadow orientation of destiny." />
+<style>
+  :root {
+    --bg: #faf7f1;
+    --card: #ffffff;
+    --ink: #22201b;
+    --muted: #6b665c;
+    --accent: #a8632c;
+    --accent-dark: #7c481e;
+    --accent-soft: #f1e4d3;
+    --border: #e6ddcc;
+    --shadow-tone: #8a8478;
+    max-width: 100%;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 20px 18px 48px;
+  }
+
+  header.top {
+    text-align: center;
+    padding: 24px 0 8px;
+  }
+
+  header.top h1 {
+    font-size: 1.5rem;
+    margin: 0 0 4px;
+  }
+
+  header.top p {
+    color: var(--muted);
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 20px;
+    margin-top: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .progress-track {
+    height: 8px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.25s ease;
+  }
+
+  .progress-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  .question-text {
+    font-size: 1.15rem;
+    margin: 22px 0 22px;
+    font-weight: 600;
+  }
+
+  .likert {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .likert button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: #fff;
+    font-size: 1rem;
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .likert button .num {
+    font-weight: 700;
+    color: var(--accent);
+    margin-right: 12px;
+  }
+
+  .likert button:active,
+  .likert button.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+    gap: 12px;
+  }
+
+  button.plain {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1rem;
+    padding: 10px 4px;
+    cursor: pointer;
+  }
+
+  button.plain:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  button.primary {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 22px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  button.primary:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  button.secondary {
+    background: none;
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    border-radius: 10px;
+    padding: 12px 22px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .intro-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .hidden { display: none !important; }
+
+  .result-block {
+    margin-top: 22px;
+  }
+
+  .result-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+  }
+
+  .tag-dominant { background: var(--accent-soft); color: var(--accent-dark); }
+  .tag-secondary { background: #eef1e6; color: #4c5a2f; }
+  .tag-shadow { background: #efece7; color: var(--shadow-tone); }
+
+  .result-block h2 {
+    margin: 0 0 2px;
+    font-size: 1.35rem;
+  }
+
+  .archetype {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0 0 12px;
+  }
+
+  .calling {
+    font-style: italic;
+    color: var(--accent-dark);
+    margin: 10px 0 14px;
+    border-left: 3px solid var(--accent);
+    padding-left: 12px;
+  }
+
+  .section-label {
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin: 16px 0 6px;
+  }
+
+  ul.plain-list {
+    margin: 4px 0 0;
+    padding-left: 20px;
+  }
+
+  ul.plain-list li {
+    margin-bottom: 4px;
+  }
+
+  .score-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 6px 0;
+    font-size: 0.85rem;
+  }
+
+  .score-bar-row .name {
+    width: 108px;
+    flex-shrink: 0;
+    color: var(--muted);
+  }
+
+  .score-bar-track {
+    flex: 1;
+    height: 8px;
+    background: var(--accent-soft);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    background: var(--accent);
+  }
+
+  footer.actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
+  }
+
+  .footnote {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+    margin-top: 28px;
+  }
+
+  @media (min-width: 640px) {
+    .wrap { padding-top: 40px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <h1>Destinal Orientation</h1>
+      <p>Find your dominant, secondary and shadow orientation of destiny.</p>
+    </header>
+
+    <section id="screen-intro" class="card">
+      <p id="intro-text">Loading...</p>
+      <div class="intro-actions">
+        <button class="primary" id="start-btn">Start</button>
+      </div>
+    </section>
+
+    <section id="screen-question" class="card hidden">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-label" id="progress-label"></div>
+      <p class="question-text" id="question-text"></p>
+      <div class="likert" id="likert-options"></div>
+      <div class="nav-row">
+        <button class="plain" id="back-btn">Back</button>
+        <button class="plain" id="skip-hint" disabled>Choose an answer to continue</button>
+      </div>
+    </section>
+
+    <section id="screen-results" class="card hidden">
+      <div id="results-content"></div>
+      <footer class="actions">
+        <button class="secondary" id="retake-btn">Take it again</button>
+      </footer>
+    </section>
+
+    <p class="footnote">Careers and colleges listed are examples to get you thinking — talk to your guidance teacher about more options.</p>
+  </div>
+
+  <script src="src/scoring.js"></script>
+  <script src="src/app.js"></script>
+</body>
+</html>

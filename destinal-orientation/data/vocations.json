@@ -1,0 +1,161 @@
+{
+  "title": "The Seven Orientations of Destiny",
+  "intro": "You are not just one type. Everyone has a dominant orientation that leads, a secondary orientation that supports it, and a shadow orientation that is quiet or repressed right now. When an orientation is understood and used well, it gives you a sense of calling. When it is ignored or misused, it can leave you feeling stuck or without direction. None of the seven orientations is better than the others — they are simply different directions through which people find meaning and do good work in the world.",
+  "canonicalOrder": ["order", "form", "coordination", "discovery", "integration", "preservation", "transformation"],
+  "orientations": [
+    {
+      "id": "order",
+      "name": "Order Orientation",
+      "archetype": "The Builder",
+      "resonantFigure": {
+        "name": "Carl Friedrich Gauss",
+        "note": "a mathematician who found deep satisfaction in structure, proof and precision"
+      },
+      "essence": "You find peace and purpose in structure, planning and building things that last.",
+      "dominantDescription": "As a Builder, you feel most alive when you are creating order out of confusion — drawing up a plan, following clear steps, or putting together something solid and dependable. You like knowing how things work and making sure they work properly. Other people can trust you to finish what you start and to make things stronger and more reliable.",
+      "callingStatement": "Your calling is to bring structure, reliability and lasting foundations to whatever you touch.",
+      "secondaryDescription": "When Order supports another orientation, you bring discipline, planning and follow-through to it — you help turn big ideas into real, working systems.",
+      "shadowDescription": "When Order sits quietly in your shadow, rules, deadlines and tidy plans may feel more like a cage than a comfort. This is not a fault in you — it simply means your energy is not naturally drawn there yet. Even a small amount of structure, used gently, can still help you finish the things that matter to you.",
+      "strengths": ["Planning and organising", "Following through to completion", "Attention to detail", "Building reliable systems"],
+      "watchOutFor": ["Becoming too rigid or afraid of change", "Judging others who work less methodically", "Getting stuck perfecting small details"],
+      "pathways": {
+        "subjectsToFocus": ["Mathematics", "Additional Mathematics", "Physics", "Design and Technology", "Computer Studies"],
+        "tertiaryFields": ["Civil or Structural Engineering", "Architecture", "Quantity Surveying", "Software Engineering", "Accounting", "Urban and Regional Planning"],
+        "zambianInstitutions": ["University of Zambia (UNZA) – School of Engineering", "Copperbelt University (CBU) – School of the Built Environment", "Northern Technical College (NORTEC)", "Zambia Institute of Chartered Accountants (ZICA)"],
+        "careerExamples": ["Civil Engineer", "Architect", "Quantity Surveyor", "Software Engineer", "Accountant", "Construction Project Manager", "Town Planner"]
+      }
+    },
+    {
+      "id": "form",
+      "name": "Form Orientation",
+      "archetype": "The Creator",
+      "resonantFigure": {
+        "name": "Leonardo da Vinci and T.S. Eliot",
+        "note": "a painter-inventor and a poet who both gave shape to imagination"
+      },
+      "essence": "You find meaning in imagining new things and giving them shape through art, words, sound or design.",
+      "dominantDescription": "As a Creator, you notice beauty and possibility that others miss. You are happiest when you are making something that did not exist before — a drawing, a story, a song, an outfit, a design. You would rather find an original way to do something than copy what has already been done.",
+      "callingStatement": "Your calling is to give shape and meaning to imagination, and to help others see the world differently through what you make.",
+      "secondaryDescription": "When Form supports another orientation, you bring imagination, originality and a feel for beauty to it — helping ideas become memorable and expressive.",
+      "shadowDescription": "When Form sits quietly in your shadow, self-expression and imagination may feel unfamiliar or even a little frightening to try. That is alright — you don't need to become an artist overnight. Small moments of creativity, tried without judging yourself, are enough to begin waking this part of you up.",
+      "strengths": ["Imagination and originality", "Noticing beauty and detail", "Expressing feelings and ideas clearly", "Comfort with ambiguity"],
+      "watchOutFor": ["Struggling to finish what you start", "Taking criticism of your work too personally", "Avoiding practical or repetitive tasks"],
+      "pathways": {
+        "subjectsToFocus": ["Art", "Literature in English", "Music", "Design and Technology", "English Language"],
+        "tertiaryFields": ["Fine Art and Graphic Design", "Fashion Design", "Creative Writing and Journalism", "Film and Media Production", "Music"],
+        "zambianInstitutions": ["Evelyn Hone College of Applied Arts and Commerce", "Zambia Institute of Mass Communication (ZAMCOM)", "University of Zambia – Department of Literature and Languages", "Kwame Nkrumah University – Creative Arts"],
+        "careerExamples": ["Graphic Designer", "Fashion Designer", "Writer or Poet", "Journalist", "Film-maker", "Musician", "Fine Artist", "Advertising Creative"]
+      }
+    },
+    {
+      "id": "coordination",
+      "name": "Coordination Orientation",
+      "archetype": "The Orchestrator",
+      "resonantFigure": {
+        "name": "Wolfgang Amadeus Mozart",
+        "note": "a composer who arranged many different instruments into one whole sound"
+      },
+      "essence": "You find satisfaction in bringing different people, ideas or tasks together so that they work as one.",
+      "dominantDescription": "As an Orchestrator, you naturally see how the different pieces of a group or project fit together. You are the one who makes sure everyone knows their role, that plans line up, and that many moving parts come together smoothly. People often ask you to organise things because you can hold the whole picture in your mind.",
+      "callingStatement": "Your calling is to bring people, ideas and moving parts together so that something bigger than any one part can happen.",
+      "secondaryDescription": "When Coordination supports another orientation, you help organise the people and steps around an idea so that it actually happens well, on time, and together.",
+      "shadowDescription": "When Coordination sits quietly in your shadow, managing many people or juggling many moving parts at once may feel overwhelming rather than exciting. This is not a weakness — you may simply prefer depth in one thing over managing many things at once, and that is a valid way to work too.",
+      "strengths": ["Seeing the big picture", "Organising people and events", "Delegating and following up", "Keeping many moving parts on track"],
+      "watchOutFor": ["Taking on too much at once", "Struggling to let go of control", "Neglecting your own individual work while managing others"],
+      "pathways": {
+        "subjectsToFocus": ["Business Studies", "Commerce", "Mathematics", "Civic Education", "Computer Studies"],
+        "tertiaryFields": ["Business Administration", "Project Management", "Human Resource Management", "Logistics and Supply Chain Management", "Event Management"],
+        "zambianInstitutions": ["University of Zambia (UNZA) – School of Business", "Copperbelt University (CBU) – School of Business", "National Institute of Public Administration (NIPA)", "Zambia Institute of Marketing (ZIM)"],
+        "careerExamples": ["Event Manager", "Project Manager", "Operations Manager", "Human Resource Manager", "Logistics Coordinator", "Business Consultant", "Music Producer or Conductor"]
+      }
+    },
+    {
+      "id": "discovery",
+      "name": "Discovery Orientation",
+      "archetype": "The Explorer",
+      "resonantFigure": {
+        "name": "Nikola Tesla",
+        "note": "an inventor who was always chasing ideas nobody else had tried yet"
+      },
+      "essence": "You find meaning in asking questions, trying new things and finding out how the world works.",
+      "dominantDescription": "As an Explorer, you are driven by curiosity. You ask 'why' and 'how' more than most people, and you would rather try something new and risk getting it wrong than never try at all. Learning something nobody around you knew before gives you real excitement.",
+      "callingStatement": "Your calling is to go where questions have not been fully answered yet, and bring back what you find.",
+      "secondaryDescription": "When Discovery supports another orientation, you bring curiosity, fresh ideas and a willingness to test new approaches to it.",
+      "shadowDescription": "When Discovery sits quietly in your shadow, the unfamiliar or untested may feel unsettling rather than exciting, and you may prefer to stick with what you already know works. That is a reasonable way to feel — you can still take small, safe steps into new things at your own pace.",
+      "strengths": ["Curiosity and asking good questions", "Comfort with trying and failing", "Independent thinking", "Noticing patterns others miss"],
+      "watchOutFor": ["Losing interest before finishing a task", "Taking unnecessary risks", "Getting bored with routine responsibilities"],
+      "pathways": {
+        "subjectsToFocus": ["Biology", "Chemistry", "Physics", "Additional Mathematics", "Geography", "Computer Studies"],
+        "tertiaryFields": ["Medicine", "Research Science", "Geology and Mining Engineering", "Data Science", "Environmental Science", "Entrepreneurship"],
+        "zambianInstitutions": ["University of Zambia (UNZA) – School of Medicine and School of Natural Sciences", "Copperbelt University (CBU) – School of Mines and Mineral Sciences", "Mulungushi University"],
+        "careerExamples": ["Medical Doctor", "Research Scientist", "Mining or Geological Engineer", "Data Scientist", "Environmental Scientist", "Entrepreneur", "Pilot"]
+      }
+    },
+    {
+      "id": "integration",
+      "name": "Integration Orientation",
+      "archetype": "The Guide",
+      "resonantFigure": {
+        "name": "Helen Keller",
+        "note": "a teacher and advocate who helped others discover strength they did not know they had"
+      },
+      "essence": "You find meaning in helping other people understand themselves and grow into their potential.",
+      "dominantDescription": "As a Guide, you naturally notice what other people are capable of, sometimes before they see it themselves. You are patient when someone is struggling to learn, and you care more about helping someone grow than about being right. Friends often come to you for advice, and you feel good when you help someone discover an ability they didn't know they had.",
+      "callingStatement": "Your calling is to walk beside others and help them grow into who they are capable of becoming.",
+      "secondaryDescription": "When Integration supports another orientation, you bring patience, empathy and encouragement to it — helping the people around your work feel seen and supported.",
+      "shadowDescription": "When Integration sits quietly in your shadow, guiding or comforting others may not come naturally, and that is fine — not everyone needs to lead this way. You can still show care in smaller, quieter ways that suit you, such as listening or being dependable.",
+      "strengths": ["Empathy and patience", "Explaining things clearly", "Noticing potential in others", "Building trust"],
+      "watchOutFor": ["Neglecting your own needs while helping others", "Struggling to set boundaries", "Taking on other people's problems too heavily"],
+      "pathways": {
+        "subjectsToFocus": ["Religious Education", "Civic Education", "Biology", "Literature in English", "Home Economics"],
+        "tertiaryFields": ["Teaching and Education", "Psychology and Counselling", "Social Work", "Nursing", "Theology and Ministry", "Human Resource Development"],
+        "zambianInstitutions": ["Chalimbana University", "Kwame Nkrumah University", "University of Zambia (UNZA) – School of Education", "Zambia Institute of Special Education (ZAMISE)"],
+        "careerExamples": ["Teacher", "School Counsellor", "Social Worker", "Nurse", "Community Development Officer", "Pastor or Chaplain", "HR Development Officer"]
+      }
+    },
+    {
+      "id": "preservation",
+      "name": "Preservation Orientation",
+      "archetype": "The Guardian",
+      "resonantFigure": {
+        "name": "Anna Pavlova",
+        "note": "a ballerina who protected and perfected the standards of her art form"
+      },
+      "essence": "You find meaning in protecting, maintaining and caring for what already has value.",
+      "dominantDescription": "As a Guardian, you take your responsibilities seriously and feel called to protect what is good — whether that is people, standards, traditions, or the environment. You get uneasy when rules or valuable things are treated carelessly, because you understand how much work it takes to build trust and order in the first place.",
+      "callingStatement": "Your calling is to protect, maintain and pass on what is valuable so that it is not lost.",
+      "secondaryDescription": "When Preservation supports another orientation, you bring discipline, responsibility and care for standards to it — helping good things last.",
+      "shadowDescription": "When Preservation sits quietly in your shadow, tradition, discipline and caution may feel less important to you than moving forward quickly, and that's alright. You can still learn to value some structure and care for what already works, even while you focus on what's next.",
+      "strengths": ["Sense of duty and responsibility", "Respect for discipline and order", "Loyalty and dependability", "Protecting people and resources"],
+      "watchOutFor": ["Resisting necessary change", "Being overly cautious or strict", "Struggling to adapt when old methods stop working"],
+      "pathways": {
+        "subjectsToFocus": ["Civic Education", "History", "Religious Education", "Physical Education", "Agricultural Science", "Biology"],
+        "tertiaryFields": ["Law", "Military or Police Service", "Agriculture and Food Security", "Public Health", "Environmental Conservation", "Library and Archive Studies"],
+        "zambianInstitutions": ["University of Zambia (UNZA) – School of Law", "Natural Resources Development College (NRDC)", "Zambia Police Service Training School", "Zambia National Service"],
+        "careerExamples": ["Lawyer", "Police or Military Officer", "Agricultural Extension Officer", "Public Health Officer", "Park Ranger or Conservationist", "Librarian or Archivist", "Farmer"]
+      }
+    },
+    {
+      "id": "transformation",
+      "name": "Transformation Orientation",
+      "archetype": "The Transmuter",
+      "resonantFigure": {
+        "name": "Wilma Rudolph",
+        "note": "an athlete who turned childhood illness into Olympic gold"
+      },
+      "essence": "You find meaning in turning difficulty into strength and in changing things that no longer work.",
+      "dominantDescription": "As a Transmuter, you are not afraid to challenge the way things have always been done, and you have a track record of turning hard or painful experiences into something that made you stronger. You feel restless when things stay the same for too long, and you believe big change is sometimes necessary, even when it is uncomfortable.",
+      "callingStatement": "Your calling is to turn breakdowns into breakthroughs — for yourself and for the people and systems around you.",
+      "secondaryDescription": "When Transformation supports another orientation, you bring resilience, boldness and a willingness to try a completely new approach to it.",
+      "shadowDescription": "When Transformation sits quietly in your shadow, change and risk may feel unsettling rather than exciting, and you may prefer steady, familiar ground. That is a valid way to be — you can still grow your comfort with change slowly, one small step at a time.",
+      "strengths": ["Resilience through hardship", "Willingness to challenge old ways", "Bold, original problem-solving", "Comfort with uncertainty"],
+      "watchOutFor": ["Changing things just for the sake of change", "Burning out from constant reinvention", "Being too impatient with slow, steady progress"],
+      "pathways": {
+        "subjectsToFocus": ["Physics", "Chemistry", "Additional Mathematics", "Computer Studies", "Design and Technology"],
+        "tertiaryFields": ["Electrical or Electronic Engineering", "Renewable Energy", "Biotechnology", "Innovation and Entrepreneurship", "Technology Start-ups"],
+        "zambianInstitutions": ["Copperbelt University (CBU) – School of Engineering", "University of Zambia (UNZA) – School of Engineering", "Mulungushi University", "BongoHive Innovation Hub, Lusaka"],
+        "careerExamples": ["Electrical or Electronic Engineer", "Renewable Energy Technician", "Technology Entrepreneur", "Biotechnologist", "Change Management Consultant", "Inventor"]
+      }
+    }
+  ]
+}
