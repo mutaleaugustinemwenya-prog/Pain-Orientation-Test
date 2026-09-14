@@ -19,7 +19,7 @@
       "strengths": ["Planning and organising", "Following through to completion", "Attention to detail", "Building reliable systems"],
       "watchOutFor": ["Becoming too rigid or afraid of change", "Judging others who work less methodically", "Getting stuck perfecting small details"],
       "pathways": {
-        "subjectsToFocus": ["Mathematics", "Additional Mathematics", "Physics", "Design and Technology", "Computer Studies"],
+        "subjectsToFocus": ["Mathematics", "Additional Mathematics", "Physics", "Design and Technology", "Computer Science", "Computer Studies", "Principles of Accounts"],
         "tertiaryFields": ["Civil or Structural Engineering", "Architecture", "Quantity Surveying", "Software Engineering", "Accounting", "Urban and Regional Planning"],
         "zambianInstitutions": ["University of Zambia (UNZA) – School of Engineering", "Copperbelt University (CBU) – School of the Built Environment", "Northern Technical College (NORTEC)", "Zambia Institute of Chartered Accountants (ZICA)"],
         "careerExamples": ["Civil Engineer", "Architect", "Quantity Surveyor", "Software Engineer", "Accountant", "Construction Project Manager", "Town Planner"]
@@ -85,7 +85,7 @@
       "strengths": ["Curiosity and asking good questions", "Comfort with trying and failing", "Independent thinking", "Noticing patterns others miss"],
       "watchOutFor": ["Losing interest before finishing a task", "Taking unnecessary risks", "Getting bored with routine responsibilities"],
       "pathways": {
-        "subjectsToFocus": ["Biology", "Chemistry", "Physics", "Additional Mathematics", "Geography", "Computer Studies"],
+        "subjectsToFocus": ["Biology", "Chemistry", "Physics", "Additional Mathematics", "Geography", "Computer Science", "Computer Studies"],
         "tertiaryFields": ["Medicine", "Research Science", "Geology and Mining Engineering", "Data Science", "Environmental Science", "Entrepreneurship"],
         "zambianInstitutions": ["University of Zambia (UNZA) – School of Medicine and School of Natural Sciences", "Copperbelt University (CBU) – School of Mines and Mineral Sciences", "Mulungushi University"],
         "careerExamples": ["Medical Doctor", "Research Scientist", "Mining or Geological Engineer", "Data Scientist", "Environmental Scientist", "Entrepreneur", "Pilot"]
@@ -107,7 +107,7 @@
       "strengths": ["Empathy and patience", "Explaining things clearly", "Noticing potential in others", "Building trust"],
       "watchOutFor": ["Neglecting your own needs while helping others", "Struggling to set boundaries", "Taking on other people's problems too heavily"],
       "pathways": {
-        "subjectsToFocus": ["Religious Education", "Civic Education", "Biology", "Literature in English", "Home Economics"],
+        "subjectsToFocus": ["Religious Education", "Civic Education", "Biology", "Literature in English", "Food and Nutrition"],
         "tertiaryFields": ["Teaching and Education", "Psychology and Counselling", "Social Work", "Nursing", "Theology and Ministry", "Human Resource Development"],
         "zambianInstitutions": ["Chalimbana University", "Kwame Nkrumah University", "University of Zambia (UNZA) – School of Education", "Zambia Institute of Special Education (ZAMISE)"],
         "careerExamples": ["Teacher", "School Counsellor", "Social Worker", "Nurse", "Community Development Officer", "Pastor or Chaplain", "HR Development Officer"]
@@ -151,7 +151,7 @@
       "strengths": ["Resilience through hardship", "Willingness to challenge old ways", "Bold, original problem-solving", "Comfort with uncertainty"],
       "watchOutFor": ["Changing things just for the sake of change", "Burning out from constant reinvention", "Being too impatient with slow, steady progress"],
       "pathways": {
-        "subjectsToFocus": ["Physics", "Chemistry", "Additional Mathematics", "Computer Studies", "Design and Technology"],
+        "subjectsToFocus": ["Physics", "Chemistry", "Additional Mathematics", "Computer Science", "Computer Studies", "Design and Technology"],
         "tertiaryFields": ["Electrical or Electronic Engineering", "Renewable Energy", "Biotechnology", "Innovation and Entrepreneurship", "Technology Start-ups"],
         "zambianInstitutions": ["Copperbelt University (CBU) – School of Engineering", "University of Zambia (UNZA) – School of Engineering", "Mulungushi University", "BongoHive Innovation Hub, Lusaka"],
         "careerExamples": ["Electrical or Electronic Engineer", "Renewable Energy Technician", "Technology Entrepreneur", "Biotechnologist", "Change Management Consultant", "Inventor"]
