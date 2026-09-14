@@ -1,7 +1,7 @@
 /**
- * Destinal Orientation scoring engine.
+ * Pathway Orientation scoring engine.
  * Implements the logic described in data/scoring-rules.json.
- * Works both as a browser global (window.DestinalScoring) and as a
+ * Works both as a browser global (window.PathwayScoring) and as a
  * CommonJS module (require('./scoring.js')) for Node scripts like
  * scripts/generate-pdf.js.
  */
@@ -9,7 +9,7 @@
   if (typeof module === "object" && module.exports) {
     module.exports = factory();
   } else {
-    root.DestinalScoring = factory();
+    root.PathwayScoring = factory();
   }
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";

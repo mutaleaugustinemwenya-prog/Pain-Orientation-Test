@@ -118,7 +118,7 @@
   }
 
   function finishQuiz() {
-    var result = window.DestinalScoring.scoreResponses({
+    var result = window.PathwayScoring.scoreResponses({
       questionsData: state.questionsData,
       vocationsData: state.vocationsData,
       scoringRulesData: state.scoringRulesData,

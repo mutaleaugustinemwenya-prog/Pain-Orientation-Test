@@ -1,11 +1,11 @@
-# Destinal Orientation
+# Pathway Orientation
 
 A self-authoring career guidance programme for Zambian Form 3/4 students, built around
-the Seven Orientations of Destiny (Order, Form, Coordination, Discovery, Integration,
+the Seven Orientations (Order, Form, Coordination, Discovery, Integration,
 Preservation, Transformation).
 
 This app is fully independent of anything else in this repository — it lives entirely
-under this `destinal-orientation/` folder and is deployed on its own via GitHub Pages.
+under this `pathway-orientation/` folder and is deployed on its own via GitHub Pages.
 
 ## Structure
 
@@ -35,9 +35,9 @@ npm install
 npm run generate-pdf
 ```
 
-This writes `output/destinal-orientation-workbook.pdf`.
+This writes `output/pathway-orientation-workbook.pdf`.
 
 ## Deployment
 
-`.github/workflows/deploy-destinal-orientation.yml` (at the repo root) builds and deploys
-this folder to GitHub Pages whenever changes under `destinal-orientation/` are pushed to `main`.
+`.github/workflows/deploy-pathway-orientation.yml` (at the repo root) builds and deploys
+this folder to GitHub Pages whenever changes under `pathway-orientation/` are pushed to `main`.

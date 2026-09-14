@@ -1,12 +1,12 @@
 /**
  * Generates a print-ready, seminar-grade self-scoring workbook PDF for
- * Destinal Orientation. Reads the same data/questions.json and
+ * Pathway Orientation. Reads the same data/questions.json and
  * data/vocations.json used by the web app, plus data/scoring-rules.json
  * for the scoring formula, so the paper workbook and the web app always
  * agree.
  *
  * Usage: node scripts/generate-pdf.js
- * Output: output/destinal-orientation-workbook.pdf
+ * Output: output/pathway-orientation-workbook.pdf
  */
 const fs = require("fs");
 const path = require("path");
@@ -20,7 +20,7 @@ const scoringRules = JSON.parse(fs.readFileSync(path.join(ROOT, "data/scoring-ru
 
 const OUTPUT_DIR = path.join(ROOT, "output");
 if (!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-const OUTPUT_PATH = path.join(OUTPUT_DIR, "destinal-orientation-workbook.pdf");
+const OUTPUT_PATH = path.join(OUTPUT_DIR, "pathway-orientation-workbook.pdf");
 
 // ---------------------------------------------------------------------
 // Design system
@@ -264,7 +264,7 @@ function drawRunningHeader(title) {
     .fillColor(FAINT)
     .font("Sans-Bold")
     .fontSize(7.6)
-    .text("DESTINAL ORIENTATION", PAGE_MARGIN, 34, { characterSpacing: 1.2 });
+    .text("PATHWAY ORIENTATION", PAGE_MARGIN, 34, { characterSpacing: 1.2 });
   doc
     .fillColor(FAINT)
     .font("Sans-Bold")
@@ -327,12 +327,12 @@ doc
   .fillColor(BRAND)
   .font("Serif-Bold")
   .fontSize(34)
-  .text("Destinal Orientation", 0, 320, { align: "center", width: PAGE_W });
+  .text("Pathway Orientation", 0, 320, { align: "center", width: PAGE_W });
 doc
   .fillColor(INK)
   .font("Serif-Italic")
   .fontSize(15)
-  .text("Find your calling among the Seven Orientations of Destiny", 0, 366, {
+  .text("Find your path among the Seven Orientations", 0, 366, {
     align: "center",
     width: PAGE_W
   });
@@ -911,7 +911,7 @@ for (let i = 1; i < range.count; i++) {
       .font("Sans")
       .fontSize(8)
       .fillColor(FAINT)
-      .text("Destinal Orientation · Self-Scoring Workbook", PAGE_MARGIN, PAGE_H - 38);
+      .text("Pathway Orientation · Self-Scoring Workbook", PAGE_MARGIN, PAGE_H - 38);
     doc
       .font("Sans-Semibold")
       .fontSize(8)

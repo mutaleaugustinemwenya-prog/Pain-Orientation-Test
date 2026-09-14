@@ -1,11 +1,11 @@
-name: Deploy Destinal Orientation to GitHub Pages
+name: Deploy Pathway Orientation to GitHub Pages
 
 on:
   push:
     branches: [main]
     paths:
-      - "destinal-orientation/**"
-      - ".github/workflows/deploy-destinal-orientation.yml"
+      - "pathway-orientation/**"
+      - ".github/workflows/deploy-pathway-orientation.yml"
   workflow_dispatch:
 
 permissions:
@@ -33,7 +33,7 @@ jobs:
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: destinal-orientation
+          path: pathway-orientation
 
       - name: Deploy to GitHub Pages
         id: deployment
