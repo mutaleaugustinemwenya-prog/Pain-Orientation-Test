@@ -349,7 +349,7 @@ doc
   .font("Sans")
   .fontSize(11)
   .text(
-    "A self-scoring workbook for Form 3 and Form 4 students — discover your dominant, secondary and shadow orientation using nothing but a pen.",
+    "A self-scoring workbook for Form 3 and Form 4 students: discover your dominant, secondary and shadow orientation using nothing but a pen.",
     PAGE_W / 2 - 190,
     422,
     { width: 380, align: "center", lineGap: 3 }
@@ -402,14 +402,14 @@ doc.moveDown(0.3);
 
   const textX = PAGE_MARGIN + 190;
   const textW = PAGE_W - PAGE_MARGIN - textX;
-  doc.fillColor(INK).font("Sans-Bold").fontSize(10).text("Dominant — leads", textX, cy - 78, { width: textW });
+  doc.fillColor(INK).font("Sans-Bold").fontSize(10).text("Dominant: leads", textX, cy - 78, { width: textW });
   doc.fillColor(MUTED).font("Sans").fontSize(9.3).text("The orientation you lean on most. This is where your calling is loudest.", textX, doc.y, { width: textW, lineGap: 2 });
 
-  doc.fillColor(INK).font("Sans-Bold").fontSize(10).text("Secondary — supports", textX, cy - 22, { width: textW });
+  doc.fillColor(INK).font("Sans-Bold").fontSize(10).text("Secondary: supports", textX, cy - 22, { width: textW });
   doc.fillColor(MUTED).font("Sans").fontSize(9.3).text("The orientation that backs up your dominant one and rounds out how you work.", textX, doc.y, { width: textW, lineGap: 2 });
 
-  doc.fillColor(INK).font("Sans-Bold").fontSize(10).text("Shadow — quiet, not broken", textX, cy + 34, { width: textW });
-  doc.fillColor(MUTED).font("Sans").fontSize(9.3).text("The orientation that is quietest in you right now. Not a flaw — simply the direction you have leaned on least.", textX, doc.y, { width: textW, lineGap: 2 });
+  doc.fillColor(INK).font("Sans-Bold").fontSize(10).text("Shadow: quiet, not broken", textX, cy + 34, { width: textW });
+  doc.fillColor(MUTED).font("Sans").fontSize(9.3).text("The orientation that is quietest in you right now, simply the direction you have leaned on least.", textX, doc.y, { width: textW, lineGap: 2 });
 
   doc.y = cy + 100;
 })();
@@ -489,7 +489,7 @@ vocationsData.canonicalOrder.forEach(function (id) {
     .fillColor(INK)
     .font("Sans-Bold")
     .fontSize(9.6)
-    .text(v.name + " — " + v.archetype, PAGE_MARGIN + 36, rowTop + 1, { width: 150 });
+    .text(v.name + ": " + v.archetype, PAGE_MARGIN + 36, rowTop + 1, { width: 150 });
   doc
     .fillColor(MUTED)
     .font("Sans")
@@ -713,7 +713,7 @@ body(
     minSum +
     " and " +
     maxSum +
-    ". Find your raw score below and read off the percentage next to it — for all seven orientations."
+    ". Find your raw score below and read off the percentage next to it for all seven orientations."
 );
 doc.moveDown(0.6);
 
@@ -786,14 +786,14 @@ doc.moveDown(0.25);
 sectionOpener("What Your Result Means", "What Your Result Means");
 h1("What your result means");
 body(
-  "Once you know your Dominant, Secondary and Shadow orientation, turn to the matching section below. Read your Dominant section fully, your Secondary section for how it supports you, and your Shadow section gently — it is not a weakness, just the quietest part of you right now."
+  "Once you know your Dominant, Secondary and Shadow orientation, turn to the matching section below. Read your Dominant section fully, your Secondary section for how it supports you, and your Shadow section gently; it is not a weakness, just the quietest part of you right now."
 );
 
 vocationsData.canonicalOrder.forEach(function (orientationId) {
   const v = orientationById[orientationId];
   const color = ORIENTATION_COLOR[orientationId];
   const pageNum = sectionOpener(v.name + " Profile");
-  tocEntries.push({ label: v.name + " — " + v.archetype, page: pageNum, indent: true });
+  tocEntries.push({ label: v.name + ": " + v.archetype, page: pageNum, indent: true });
 
   // Header band
   const bandH = 74;
@@ -825,7 +825,7 @@ vocationsData.canonicalOrder.forEach(function (orientationId) {
       .fillColor(BRAND_DARK)
       .font("Serif-Italic")
       .fontSize(9.4)
-      .text("Think of " + v.resonantFigure.name + " — " + v.resonantFigure.note + ".", PAGE_MARGIN + 12, noteTop + 8, {
+      .text("Think of " + v.resonantFigure.name + ": " + v.resonantFigure.note + ".", PAGE_MARGIN + 12, noteTop + 8, {
         width: PAGE_W - PAGE_MARGIN * 2 - 24
       });
     doc.y = noteTop + 38;

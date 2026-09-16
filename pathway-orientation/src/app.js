@@ -138,7 +138,7 @@
   function renderOrientationBlock(entry, tagClass, tagLabel) {
     var block = el("div", "result-block");
     block.appendChild(el("span", "result-tag " + tagClass, tagLabel));
-    block.appendChild(el("h2", null, entry.name + " — " + entry.archetype));
+    block.appendChild(el("h2", null, entry.name + ": " + entry.archetype));
     block.appendChild(el("p", "archetype", entry.essence));
 
     if (entry.callingStatement) {
@@ -188,7 +188,7 @@
         el(
           "p",
           "archetype",
-          "Think of " + entry.resonantFigure.name + " — " + entry.resonantFigure.note + "."
+          "Think of " + entry.resonantFigure.name + ": " + entry.resonantFigure.note + "."
         )
       );
     }
@@ -218,7 +218,7 @@
     container.innerHTML = "";
 
     var heading = el("p", null,
-      "<strong>Remember:</strong> you are not just one orientation. Your dominant orientation leads, your secondary orientation supports it, and your shadow orientation is simply the one that's quietest right now — not a flaw."
+      "<strong>Remember:</strong> you are not just one orientation. Your dominant orientation leads, your secondary orientation supports it, and your shadow orientation is simply the one that's quietest right now, not a flaw."
     );
     container.appendChild(heading);
 
