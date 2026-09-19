@@ -1,0 +1,242 @@
+// Utushimi — short-story marketplace & Mockingbird Digital storefront
+// Money is always stored as an integer in ngwee (1 Kwacha = 100 ngwee) to avoid float rounding.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  READER
+  WRITER
+  ADMIN
+}
+
+enum Genre {
+  FICTION
+  ROMANCE
+  THRILLER
+  SCIFI
+  HORROR
+  DRAMA
+  POETRY
+  NONFICTION
+  FOLKTALE
+  OTHER
+}
+
+enum StoryStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum ReviewDecision {
+  APPROVE
+  REJECT
+}
+
+enum MobileMoneyNetwork {
+  MTN
+  AIRTEL
+}
+
+// Lifecycle of a single mobile-money collection attempt (story or anthology purchase).
+enum PurchaseStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+// A writer's cut of a completed sale, tracked independently of the purchase's own lifecycle.
+enum LedgerEntryStatus {
+  HELD // within the refund/holdback window
+  ELIGIBLE // past the holdback window, unpaid
+  PAID // included in a completed Payout
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  phone        String?
+  role         Role     @default(READER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  writerProfile      WriterProfile?
+  stories            Story[]             @relation("WriterStories")
+  reviewActions      ReviewAction[]      @relation("AdminReviews")
+  purchases          Purchase[]
+  anthologyPurchases AnthologyPurchase[]
+  triggeredPayouts   Payout[]            @relation("PayoutTriggeredBy")
+
+  @@index([role])
+}
+
+model WriterProfile {
+  id            String              @id @default(cuid())
+  userId        String              @unique
+  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio           String?
+  payoutPhone   String?
+  payoutNetwork MobileMoneyNetwork?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  ledgerEntries PayoutLedgerEntry[]
+  payouts       Payout[]
+}
+
+model Story {
+  id              String      @id @default(cuid())
+  writerId        String
+  writer          User        @relation("WriterStories", fields: [writerId], references: [id])
+  title           String
+  slug            String      @unique
+  genre           Genre
+  priceNgwee      Int
+  coverText       String
+  body            String
+  previewCutoff   Int // number of characters of `body` visible before the paywall
+  readTimeMinutes Int
+  status          StoryStatus @default(PENDING_REVIEW)
+  rejectionNotes  String?
+  submittedAt     DateTime    @default(now())
+  publishedAt     DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  reviewActions ReviewAction[]
+  purchases     Purchase[]
+
+  @@index([status])
+  @@index([genre])
+  @@index([writerId])
+}
+
+model ReviewAction {
+  id        String         @id @default(cuid())
+  storyId   String
+  story     Story          @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  adminId   String
+  admin     User           @relation("AdminReviews", fields: [adminId], references: [id])
+  decision  ReviewDecision
+  notes     String?
+  createdAt DateTime       @default(now())
+
+  @@index([storyId])
+}
+
+model Purchase {
+  id               String             @id @default(cuid())
+  readerId         String
+  reader           User               @relation(fields: [readerId], references: [id])
+  storyId          String
+  story            Story              @relation(fields: [storyId], references: [id])
+  amountNgwee      Int
+  platformCutNgwee Int
+  writerCutNgwee   Int
+  network          MobileMoneyNetwork
+  phone            String
+  provider         String // PaymentProvider id that handled this collection, e.g. "mock"
+  providerRef      String? // external transaction reference from the aggregator
+  status           PurchaseStatus     @default(PENDING)
+  purchasedAt      DateTime           @default(now())
+  completedAt      DateTime?
+
+  ledgerEntry PayoutLedgerEntry?
+
+  @@index([readerId])
+  @@index([storyId])
+  @@index([status])
+}
+
+model PayoutLedgerEntry {
+  id              String            @id @default(cuid())
+  purchaseId      String            @unique
+  purchase        Purchase          @relation(fields: [purchaseId], references: [id])
+  writerProfileId String
+  writerProfile   WriterProfile     @relation(fields: [writerProfileId], references: [id])
+  amountNgwee     Int // writer's cut of this sale
+  status          LedgerEntryStatus @default(HELD)
+  eligibleAt      DateTime // purchase.completedAt + holdback window
+  payoutId        String?
+  payout          Payout?           @relation(fields: [payoutId], references: [id])
+  createdAt       DateTime          @default(now())
+
+  @@index([writerProfileId, status])
+}
+
+model Payout {
+  id               String              @id @default(cuid())
+  writerProfileId  String
+  writerProfile    WriterProfile       @relation(fields: [writerProfileId], references: [id])
+  totalAmountNgwee Int
+  status           PayoutStatus        @default(PENDING)
+  network          MobileMoneyNetwork
+  phone            String
+  provider         String
+  providerRef      String?
+  failureReason    String?
+  triggeredById    String
+  triggeredBy      User                @relation("PayoutTriggeredBy", fields: [triggeredById], references: [id])
+  ledgerEntries    PayoutLedgerEntry[]
+  createdAt        DateTime            @default(now())
+  paidAt           DateTime?
+
+  @@index([writerProfileId, status])
+}
+
+// Mockingbird Digital's own titles — a distinct content type with no writer-payout ledger.
+model AnthologyTitle {
+  id              String    @id @default(cuid())
+  title           String
+  slug            String    @unique
+  coverText       String
+  body            String
+  previewCutoff   Int
+  priceNgwee      Int
+  readTimeMinutes Int
+  published       Boolean   @default(false)
+  publishedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  purchases AnthologyPurchase[]
+
+  @@index([published])
+}
+
+model AnthologyPurchase {
+  id          String             @id @default(cuid())
+  readerId    String
+  reader      User               @relation(fields: [readerId], references: [id])
+  anthologyId String
+  anthology   AnthologyTitle     @relation(fields: [anthologyId], references: [id])
+  amountNgwee Int
+  network     MobileMoneyNetwork
+  phone       String
+  provider    String
+  providerRef String?
+  status      PurchaseStatus     @default(PENDING)
+  purchasedAt DateTime           @default(now())
+  completedAt DateTime?
+
+  @@index([readerId])
+  @@index([anthologyId])
+}
