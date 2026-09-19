@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+:root {
+  /* Clinical dossier register — near-black, structured, case-file typographic system. */
+  --color-ink: #0e0e0c;
+  --color-panel: #151310;
+  --color-banner: #17150f;
+  --color-rule: #2a2823;
+  --color-input-border: #3a3833;
+  --color-text-primary: #ece9e2;
+  --color-text-muted: #b7b3a9;
+  --color-text-faint: #8b887e;
+  --color-text-micro: #6e6b62;
+
+  /* Stamp red — used sparingly for CTAs, active states, price tags, status badges. */
+  --color-accent: #b4402a;
+  --color-accent-strong: #d14e35;
+}
+
+@theme inline {
+  --color-ink: var(--color-ink);
+  --color-panel: var(--color-panel);
+  --color-banner: var(--color-banner);
+  --color-rule: var(--color-rule);
+  --color-input-border: var(--color-input-border);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-faint: var(--color-text-faint);
+  --color-text-micro: var(--color-text-micro);
+  --color-accent: var(--color-accent);
+  --color-accent-strong: var(--color-accent-strong);
+
+  --font-display: var(--font-fraunces);
+  --font-body: var(--font-source-serif);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+html {
+  background: var(--color-ink);
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-text-primary);
+  font-family: var(--font-body), Georgia, serif;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-text-primary);
+}
+
+/* Uniform treatment for the monospace UI-chrome labels used throughout the app:
+   nav, tags, file numbers, buttons, stat labels — always uppercase, tracked out. */
+.mono-label {
+  font-family: var(--font-mono), monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.rule-divider {
+  border: none;
+  border-top: 1px solid var(--color-rule);
+}
+
+/* Redacted-text treatment for locked story content above the paywall: a blurred, dimmed
+   bar with a gradient fade into the ink background and a "REMAINDER SEALED" label. */
+.redacted-block {
+  position: relative;
+  pointer-events: none;
+  user-select: none;
+}
+
+.redacted-block::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 0%, var(--color-ink) 92%);
+}
+
+.redacted-block .redacted-line {
+  filter: blur(4px);
+  opacity: 0.45;
+}
